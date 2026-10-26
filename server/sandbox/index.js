@@ -85,15 +85,6 @@ export async function startSandboxServer(opts = {}) {
     if (parts.rawPath === '/') { res.writeHead(302, { Location: '/studio/home.html', 'Cache-Control': 'no-store' }); res.end(); return; }
     if (parts.rawPath === '/healthz') return sendJson(req, res, 200, { ok: true, mode: 'sandbox', app: APP_VERSION, version: PROTOCOL_VERSION, uptimeSec: Math.round((Date.now() - startedAt) / 1000) });
     if (parts.rawPath === '/api/music') return sendJson(req, res, 200, { files: await musicFiles() });
-    if (parts.rawPath === '/api/menu-music') {
-      let config = {};
-      try { config = JSON.parse(await fs.readFile(path.join(ROOT, 'content', 'menu-music.json'), 'utf8')); } catch { /* No configured menu tracks. */ }
-      const available = new Map((await musicFiles()).map((file) => [file.name, file.url]));
-      const tracks = (Array.isArray(config.tracks) ? config.tracks : []).filter((track) => track && available.has(track.file))
-        .map((track) => ({ name: String(track.name || track.file), url: available.get(track.file),
-          scenes: Array.isArray(track.scenes) ? track.scenes.filter((id) => ['home', 'sandbox', 'play', 'editor'].includes(id)) : [] }));
-      return sendJson(req, res, 200, { tracks });
-    }
     if (parts.rawPath === '/api/levels') return sendJson(req, res, 200, { levels: await readLevels() });
     if (levelPath != null && levelPath !== '/') {
       const file = decodeURIComponent(levelPath.replace(/^\//, ''));

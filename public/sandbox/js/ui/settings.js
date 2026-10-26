@@ -1,5 +1,6 @@
 import { saveSettings, MENU_THEMES } from '../settings.js';
 import { KEY_ACTIONS, getKeybinds, setKeybind, keyLabel } from '../keybinds.js';
+import { loadMenuMusic } from '../menu-audio.js';
 
 /** 键位显示：单个字符原样，其余用可读写法。 */
 
@@ -15,7 +16,7 @@ export function openSettings({ settings, onChange, onClose, global = false }) {
   const keys = () => KEY_ACTIONS.map(([action, label]) => `<label class="settings__row"><span>${label}</span><button type="button" class="settings__key" data-keybind="${action}">${keyLabel(binds[action])}</button></label>`).join('');
   dialog.innerHTML = `<header class="saves__head"><h2 id="settings-title">${global ? '全局设置' : '局内设置'}</h2><button type="button" class="menu__button" data-close>关闭 ×</button></header>
     <div class="settings__sections">${global ? `<section class="settings__appearance"><h3>局外主题</h3><div class="settings__themes" role="radiogroup" aria-label="局外界面主题">${MENU_THEMES.map((theme) => `<label class="settings__theme" data-theme-choice="${theme.id}"><span class="settings__theme-swatch" aria-hidden="true"><i></i><i></i><i></i></span><input type="radio" name="menu-theme" data-setting="menuTheme" value="${theme.id}"${value.menuTheme === theme.id ? ' checked' : ''}><strong>${theme.name}</strong><small>${theme.detail}</small></label>`).join('')}</div></section>` : ''}<section><h3>声音</h3>${toggle('muted', '静音')}${volume('sfx', '战斗与界面音效')}${volume('voice', '干员语音')}
-    ${volume('bgm', '背景音乐')}${toggle('menuBgm', '局外背景音乐')}${select('voiceLang', '语音语言', [['cn','中文'],['jp','日语'],['en','英语'],['kr','韩语']])}${toggle('voiceNative', '优先使用本土语言')}</section>
+    ${volume('bgm', '背景音乐')}${toggle('menuBgm', '局外背景音乐')}${global ? '<div class="settings__music"><label class="settings__row"><span>局外音乐曲目</span><select data-setting="menuBgmTrack" aria-label="局外音乐曲目" disabled><option>读取曲目中…</option></select></label><button type="button" class="menu__button" data-music-refresh>刷新曲目</button></div>' : ''}${select('voiceLang', '语音语言', [['cn','中文'],['jp','日语'],['en','英语'],['kr','韩语']])}${toggle('voiceNative', '优先使用本土语言')}</section>
     <section><h3>画面与战斗信息</h3>${select('quality', '画质', [['high','高'],['medium','中'],['low','低']])}
     ${select('officialFx', '官方特效', [['off','关闭'],['lite','精简'],['full','完整'],['auto','自动']])}
     ${toggle('damageNumbers', '显示伤害数字')}${toggle('officialDamageNumbers', '使用官方伤害字形')}${toggle('ammoEnergyCount', '显示弹药与能量数量')}
@@ -63,4 +64,29 @@ export function openSettings({ settings, onChange, onClose, global = false }) {
   dialog.addEventListener('close', () => { dialog.remove(); onClose?.(); }, { once: true });
   document.body.append(dialog);
   dialog.showModal();
+  if (global) {
+    const picker = dialog.querySelector('[data-setting="menuBgmTrack"]');
+    const refresh = dialog.querySelector('[data-music-refresh]');
+    const reloadMusic = async () => {
+      refresh.disabled = true;
+      const files = await loadMenuMusic();
+      if (!dialog.isConnected) return;
+      refresh.disabled = false;
+      if (!files) {
+        dialog.querySelector('[role="status"]').textContent = '无法读取音乐列表，请重试';
+        return;
+      }
+      picker.replaceChildren();
+      for (const file of files) picker.add(new Option(file.name.replace(/\.ogg$/i, ''), file.name));
+      if (!files.some((file) => file.name === value.menuBgmTrack)) {
+        const missing = new Option(files.length ? '所选曲目已移除，请重新选择' : '暂无可用音乐', value.menuBgmTrack);
+        missing.disabled = true;
+        picker.add(missing);
+      }
+      picker.value = value.menuBgmTrack;
+      picker.disabled = !files.length;
+    };
+    refresh.addEventListener('click', reloadMusic);
+    void reloadMusic();
+  }
 }

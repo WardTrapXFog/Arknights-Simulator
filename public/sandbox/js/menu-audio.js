@@ -1,4 +1,5 @@
 import { playLevelBgm, stopLevelBgm, currentLevelBgm } from './level-bgm.js';
+import { DEFAULT_MENU_MUSIC } from './settings.js';
 
 const CUES = {
   hover: '/assets/audio/sfx/general/g_ui/g_ui_btn_u.mp3',
@@ -10,14 +11,16 @@ const buffers = new Map();
 
 export async function loadMenuMusic() {
   try {
-    const response = await fetch('/api/menu-music', { cache: 'no-store' });
-    if (response.ok) tracks = (await response.json()).tracks || [];
-  } catch { tracks = []; }
+    const response = await fetch('/api/music', { cache: 'no-store' });
+    if (!response.ok) return null;
+    tracks = (await response.json()).files || [];
+  } catch { return null; }
   refreshMusic();
+  return tracks;
 }
 
 function refreshMusic() {
-  const track = tracks.find((item) => !item.scenes?.length || item.scenes.includes(section));
+  const track = tracks.find((item) => item.name === (settings.menuBgmTrack || DEFAULT_MENU_MUSIC));
   if (!active || !unlocked || !settings.menuBgm || !track || settings.muted || settings.bgm <= 0) {
     if (menuUrl && currentLevelBgm() === menuUrl) stopLevelBgm();
     menuUrl = null; return;

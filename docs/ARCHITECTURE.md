@@ -65,7 +65,7 @@ tools/               生成器与素材脚本
 
 `public/studio/home.html` 是自由沙盒 / 游玩自制关卡 / 关卡制作器的三入口菜单；菜单和存档窗口的样式在 `public/sandbox/menu.css`，也由它提供共用的扫描线和静态噪点变量。`public/studio/sandbox.css` 保留 HUD 布局，`public/sandbox/hud-theme.css` 定义炭灰面板、琥珀状态、青绿交互、警报红、小圆角、倒角与菱形控件。状态栏直接使用原有 `public/assets/ui/hudPanel/bg_battle.png` 八边形长条底板。扫描线与噪点只用于面板和菜单，不覆盖战场画布；打开与点击动画走 CSS 分段关键帧，系统减少动态效果设置会关闭动画。`controller.js` 的 `onSaves` 打开窗口前暂停 runner，关闭后按此前播放状态恢复；`pagehide` 保存当前编辑内容。
 
-`terminal-shell.js` 与 `terminal.css` 统一主菜单和三个二级入口的导航、设置、上浮粒子与按键立体反馈。主菜单开屏只在当前标签页会话首次进入时播放；二级入口由 head 中的 `terminal-navigation.js` 接入浏览器跨文档 View Transition，等待目标页 `terminalReady()` 后再按选项卡顺序左右滑动；等待期间保持原页面图像，页面不再输出两段启动加载文字。主菜单在首次开屏结束后依次浮现标题、三个入口与页脚；返回主菜单时只播放内容入场。三个二级入口共用同一深色背景，制作器的顶部工具区使用对应半透明底色。实际关卡编辑工具关闭这些交互音效与动效，页面角落保留全局设置和音乐开关。`menu-audio.js` 通过 `/api/menu-music` 读取 `content/menu-music.json`，复用 `level-bgm.js` 播放局外音乐，进入战斗后停止。配置见[局外音乐](局外音乐.md)。文字选择与链接、图片拖拽在页面层禁用，输入框仍可编辑。
+`terminal-shell.js` 与 `terminal.css` 统一主菜单和三个二级入口的导航、设置、上浮粒子与按键立体反馈。主菜单开屏只在当前标签页会话首次进入时播放；二级入口由 head 中的 `terminal-navigation.js` 接入浏览器跨文档 View Transition，等待目标页 `terminalReady()` 后再按选项卡顺序左右滑动；等待期间保持原页面图像，页面不再输出两段启动加载文字。主菜单在首次开屏结束后依次浮现标题、三个入口与页脚；返回主菜单时只播放内容入场。三个二级入口共用同一深色背景，制作器的顶部工具区使用对应半透明底色。实际关卡编辑工具关闭这些交互音效与动效，页面角落保留全局设置和音乐开关。`menu-audio.js` 与关卡编辑器共用 `/api/music` 曲目列表，默认播放《生命流》，全局设置可即时选曲并刷新列表；选择写入 `arksim-sandbox-settings-v1.menuBgmTrack`。复用 `level-bgm.js` 播放局外音乐，进入战斗后停止。使用见[局外音乐](局外音乐.md)。文字选择与链接、图片拖拽在页面层禁用，输入框仍可编辑。
 
 `menu-themes.css` 为局外页面提供青磁信号、钛灰光学、石墨琥珀三套配色与材质，默认石墨琥珀。全局设置的「局外主题」使用单选项即时切换，偏好写入 `arksim-sandbox-settings-v1.menuTheme`；head 中的 `terminal-navigation.js` 在首次绘制前恢复配色。主入口倒角卡片、当前选项卡加高、六槽布局与各模块控件尺寸沿用现有结构；主要操作用实色高亮，次要操作使用深色表面，危险操作保留红色。主题只作用于局外页面的控件和面板，地形色义与战斗 HUD 使用原有样式。
 
@@ -102,7 +102,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 `tools/build-enemy-library.mjs` 读取敌人数据、KITS/STATS_ONLY/BOSS_KEYS 和 `ENEMY_PRESETS`，生成 `public/sandbox/js/enemy-library.js` 的正式/仅数值/玩具分层。`LIBRARY_KEYS` 用于关卡校验；编辑器只列正常敌人，沙盒将共用目录追加到旧投放预设后。筛选等级取共用目录的 `rank`，木桩独立分档。
 
-关卡战斗左上角使用「退出战斗」下拉确认，红色「确认」返回关卡列表；展开时暂停，收起时恢复此前播放状态。沙盒保留原来的开始菜单入口。`/api/music`、`/api/menu-music` 提供音乐列表，`/music/` 提供 OGG 文件；播放器按文件的源采样率换算循环秒数。音乐使用范围见 `content/music/README.md`。
+关卡战斗左上角使用「退出战斗」下拉确认，红色「确认」返回关卡列表；展开时暂停，收起时恢复此前播放状态。沙盒保留原来的开始菜单入口。`/api/music` 提供局外设置与关卡编辑器共用的音乐列表，`/music/` 提供 OGG 文件；播放器按文件的源采样率换算循环秒数。音乐使用范围见 `content/music/README.md`。
 
 一级界面不滚动：`level.css` 用固定视口网格安排工具栏、地图、单页侧栏与时间轴；地图按容器宽高缩放，路线/节点通过原生单行下拉选择。敌人、导入、备注及完整错误信息仅在二级对话框或展开菜单中滚动。关卡库按窗口可容纳的行列分页，时间轴默认全长适配，放大后用前后按钮切换时间窗口。
 

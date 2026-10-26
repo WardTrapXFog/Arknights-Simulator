@@ -164,6 +164,9 @@
 .settings__row input[type="range"] { width: 115px; accent-color: #efa84b; }
 .settings__row output { min-width: 38px; font: 12px var(--font-mono); color: #d9ac68; }
 .settings__row select { max-width: 140px; padding: 5px 8px; background: #181b1e; border: 1px solid #535a5b; color: #d0d2c7; font-size: 12px; }
+.settings__music .settings__row { flex-wrap: wrap; padding: 8px 0; }
+.settings__music .settings__row select { width: 100%; max-width: 100%; min-width: 0; }
+.settings__music > button { margin: 8px 0; padding: 6px 12px; font-size: 12px; }
 @media (max-width: 650px) { .settings__sections { grid-template-columns: 1fr; gap: 22px; } }
 
 .menu__cards--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
