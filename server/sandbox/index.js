@@ -131,6 +131,7 @@ export async function startSandboxServer(opts = {}) {
     const mountName = Object.hasOwn(mounts, segments[0]) ? segments[0] : 'public';
     const root = mountName === 'public' ? publicDir : mounts[mountName];
     const relative = mountName === 'public' ? segments : segments.slice(1);
+    if (mountName === 'music' && relative[0]?.toLowerCase() === 'original') return sendError(req, res, 404, '文件不存在');
     if (mountName === 'music' && !MUSIC_EXT.has(path.extname(pathname).toLowerCase())) return sendError(req, res, 404, '文件不存在');
     if ((mountName === 'sim' && (path.extname(pathname) !== '.js' || /nodedata\.js$/i.test(pathname))) || (mountName === 'data' && path.extname(pathname) !== '.json')) return sendError(req, res, 404, '文件不存在');
     const candidate = path.join(root, ...relative);
@@ -139,6 +140,7 @@ export async function startSandboxServer(opts = {}) {
       try {
         const real = await fs.realpath(file), rel = path.relative(await fs.realpath(root), real);
         if (rel.startsWith('..') || path.isAbsolute(rel)) continue;
+        if (mountName === 'music' && rel.split(path.sep)[0].toLowerCase() === 'original') continue;
         if (mountName === 'music' && !MUSIC_EXT.has(path.extname(real).toLowerCase())) continue;
         const stat = await fs.stat(real);
         if (!stat.isFile()) continue;

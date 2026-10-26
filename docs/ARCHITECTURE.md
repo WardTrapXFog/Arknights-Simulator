@@ -102,7 +102,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 `tools/build-enemy-library.mjs` 读取敌人数据、KITS/STATS_ONLY/BOSS_KEYS 和 `ENEMY_PRESETS`，生成 `public/sandbox/js/enemy-library.js` 的正式/仅数值/玩具分层。`LIBRARY_KEYS` 用于关卡校验；编辑器只列正常敌人，沙盒将共用目录追加到旧投放预设后。筛选等级取共用目录的 `rank`，木桩独立分档。
 
-关卡战斗左上角使用「退出战斗」下拉确认，红色「确认」返回关卡列表；展开时暂停，收起时恢复此前播放状态。沙盒保留原来的开始菜单入口。`/api/music`、`/api/menu-music` 与 `/music/` 仅提供 OGG，MP3 等源文件不对外提供；OGG 随源码分发，音乐使用范围见 `content/music/README.md`。
+关卡战斗左上角使用「退出战斗」下拉确认，红色「确认」返回关卡列表；展开时暂停，收起时恢复此前播放状态。沙盒保留原来的开始菜单入口。`/api/music`、`/api/menu-music` 与 `/music/` 仅提供 OGG，`content/music/original/` 整体不入库、不对外提供。`tools/music-loop.mjs` 自动配对同名 intro/loop，以解码采样数拼接并写入循环标记；播放器按文件的源采样率换算循环秒数。OGG 随源码分发，音乐使用范围见 `content/music/README.md`。
 
 一级界面不滚动：`level.css` 用固定视口网格安排工具栏、地图、单页侧栏与时间轴；地图按容器宽高缩放，路线/节点通过原生单行下拉选择。敌人、导入、备注及完整错误信息仅在二级对话框或展开菜单中滚动。关卡库按窗口可容纳的行列分页，时间轴默认全长适配，放大后用前后按钮切换时间窗口。
 

@@ -6,6 +6,7 @@
 //
 // 用法：
 //   node tools/music-loop.mjs                 按下面的 LOOPS 表转换（已存在的 .ogg 会被覆盖）
+//                                             并合成 original/ 中同名的 *_intro + *_loop
 //   node tools/music-loop.mjs --probe        只打印现有 ogg 的循环标签
 //
 // 来源（用户 2026-10-26 自己听出来的衔接点；声纹/自动识别做不到这件事）：
@@ -18,6 +19,8 @@ import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const MUSIC = path.join(ROOT, 'content', 'music');
+const ORIGINAL = path.join(MUSIC, 'original');
+const PAIR_TITLES = { m_sys_void: '生命流' };
 
 /** ffmpeg 装了但不在 PATH 时的兜底位置（winget 安装的布局）。 */
 const FFMPEG_CANDIDATES = [
@@ -66,17 +69,48 @@ if (process.argv.includes('--probe')) {
   process.exit(0);
 }
 
+// 原始分段已经由使用者确定边界；解码成统一 PCM 后只编码一次，循环点精确到采样。
+const pairs = new Map();
+for (const name of fs.existsSync(ORIGINAL) ? fs.readdirSync(ORIGINAL) : []) {
+  if (!/\.(mp3|wav|flac|m4a|aac|aif|aiff|opus|wma)$/i.test(name)) continue;
+  const stem = path.basename(name, path.extname(name)).replace(/^\d+\.\s*/, '');
+  const match = /^(.*?)[_\s.-]+(intro|loop)$/i.exec(stem);
+  if (!match || !match[1]) continue;
+  const key = match[1].toLowerCase();
+  const pair = pairs.get(key) || { title: match[1] };
+  const role = match[2].toLowerCase();
+  if (pair[role]) throw new Error(`${match[1]} 有重复的 ${role} 源文件，请只保留一份`);
+  pair[role] = path.join(ORIGINAL, name);
+  pairs.set(key, pair);
+}
+for (const [key, pair] of pairs) {
+  if (!pair.intro || !pair.loop) { console.log(`跳过（intro / loop 尚未配齐）：${pair.title}`); continue; }
+  const info = JSON.parse(run(probe, ['-v', 'error', '-select_streams', 'a:0', '-show_entries', 'stream=sample_rate,channels', '-of', 'json', pair.intro])).streams[0];
+  const rate = Number(info.sample_rate), channels = info.channels;
+  const decode = (file) => execFileSync(which, ['-v', 'error', '-i', file, '-map', '0:a:0', '-vn',
+    '-ar', String(rate), '-ac', String(channels), '-f', 'f32le', 'pipe:1'], { maxBuffer: 256 << 20 });
+  const intro = decode(pair.intro), loop = decode(pair.loop);
+  const loopStart = intro.length / (channels * 4), loopLength = loop.length / (channels * 4);
+  const title = PAIR_TITLES[key] || pair.title;
+  const dst = path.join(MUSIC, `${title}.ogg`);
+  execFileSync(which, ['-y', '-v', 'error', '-f', 'f32le', '-ar', String(rate), '-ac', String(channels), '-i', 'pipe:0',
+    '-map_metadata', '-1', '-c:a', 'libvorbis', '-q:a', '6', '-metadata', `TITLE=${title}`,
+    '-metadata', `LOOPSTART=${loopStart}`, '-metadata', `LOOPLENGTH=${loopLength}`,
+    '-metadata', `LOOPSAMPLERATE=${rate}`, dst], { input: Buffer.concat([intro, loop]), maxBuffer: 8 << 20 });
+  console.log(`${title}.ogg · intro ${(loopStart / rate).toFixed(3)} 秒 → loop ${(loopLength / rate).toFixed(3)} 秒循环`);
+}
+
 for (const { file, start } of LOOPS) {
-  const src = path.join(MUSIC, file);
+  const src = fs.existsSync(path.join(ORIGINAL, file)) ? path.join(ORIGINAL, file) : path.join(MUSIC, file);
   if (!fs.existsSync(src)) { console.log(`跳过（没有这个文件）：${file}`); continue; }
-  const dst = src.replace(/\.mp3$/i, '.ogg');
+  const dst = path.join(MUSIC, file.replace(/\.mp3$/i, '.ogg'));
   const total = durationOf(src);
   const rate = 44100;
   const loopStart = Math.round(start * rate);
   const loopLength = Math.round(total * rate) - loopStart;
   // -q:a 6 ≈ 192kbps Vorbis，够用；-map_metadata -1 去掉 mp3 的 ID3，避免带进奇怪字段
   run(which, ['-y', '-v', 'error', '-i', src, '-map_metadata', '-1', '-c:a', 'libvorbis', '-q:a', '6',
-    '-metadata', `LOOPSTART=${loopStart}`, '-metadata', `LOOPLENGTH=${loopLength}`, dst]);
+    '-metadata', `LOOPSTART=${loopStart}`, '-metadata', `LOOPLENGTH=${loopLength}`, '-metadata', `LOOPSAMPLERATE=${rate}`, dst]);
   const t = tagsOf(dst);
   console.log(`${path.basename(dst)}
   时长 ${total.toFixed(3)}s · 循环起点 ${start.toFixed(3)}s

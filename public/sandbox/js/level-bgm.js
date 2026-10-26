@@ -24,8 +24,14 @@ async function readLoopTags(url) {
     // Vorbis comment 就是明文的 KEY=VALUE 序列，直接扫即可（不依赖 ogg 页结构）
     const start = /LOOPSTART=(\d+)/i.exec(text);
     const length = /LOOPLENGTH=(\d+)/i.exec(text);
+    const tagRate = /LOOPSAMPLERATE=(\d+)/i.exec(text);
     if (!start) return null;
-    return { loopStart: Number(start[1]), loopLength: length ? Number(length[1]) : null };
+    // Vorbis identification packet: 0x01 + "vorbis", sample rate is at byte 12.
+    const header = text.indexOf('\x01vorbis');
+    const sourceRate = header >= 0 && header + 16 <= buf.length
+      ? new DataView(buf.buffer, buf.byteOffset, buf.byteLength).getUint32(header + 12, true) : null;
+    return { loopStart: Number(start[1]), loopLength: length ? Number(length[1]) : null,
+      sampleRate: Number(tagRate?.[1]) || sourceRate };
   } catch { return null; }
 }
 
@@ -96,7 +102,8 @@ async function start(url) {
     const node = ac.createBufferSource();
     node.buffer = buffer;
     if (tags?.loopStart != null) {
-      const rate = buffer.sampleRate;
+      // decodeAudioData may resample to the device rate; tags count samples in the original OGG.
+      const rate = tags.sampleRate || buffer.sampleRate;
       node.loop = true;
       node.loopStart = tags.loopStart / rate;
       // LOOPLENGTH 是循环段长度；若缺失就循环到曲尾

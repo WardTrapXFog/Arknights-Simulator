@@ -18,6 +18,7 @@ temp_clip/
 content/music/*
 !content/music/*.ogg
 !content/music/README.md
+content/music/original/
 
 # 关卡库：本地工作目录，不进代码仓（分发走 Release 附件 / 独立数据仓 / URL 导入）
 content/levels/
