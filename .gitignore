@@ -1,0 +1,33 @@
+node_modules/
+.cache/
+.recovery/
+.agent-runs/
+.env
+.env.*
+*.log
+*.pem
+*.key
+plugins/.studio-key
+public/vendor/
+public/assets/*
+!public/assets/custom/
+_collab/
+temp_talulah/
+temp_clip/
+# 只分发 OGG 作战音乐；MP3 等源文件仅保留在本地。
+content/music/*
+!content/music/*.ogg
+!content/music/README.md
+
+# 关卡库：本地工作目录，不进代码仓（分发走 Release 附件 / 独立数据仓 / URL 导入）
+content/levels/
+# ── 作者本人的东西，不随仓库分发 ──────────────────────────────
+# agent 工作规则、逐日的开发日志、自设干员的视效策划稿、调研原始数据、发布脚本
+AGENTS.md
+docs/WORKLOG.md
+docs/塔露拉表现总表.md
+docs/维娜与结城理视效.md
+docs/召唤物与手牌状态分析.md
+docs/research/
+publish-to-github.bat
+publish-to-github.ps1

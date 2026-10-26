@@ -1,0 +1,154 @@
+{
+  "key": "enemy_10221_agporc_2",
+  "record": {
+    "key": "enemy_10221_agporc_2",
+    "name": "入戏太深的孩童",
+    "level": 0,
+    "rank": "NORMAL",
+    "handbookIndex": "TO02",
+    "desc": "受到浮空及失衡效果后防御力大幅降低",
+    "descRaw": "受到浮空及失衡效果后防御力大幅降低",
+    "applyWay": "MELEE",
+    "stats": {
+      "maxHp": 2000,
+      "atk": 320,
+      "def": 0,
+      "res": 40,
+      "moveSpeed": 1,
+      "bat": 2,
+      "aspd": 100,
+      "rangeRadius": 0,
+      "rawRangeRadius": 0,
+      "blockCnt": 0,
+      "massLevel": 1,
+      "lpr": 1,
+      "hpRecoveryPerSec": 0,
+      "elementRes": 0,
+      "elementDmgRes": 0,
+      "hitRatePhys": 0,
+      "hitRateArts": 0,
+      "dmgType": "phys",
+      "dmgTypes": [
+        "phys"
+      ],
+      "motion": "WALK",
+      "immunities": {
+        "stun": false,
+        "silence": false,
+        "sleep": false,
+        "frozen": false,
+        "levitate": false
+      },
+      "otherImmunities": [],
+      "tauntLevel": 0
+    },
+    "abilities": [
+      {
+        "text": "受到浮空及失衡效果后防御力大幅降低",
+        "textRaw": "受到浮空及失衡效果后防御力大幅降低",
+        "format": "NORMAL"
+      }
+    ],
+    "talents": {
+      "bb": {
+        "DefUp.def": 600
+      },
+      "bbStr": {}
+    },
+    "skills": [
+      {
+        "prefabKey": "DoMaskBreak",
+        "priority": 0,
+        "cooldown": 0,
+        "initCooldown": 0,
+        "spCost": 0,
+        "blackboard": null
+      }
+    ],
+    "notCountInTotal": false,
+    "tags": [],
+    "be": 2000,
+    "beFactor": 1,
+    "attrPower": 2000,
+    "isFlyEnemy": false,
+    "tokenOnly": false,
+    "acTypes": [],
+    "acType": "SPECIAL",
+    "templateSlot": "T",
+    "summons": [],
+    "inactiveIn": [],
+    "seasonOverride": null,
+    "iconId": "enemy_10221_agporc_2",
+    "spine": "enemy_10221_agporc_2",
+    "modelScale": 1,
+    "attackAnim": {
+      "clip": "A_Attack",
+      "dur": 2,
+      "hit": 0.533
+    }
+  },
+  "art": {
+    "icon": "/assets/custom/enemy_10221_agporc_2/avatar.png",
+    "spine": {
+      "skel": "/assets/custom/enemy_10221_agporc_2/enemy_10221_agporc_2.skel",
+      "atlas": "/assets/custom/enemy_10221_agporc_2/enemy_10221_agporc_2.atlas",
+      "textures": [
+        "/assets/custom/enemy_10221_agporc_2/enemy_10221_agporc_2.png"
+      ],
+      "pma": true,
+      "anims": {
+        "idle": "A_Idle",
+        "deploy": "A_Idle",
+        "attack": {
+          "begin": null,
+          "loop": "A_Attack",
+          "end": null
+        },
+        "attackDown": null,
+        "skill": {
+          "begin": null,
+          "loop": "A_Attack",
+          "end": null,
+          "via": "attack",
+          "index": 0,
+          "idle": null
+        },
+        "die": "A_Die",
+        "move": {
+          "begin": null,
+          "loop": "A_Move",
+          "end": null
+        },
+        "stun": null
+      },
+      "animations": {
+        "A_Attack": 2,
+        "A_Default": 0,
+        "A_Die": 1,
+        "A_Idle": 2.667,
+        "A_Move": 1.333,
+        "A_Trans": 1,
+        "B_Attack": 2,
+        "B_Default": 0,
+        "B_Die": 1,
+        "B_Idle": 2.667,
+        "B_Move": 1
+      },
+      "events": [
+        "OnAttack"
+      ],
+      "hits": {
+        "A_Attack": [
+          0.533
+        ],
+        "A_Trans": [
+          0.5
+        ],
+        "B_Attack": [
+          0.533
+        ]
+      },
+      "bounds": null
+    }
+  }
+}

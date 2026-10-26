@@ -1,0 +1,1908 @@
+/* public/studio/sandbox.css — 关卡模拟器的实机 HUD（/studio/console.html）。
+ *
+ * 结构：一枚铺满 100vw × 100vh 的战场画布（#hud-canvas，渲染器把自己挂进去），其余全是浮层：
+ *   顶部居中信息牌（歼灭 / 基地生命 / 作战时间） · 右上角胶囊时间控制（播放·倍速·步进·重开 + 3D/2D·扣费·纯净）
+ *   右下「费用 + 手牌」合体栏（DP / 头像 / 星级 / 费用 / 技能浮窗 / 移出手牌） · 左下选中干员状态卡
+ *   左侧可折叠两 Tab 工具箱（刷敌人 / 改地形）
+ * 布局基底由本文件提供，最终颜色、面板与控件外观由 /sandbox/hud-theme.css 定义。
+ * 美术素材全部来自 public/assets/ui/（data/assets.json 的 ui 段）：顶栏底板 bg_battle、生命图标 icon_hp、
+ * 血条 slider_hp_back/fill、技能就绪 skill_ready、星级条 charRaritySprite/rarity_N。
+ *
+ * 尺寸走 rem（theme.css：1rem ≈ 窗口宽的 1/19.2，1920 宽时 = 100px），所以整套 HUD 跟着窗口等比缩放。 */
+
+/* ---- 页面壳 ------------------------------------------------------------------------------------------------------- */
+body.sb {
+  overflow: hidden;
+  height: 100%;
+  background: #05070a;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.hud {
+  --gold: #f2c94c;
+  --gold-dim: rgba(242, 201, 76, .35);
+  --blue: #00b0ff;
+  --red: #ff4a3d;
+  --green: #3ddc84;
+  --glass: rgba(20, 22, 26, .82);
+  --glass-solid: rgba(14, 16, 19, .94);
+  --hair: rgba(255, 255, 255, .16);
+  --hair-2: rgba(255, 255, 255, .28);
+  /* 工具箱最大高度：默认占大半屏；选中干员后左下详情面板会顶上来，此时收窄到它上方。 */
+  --drawer-max-h: min(68vh, calc(100vh - .8rem));
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  color: var(--text-hi);
+  font-family: var(--font-cjk);
+  font-size: calc(.14 * var(--t));
+  line-height: 1.35;
+}
+
+/* everything that is not the canvas is a floating layer */
+.hud > * { position: absolute; z-index: 2; }
+
+/* the field view mounts its canvases here */
+.hud__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0 !important;
+  background: radial-gradient(120% 90% at 50% 0%, #12171c 0%, #05070a 70%);
+}
+
+.hud .glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair);
+  box-shadow: 0 .06rem .24rem rgba(0, 0, 0, .5);
+}
+
+/* 按钮重置：一定要用 :where() 把特异度压到最低（0,0,1）。
+   写成 `.hud button`（0,1,1）会比 `.terr` / `.chip` / `.dbtn` / `.hand__more` 这些单类选择器更高，
+   它们写的 background / border / padding 就全被这条重置吃掉——按钮只剩文字，看着像「没底色」。 */
+:where(.hud) button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.hud img { display: block; }
+
+/* ---- 顶部居中信息牌 ----------------------------------------------------------------------------------------------- */
+.hud__top {
+  top: .16rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  gap: .02rem;
+  padding: .05rem .14rem;
+  /* 官方顶栏底板（hudPanel/bg_battle：暗底 + 金色描边胶囊），九宫格拉伸 */
+  background: url(/assets/ui/hudPanel/bg_battle.png) center/100% 100% no-repeat;
+  filter: drop-shadow(0 .04rem .16rem rgba(0, 0, 0, .55));
+}
+
+.plate__stat {
+  display: flex;
+  align-items: center;
+  gap: .08rem;
+  padding: .02rem .22rem;
+  border-right: 1px solid rgba(255, 255, 255, .14);
+}
+
+.plate__stat:last-child { border-right: 0; }
+
+.plate__stat .ico {
+  width: .2rem;
+  height: .2rem;
+  flex: none;
+  color: var(--gold);
+}
+
+.plate__stat .ico--hp { color: #7ef0b0; }
+
+/* 12×19 的小图标，等比放到 .2rem 高 */
+.plate__stat .ico--img {
+  background: url(/assets/ui/hudPanel/icon_hp.png) center/contain no-repeat;
+  color: transparent;
+}
+
+.plate__stat b {
+  font-family: var(--font-num);
+  font-size: .3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .02em;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 .08rem rgba(0, 0, 0, .8);
+  min-width: .62rem;
+  text-align: center;
+}
+
+.plate__stat b.is-bad { color: var(--red); }
+
+.plate__stat i {
+  font-style: normal;
+  font-size: .1rem;
+  letter-spacing: .16em;
+  color: var(--text-lo);
+  text-transform: uppercase;
+}
+
+/* ---- 右上角胶囊组 ------------------------------------------------------------------------------------------------- */
+.hud__caps {
+  top: .16rem;
+  right: .2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .08rem;
+}
+
+.caps {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair);
+  box-shadow: 0 .04rem .2rem rgba(0, 0, 0, .45);
+}
+
+.cap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .05rem;
+  min-width: .46rem;
+  height: .38rem;
+  padding: 0 .12rem;
+  transform: skewX(-9deg);
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid transparent;
+  color: var(--text-md);
+  font-family: var(--font-num);
+  font-size: .17rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  transition: background 120ms, color 120ms, border-color 120ms;
+}
+
+.cap > * { transform: skewX(9deg); }
+.cap .icon { width: .2rem; height: .2rem; }
+
+.cap:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.cap.is-on { color: var(--gold); border-color: var(--gold-dim); background: rgba(242, 201, 76, .14); }
+.cap.is-blue { color: var(--blue); }
+.cap.is-live { color: var(--gold); }
+
+/* 播放键稍大，是这一组的锚 */
+.cap--play {
+  min-width: .46rem;
+  padding: 0;
+  background: var(--gold);
+  color: #101214;
+}
+
+.cap--play:hover { background: #ffd968; color: #101214; }
+.cap--play .icon { width: .22rem; height: .22rem; }
+
+.cap__k {
+  font-family: var(--font-cjk);
+  font-size: .1rem;
+  font-weight: 400;
+  letter-spacing: .04em;
+  color: var(--text-lo);
+  align-self: flex-end;
+  margin-bottom: .06rem;
+}
+
+.caps--sub .cap { height: .32rem; font-size: .15rem; min-width: .4rem; }
+
+/* ---- 右下「费用 + 手牌」合体栏 ------------------------------------------------------------------------------------ */
+/* 手牌与 DP 合并成同一块玻璃底板，整体贴右下；干员详情卡仍在左下，两边互不打架。 */
+.hud__dock {
+  right: .24rem;
+  bottom: .18rem;
+  display: flex;
+  align-items: flex-end;
+  gap: .14rem;
+  max-width: calc(100vw - .48rem);
+  padding: .08rem .14rem .08rem .16rem;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair);
+  border-right: 3px solid var(--gold);
+  box-shadow: 0 .06rem .24rem rgba(0, 0, 0, .5);
+}
+
+.hud__dp {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  gap: .08rem;
+  margin-bottom: .04rem;
+  padding: .01rem .14rem .01rem 0;
+  border-right: 1px solid var(--hair);
+}
+
+.dp__icon {
+  width: .26rem;
+  height: .3rem;
+  background: var(--gold);
+  clip-path: polygon(50% 0, 100% 38%, 100% 62%, 50% 100%, 0 62%, 0 38%);
+  flex: none;
+  margin-bottom: .04rem;
+}
+
+.dp__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .07rem;
+}
+
+.dp__num {
+  font-family: var(--font-num);
+  font-style: italic;
+  font-size: .46rem;
+  font-weight: 700;
+  line-height: .82;
+  letter-spacing: -.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 .02rem .1rem rgba(0, 0, 0, .8);
+}
+
+.dp__bar {
+  width: .58rem;
+  height: .05rem;
+  background: rgba(255, 255, 255, .12);
+  overflow: hidden;
+}
+
+.dp__bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--gold);
+  box-shadow: 0 0 .06rem rgba(242, 201, 76, .8);
+  transition: width 120ms linear;
+}
+
+/* ---- 右下干员手牌（挂在合体栏里） ------------------------------------------------------------------------------- */
+.hud__hand {
+  display: flex;
+  align-items: flex-end;
+  gap: .08rem;
+  min-width: 0;
+}
+
+.hand__scroll {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: .08rem;
+  padding: .04rem .02rem 0;
+  /* 不能出现 overflow:hidden/auto —— 技能浮窗要往卡片上方长出去 */
+  overflow: visible;
+}
+
+/* 一张干员卡：头像 + 星级条 + 右上角费用 + 底部名字 */
+/* 卡片本体：定位 + 悬停位移。切角与边框放在 .ocard__box 上——
+   切角是 clip-path，会把子元素一起裁掉，而技能浮窗必须能长到卡片外面去。 */
+.ocard {
+  position: relative;
+  width: .86rem;
+  height: 1.02rem;
+  flex: none;
+  transition: transform 120ms var(--ease-out);
+  transform: translateY(0);
+}
+
+.ocard__box {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #262b31 0%, #14171b 100%);
+  border: 1px solid rgba(255, 255, 255, .18);
+  clip-path: polygon(.08rem 0, 100% 0, 100% calc(100% - .08rem), calc(100% - .08rem) 100%, 0 100%, 0 .08rem);
+  transition: border-color 120ms;
+}
+
+.ocard:hover { transform: translateY(-.04rem); }
+.ocard:hover .ocard__box { border-color: var(--hair-2); }
+
+.ocard.is-on { transform: translateY(-.06rem); }
+
+.ocard.is-on .ocard__box {
+  border-color: var(--gold);
+  box-shadow: inset 0 0 0 1px var(--gold), 0 0 .2rem rgba(242, 201, 76, .45);
+}
+
+.ocard.is-empty { opacity: .3; }
+
+/* 移出手牌：卡片左上角的小叉（费用在右上角，两边对称） */
+.ocard__del {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  width: .24rem;
+  height: .22rem;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 10, 12, .9);
+  border-right: 1px solid rgba(255, 255, 255, .22);
+  border-bottom: 1px solid rgba(255, 255, 255, .22);
+  color: var(--text-md);
+  font-size: .11rem;
+  line-height: 1;
+  opacity: .62;
+  transition: opacity 120ms, background 120ms, color 120ms, border-color 120ms;
+}
+
+.ocard:hover .ocard__del,
+.ocard.is-on .ocard__del,
+.ocard__del:focus-visible { opacity: 1; }
+
+.ocard__del:hover {
+  color: #ffb3ac;
+  background: rgba(120, 24, 20, .92);
+  border-color: rgba(255, 74, 61, .6);
+}
+
+.ocard__ava {
+  position: absolute;
+  inset: 1px 1px .18rem 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - .19rem);
+  object-fit: cover;
+  object-position: center 18%;
+  filter: saturate(.95) contrast(1.05);
+}
+
+.ocard.is-on .ocard__ava { filter: saturate(1.1) brightness(1.08); }
+
+.ocard__shade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 55%;
+  background: linear-gradient(180deg, transparent, rgba(6, 8, 10, .92));
+}
+
+/* 星级条：官方 rarity_N 图当遮罩，颜色由 currentColor 给 */
+.ocard__stars {
+  position: absolute;
+  left: .05rem;
+  bottom: .22rem;
+  width: .5rem;
+  height: .1rem;
+  background: currentColor;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.ocard__name {
+  position: absolute;
+  left: .05rem;
+  right: .05rem;
+  bottom: .03rem;
+  font-size: .12rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: #f2f2f2;
+  text-shadow: 0 1px 2px #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.ocard__cost {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: .24rem;
+  height: .22rem;
+  padding: 0 .03rem;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 10, 12, .9);
+  border-left: 1px solid rgba(242, 201, 76, .55);
+  border-bottom: 1px solid rgba(242, 201, 76, .55);
+  color: var(--gold);
+  font-family: var(--font-num);
+  font-size: .15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 技能浮窗：点开的卡片上方浮出 S1/S2/S3 */
+.oskills {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + .08rem);
+  transform: translateX(-50%) translateY(.04rem);
+  display: flex;
+  gap: .05rem;
+  padding: .06rem .07rem;
+  background: var(--glass-solid);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair-2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms, transform 120ms;
+  z-index: 5;
+  clip-path: polygon(0 0, calc(100% - .07rem) 0, 100% .07rem, 100% 100%, .07rem 100%, 0 calc(100% - .07rem));
+}
+
+.oskills::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: .1rem;
+  height: .06rem;
+  transform: translateX(-50%);
+  background: var(--glass-solid);
+}
+
+.ocard.is-pop .oskills { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+
+.oskill {
+  position: relative;
+  width: .46rem;
+  height: .46rem;
+  border: 1px solid rgba(255, 255, 255, .22);
+  background: #0c0f12;
+  overflow: hidden;
+}
+
+.oskill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.oskill__n {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0 .03rem;
+  background: rgba(0, 0, 0, .72);
+  font-family: var(--font-num);
+  font-size: .1rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.oskill:hover { border-color: var(--hair-2); }
+
+.oskill.is-on {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 .12rem rgba(242, 201, 76, .6);
+}
+
+/* 自设干员没有官方技能图标：用元素色底 + S 编号，一眼可辨 */
+.oskill__ph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-num);
+  font-size: .2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 .01rem .06rem rgba(0, 0, 0, .8);
+  background: radial-gradient(120% 120% at 30% 20%, rgba(255, 138, 46, .85), rgba(120, 30, 8, .9) 70%);
+}
+
+.oskill__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + .08rem);
+  transform: translateX(-50%);
+  padding: .04rem .08rem;
+  background: rgba(6, 8, 10, .96);
+  border: 1px solid var(--hair-2);
+  color: var(--text-hi);
+  font-size: .11rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 100ms;
+  z-index: 6;
+}
+
+.oskill:hover .oskill__tip { opacity: 1; }
+
+.hand__more {
+  width: .46rem;
+  height: 1.02rem;
+  flex: none;
+  display: grid;
+  place-items: center;
+  /* 底色：比卡片浅一档的实心亮块 + 金色描边，一眼能看出这是个能点的「加号」 */
+  background: linear-gradient(160deg, rgba(242, 201, 76, .26), rgba(20, 22, 26, .92) 62%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(242, 201, 76, .62);
+  box-shadow: inset 0 0 .12rem rgba(242, 201, 76, .22), 0 .02rem .08rem rgba(0, 0, 0, .5);
+  color: var(--gold);
+  font-size: .26rem;
+  font-weight: 400;
+  line-height: 1;
+  text-shadow: 0 0 .1rem rgba(242, 201, 76, .7);
+  transition: background 140ms, border-color 140ms, transform 120ms, box-shadow 140ms;
+}
+
+.hand__more:hover {
+  background: linear-gradient(160deg, rgba(242, 201, 76, .5), rgba(28, 30, 34, .95) 70%);
+  border-color: var(--gold);
+  box-shadow: inset 0 0 .16rem rgba(242, 201, 76, .4), 0 0 .14rem rgba(242, 201, 76, .45);
+  color: #fff;
+}
+
+.hand__more:active { transform: scale(.93); }
+
+/* ---- 左下选中干员状态卡 ------------------------------------------------------------------------------------------- */
+/* 版式（用户 2026-10-22 指定）：
+     左侧一小块「基础面板」：头像 + 名字 + 血条 + 生命/攻击/防御/法抗 + 技能键 + 撤退键
+     右侧上方三栏：「特性」「第一天赋 / 第二天赋」「技能」
+   左栏定宽（不参与伸缩），右栏吃剩余宽度。右栏内容多时自己滚动，卡片高度封顶。
+   宽度下限用 px 而不是 rem —— 1rem = min(vw/19.2, vh/10.8) 会随窗口一起缩，
+   用 rem 当下限等于没有下限（1076x505 时 4.6rem 只有 215px，一行只放得下五六个字）。 */
+.hud__detail {
+  left: .2rem;
+  bottom: .2rem;
+  width: clamp(340px, 62vw, 7.6rem);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: .1rem;
+  padding: .09rem .11rem .1rem;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair);
+  border-left: 3px solid var(--gold);
+  box-shadow: 0 .06rem .24rem rgba(0, 0, 0, .5);
+  clip-path: polygon(0 0, calc(100% - .12rem) 0, 100% .12rem, 100% 100%, 0 100%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(.08rem);
+  transition: opacity 140ms, transform 140ms;
+  max-height: max(3.2rem, min(56vh, 5.6rem));
+  overflow: hidden;
+}
+
+.hud__detail.is-on { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+/* ---- 左侧：基础面板 ---------------------------------------------------------------------------------------------- */
+/* 定宽而不是自适应：右栏文字需要尽可能多的宽度，左栏内容（头像/名字/属性行/按钮）本身宽度是固定的。
+   min-width 用 px 兜底 —— 1rem 会随窗口缩，纯 rem 定宽在窄窗口会把属性行挤到换行。 */
+.dt__basic {
+  flex: none;
+  width: 1.95rem;
+  min-width: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: .04rem;
+  padding-right: .09rem;
+  border-right: 1px solid var(--hair);
+}
+
+/* 头像 + 名字的头部 */
+.dt__head {
+  display: flex;
+  align-items: flex-start;
+  gap: .06rem;
+}
+
+.dt__portrait {
+  position: relative;
+  flex: none;
+  width: .54rem;
+  height: .54rem;
+  background: #0a0d10 center/cover no-repeat;
+  border: 1px solid rgba(255, 255, 255, .2);
+  overflow: hidden;
+}
+
+.dt__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; }
+
+.dt__headtext {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .02rem;
+}
+
+/* 「已选中 / 待部署」小标 */
+.dt__tag {
+  align-self: flex-start;
+  padding: .012rem .05rem;
+  background: var(--gold);
+  color: #101214;
+  font-size: .08rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .04em;
+  clip-path: polygon(.04rem 0, 100% 0, 100% 100%, 0 100%, 0 .04rem);
+  animation: tagPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes tagPulse {
+  0%, 100% { opacity: .82; }
+  50% { opacity: 1; }
+}
+
+.dt__name {
+  display: flex;
+  align-items: baseline;
+  gap: .04rem;
+  font-size: .15rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dt__name small {
+  font-size: .09rem;
+  font-weight: 400;
+  color: var(--gold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 名字下面的职业行 */
+.dt__sub {
+  display: flex;
+  align-items: baseline;
+  gap: .04rem;
+  overflow: hidden;
+}
+
+.dt__sub small {
+  font-size: .095rem;
+  color: var(--text-dim);
+  letter-spacing: .02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 属性行：从上到下 攻击力 / 防御力 / 法术抗性 / 阻挡数，最后一行是当前生命值/总生命值 */
+.dt__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: .03rem;
+  padding: .02rem .04rem .02rem 0;
+  border-top: 1px solid var(--hair);
+}
+
+.dt__stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .05rem;
+  padding: .012rem .04rem;
+}
+
+.dt__stat i {
+  font-style: normal;
+  font-size: .1rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.dt__stat b {
+  font-family: var(--font-num);
+  font-size: .125rem;
+  font-weight: 700;
+  color: var(--text-hi);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* 生命值那一行：标签「生命值」，值写成 当前/上限 */
+.dt__stat--hp { border-left-color: rgba(120, 220, 140, .55); }
+.dt__stat--hp b { font-size: .115rem; }
+
+/* 左栏底部：技能键 + 撤退键并排 */
+.dt__basicbtns {
+  display: flex;
+  align-items: stretch;
+  gap: .05rem;
+  margin-top: auto;
+  padding-top: .03rem;
+}
+
+/* 技能键：方形，和撤退键一样大 */
+.dt__skill {
+  position: relative;
+  flex: none;
+  width: .66rem;
+  height: .66rem;
+  background: #0a0d10;
+  border: 1px solid rgba(255, 255, 255, .22);
+  overflow: hidden;
+}
+
+.dt__skill img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dt__skill .ph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-size: .17rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* SP 数字压在最底下，背景加深保证任何技能图上都读得出来 */
+.dt__skill .dt__sp {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: .005rem 0 .01rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .78) 42%);
+  color: #fff;
+  font-family: var(--font-num);
+  font-size: .1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  letter-spacing: .01em;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* 攻击范围按钮：技能键右边，3×3 网格图标。
+   本体里它是绿色网格，按下后战场亮出橙色格子范围；这里同样：亮 = 范围正在显示。 */
+.dt__range {
+  flex: none;
+  width: .5rem;
+  height: .66rem;
+  display: grid;
+  place-items: center;
+  background: #10161a;
+  border: 1px solid rgba(255, 255, 255, .22);
+  color: #6e7b82;
+  transition: background 120ms, color 120ms, border-color 120ms, box-shadow 120ms;
+}
+
+.dt__range .icon { width: .26rem; height: .26rem; fill: currentColor; stroke: none; }
+
+.dt__range:hover { color: #cfe8b8; border-color: rgba(160, 220, 120, .45); }
+
+/* 亮着：绿框 + 绿图 + 外发光，和本体「范围已展开」的状态一致 */
+.dt__range.is-on {
+  color: #a8e05a;
+  background: rgba(110, 190, 40, .12);
+  border-color: rgba(150, 230, 70, .75);
+  box-shadow: 0 0 .1rem rgba(140, 220, 60, .35) inset, 0 0 .08rem rgba(140, 220, 60, .3);
+}
+
+.dt__range:active { transform: scale(.96); }
+
+/* 撤退：实心红按钮，和技能键同高并排 —— 它是这张卡上唯一的破坏性操作，要一眼看得见 */
+.dt__retreat {
+  flex: none;
+  width: .66rem;
+  height: .66rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .02rem;
+  background: linear-gradient(180deg, #e0332a, #a8161c);
+  color: #fff;
+  font-size: .1rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  border: 1px solid rgba(255, 140, 130, .5);
+  box-shadow: 0 .02rem .1rem rgba(220, 40, 40, .3);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - .05rem), calc(100% - .05rem) 100%, 0 100%);
+  transition: background 120ms, box-shadow 120ms, transform 100ms;
+}
+
+.dt__retreat .icon { width: .13rem; height: .13rem; }
+
+.dt__retreat:hover {
+  background: linear-gradient(180deg, #ff5c4e, #cd2126);
+  box-shadow: 0 .02rem .18rem rgba(255, 90, 70, .6);
+}
+
+.dt__retreat:active { transform: scale(.985); }
+
+/* ---- 右侧：Tab 栏 + 正文 ----------------------------------------------------------------------------------------- */
+/* 版式照搬本体：顶部一条「技能 / 特性 / 天赋」分栏，下面一条细线，再下面是当前 Tab 的正文。 */
+.dt__right {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .04rem;
+}
+
+.dt__tabs {
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  gap: .02rem;
+  border-bottom: 1px solid var(--hair);
+}
+
+.dt__tab {
+  flex: 1;
+  padding: .03rem .02rem .04rem;
+  background: rgba(255, 255, 255, .04);
+  color: var(--text-dim);
+  font-size: .115rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: center;
+  border-bottom: 2px solid transparent;
+  transition: color 120ms, background 120ms, border-color 120ms;
+}
+
+.dt__tab:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+
+/* 选中：金字 + 金色下划线（本体就是这个处理，不换底色） */
+.dt__tab.is-on {
+  color: var(--gold);
+  background: rgba(255, 200, 80, .07);
+  border-bottom-color: var(--gold);
+}
+
+.dt__info {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: .02rem;
+}
+
+.dt__info::-webkit-scrollbar { width: .04rem; }
+.dt__info::-webkit-scrollbar-thumb { background: var(--hair-2); }
+
+.dt__seg-h {
+  display: flex;
+  align-items: baseline;
+  gap: .06rem;
+  font-size: .12rem;
+  color: var(--gold);
+}
+
+.dt__seg-h b { font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dt__seg-k {
+  flex: none;
+  padding: 0 .05rem;
+  font-style: normal;
+  font-size: .1rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: #0b0d10;
+  background: var(--gold);
+  clip-path: polygon(0 0, 100% 0, calc(100% - .04rem) 100%, 0 100%);
+}
+
+.dt__seg-p {
+  margin: .02rem 0 0;
+  font-size: .115rem;
+  line-height: 1.45;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 技能页在名字下面那排「自动回复 / 手动触发」小标签（本体有，用来读技能怎么转） */
+.dt__seg-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .04rem;
+  margin-top: .03rem;
+}
+
+.dt__seg-meta i {
+  font-style: normal;
+  padding: 0 .05rem;
+  font-size: .095rem;
+  line-height: 1.5;
+  color: #0b0d10;
+  background: #7fb2c8;
+  clip-path: polygon(.04rem 0, 100% 0, 100% 100%, 0 100%, 0 .04rem);
+}
+
+.dt__seg-p--empty { color: var(--text-dim); opacity: .7; font-style: italic; }
+
+.dt__portrait {
+  position: relative;
+  width: .68rem;
+  height: .68rem;
+  flex: none;
+  margin-top: 0;
+  background: #0a0d10 center/cover no-repeat;
+  border: 1px solid rgba(255, 255, 255, .2);
+  overflow: hidden;
+}
+
+.dt__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; }
+
+.dt__name {
+  display: flex;
+  align-items: baseline;
+  gap: .06rem;
+  font-size: .16rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dt__name small {
+  font-size: .1rem;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: .04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 1.1rem;
+}
+
+/* 官方血条：slider_hp_back 当槽，slider_hp_fill 裁出宽度 */
+.dt__hp {
+  position: relative;
+  height: .12rem;
+  background: url(/assets/ui/battleUi/slider_hp_back.png) left center/100% 100% no-repeat;
+  overflow: hidden;
+}
+
+.dt__hp i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: url(/assets/ui/battleUi/slider_hp_fill.png) left center/auto 100% no-repeat;
+  transition: width 120ms linear;
+}
+
+.dt__hp span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-num);
+  font-size: .11rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 .04rem #000, 0 1px 2px #000;
+  letter-spacing: .02em;
+}
+
+/* 大号方形技能按钮：未满 = 绿色充能遮罩 + SP 数字；满 = 官方 skill_ready 菱形爆光 */
+/* 技能键：和头像同高，靠右排列。原来 0.82rem 在 6.6rem 的卡里把名字那一列挤得只剩几个字宽。 */
+.dt__skill {
+  position: relative;
+  width: .68rem;
+  height: .68rem;
+  flex: none;
+  margin-top: 0;
+  margin-left: auto;
+  background: #0a0d10;
+  border: 1px solid rgba(255, 255, 255, .22);
+  overflow: hidden;
+}
+
+.dt__skill img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dt__skill .ph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-num);
+  font-size: .3rem;
+  font-weight: 700;
+  color: #fff;
+  background: radial-gradient(120% 120% at 30% 20%, rgba(255, 138, 46, .85), rgba(120, 30, 8, .9) 70%);
+}
+
+/* 充能遮罩：从底部涨上来 */
+.dt__charge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+  background: linear-gradient(180deg, rgba(61, 220, 132, .28), rgba(24, 140, 80, .42));
+  border-top: 1px solid rgba(150, 255, 200, .75);
+  box-shadow: 0 -.02rem .1rem rgba(61, 220, 132, .35);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.dt__sp {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: .01rem 0;
+  text-align: center;
+  background: rgba(0, 0, 0, .68);
+  font-family: var(--font-num);
+  font-size: .1rem;
+  font-weight: 700;
+  color: #d9ffe9;
+  letter-spacing: .02em;
+}
+
+.dt__skill.is-ready {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 .18rem rgba(242, 201, 76, .55);
+}
+
+.dt__skill.is-ready::after {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background: url(/assets/ui/battleUi/skill_ready.png) center/contain no-repeat;
+  animation: skill-breathe 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes skill-breathe {
+  0%, 100% { opacity: .75; transform: scale(.94); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+/* 技能持续中：底部黄色倒计时条 */
+.dt__dur {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: .04rem;
+  background: var(--gold);
+  box-shadow: 0 0 .08rem rgba(242, 201, 76, .9);
+  pointer-events: none;
+}
+
+.dt__skill:hover { border-color: var(--hair-2); }
+
+/* 未见过的「换形态」入口：数据里有 altForms 才出现（当前阵容没有） */
+.dt__alt {
+  padding: .02rem .08rem;
+  background: rgba(0, 176, 255, .16);
+  border: 1px solid rgba(0, 176, 255, .55);
+  color: var(--blue);
+  font-size: .11rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms, border-color 120ms, color 120ms;
+}
+
+.dt__alt:hover { background: rgba(0, 176, 255, .3); border-color: var(--blue); }
+
+/* 冷却中：压暗 + 一格从右往左收的倒计时条，秒数直接写在按钮上 */
+.dt__alt.is-cooling {
+  color: var(--text-dim);
+  border-color: var(--hair);
+  background: rgba(255, 255, 255, .05);
+  cursor: not-allowed;
+}
+
+.dt__alt.is-cooling .dt__cd {
+  position: absolute;
+  inset: 0;
+  display: grid !important;
+  place-items: center;
+  background: rgba(6, 8, 10, .72);
+  font-family: var(--font-num);
+  font-size: .12rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: .02em;
+  font-style: normal;
+}
+
+/* 费用不够：变红提示，不是灰掉 —— 灰掉会让人以为按钮坏了 */
+.dt__alt.is-poor:not(.is-cooling) { color: #ff8b78; border-color: rgba(255, 90, 70, .6); background: rgba(200, 40, 30, .16); }
+
+/* 自定义动作（换面具 / 装备应变）：现在面板是纵向流，它们跟着排在最下面一行，不再绝对定位到底边 */
+/* 自定义动作（换面具 / 装备应变）：网格第三行，横跨整张卡 */
+.hud__detail.has-custom-actions { padding-bottom: .1rem; }
+.dt__actions { grid-area: acts; display: flex; gap: .08rem; }
+.dt__actions .dt__alt { flex: 1; min-height: .26rem; white-space: nowrap; }
+
+/* ---- 左侧工具箱 -------------------------------------------------------------------------------------------------- */
+/* 从「垂直居中」改成「贴着左上角」：居中的面板一旦变高，下沿会一直涨到左下角的干员详情卡上。
+   顶到左上角后，面板只往下长，配合下面的 max-height 就能保证它永远停在详情面板上方。 */
+.hud__drawer {
+  left: .18rem;
+  top: .16rem;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  z-index: 4;
+  max-height: var(--drawer-max-h);
+}
+
+/* 底左详情卡最高 5.6rem、离底 .2rem；工具箱在它出现时收到 6.1rem 以上，两者不再叠在一起。 */
+.hud:has(.hud__detail.is-on) { --drawer-max-h: calc(100vh - 6.1rem); }
+
+.dr__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 3px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair);
+  box-shadow: 0 .06rem .24rem rgba(0, 0, 0, .45);
+}
+
+.dr__tab {
+  width: .52rem;
+  height: .52rem;
+  display: grid;
+  place-items: center;
+  font-size: .24rem;
+  line-height: 1;
+  background: rgba(255, 255, 255, .1);
+  color: #e6ecef;
+  border-left: 2px solid transparent;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+  transition: background 120ms, color 120ms;
+}
+
+.dr__tab .icon { width: .26rem; height: .26rem; fill: none; stroke: currentColor; }
+/* 镂空图标（骷髅）：上面那条把 fill 关了，这里单独开回来 —— 洞是 evenodd 挖的，靠透明透出底板 */
+.dr__tab .icon.icon--fill { fill: currentColor; stroke: none; }
+.dr__tab:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.dr__tab.is-on { background: rgba(242, 201, 76, .16); color: var(--gold); border-left-color: var(--gold); }
+/* 刷敌人：暗红骷髅 —— 选中时不像其它 Tab 变金，而是稍亮一档的红 + 红底 + 红左条，语义才连得上。
+   注意这一格默认就是选中的（state.tab 初始 'enemy'），所以「暗红」要以选中态为准，别只在常态才暗。 */
+.dr__tab--enemy { color: #9e2128; }
+.dr__tab--enemy .icon--fill { filter: drop-shadow(0 0 .04rem rgba(190, 40, 42, .7)); }
+.dr__tab--enemy:hover { color: #c22f30; background: rgba(150, 28, 30, .24); }
+.dr__tab--enemy.is-on {
+  color: #c62f30;
+  background: rgba(150, 28, 30, .3);
+  border-left-color: #a5232a;
+}
+.dr__tab--enemy.is-on .icon--fill { filter: drop-shadow(0 0 .06rem rgba(210, 50, 50, .9)); }
+/* 另外两个 Tab 给一点低饱和的语义色（波次=琥珀、地形=青），只在没选中时露出来；
+   选中态仍旧统一走金色，不抢「正在编这一栏」的信号。 */
+.dr__tab[data-tab="wave"]:not(.is-on) { color: #cf9a3e; }
+.dr__tab[data-tab="wave"]:not(.is-on):hover { color: #eab958; }
+.dr__tab[data-tab="terrain"]:not(.is-on) { color: #57b0a6; }
+.dr__tab[data-tab="terrain"]:not(.is-on):hover { color: #74cfc4; }
+
+.dr__panel {
+  width: 0;
+  overflow: hidden;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--hair);
+  border-left: 0;
+  box-shadow: 0 .06rem .24rem rgba(0, 0, 0, .45);
+  transition: width 180ms var(--ease-out);
+}
+
+.hud__drawer.is-open .dr__panel { width: 3.55rem; }
+
+.dr__inner {
+  width: 3.55rem;
+  max-height: var(--drawer-max-h);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: .1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .08rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, .22) transparent;
+}
+
+.dr__inner::-webkit-scrollbar { width: 4px; }
+.dr__inner::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .22); }
+
+.dr__head {
+  display: flex;
+  align-items: center;
+  gap: .06rem;
+  font-size: .12rem;
+  letter-spacing: .1em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.dr__head small {
+  font-size: .1rem;
+  font-weight: 400;
+  letter-spacing: .04em;
+  color: var(--text-dim);
+  text-transform: none;
+}
+
+.dr__head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+
+.dr__hint {
+  margin: 0;
+  font-size: .1rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* 筛选片 */
+.chips { display: flex; gap: 3px; flex-wrap: wrap; }
+
+.chip {
+  padding: .03rem .1rem;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid transparent;
+  color: var(--text-md);
+  font-size: .11rem;
+  letter-spacing: .04em;
+}
+
+.chip:hover { background: rgba(255, 255, 255, .12); }
+.chip.is-on { color: #101214; background: var(--gold); font-weight: 700; }
+
+/* 敌人网格：只在窗格里滚动，筛选片和出生红门保持可见 */
+.egrid-wrap {
+  max-height: 2.4rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px;
+  background: rgba(0, 0, 0, .18);
+  border: 1px solid rgba(255, 255, 255, .07);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, .22) transparent;
+}
+
+.egrid-wrap::-webkit-scrollbar { width: 4px; }
+
+.egrid-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .22); }
+
+.egrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-content: start;
+  gap: 4px;
+}
+
+/* 出生红门 / 刷怪按钮固定在面板底部，选人时不用在长列表里来回滚 */
+.dr__foot {
+  display: flex;
+  flex-direction: column;
+  gap: .06rem;
+  padding-top: .06rem;
+  border-top: 1px solid var(--hair);
+}
+
+/* ---- 投放方式 ---------------------------------------------------------------------------------------------------- */
+/* 红门上下文横幅 */
+.dr__ctx {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .02rem;
+  padding: .06rem .3rem .06rem .1rem;
+  background: linear-gradient(100deg, rgba(255, 74, 61, .22), rgba(20, 22, 26, .5) 70%);
+  border: 1px solid rgba(255, 74, 61, .5);
+  border-left: 3px solid var(--red);
+}
+
+.dr__ctx b { font-size: .13rem; color: #fff; }
+.dr__ctx span { font-size: .1rem; color: #ffb3ac; }
+
+.dr__ctx-x {
+  position: absolute;
+  top: .04rem;
+  right: .04rem;
+  width: .22rem;
+  height: .22rem;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 10, 12, .8);
+  border: 1px solid rgba(255, 255, 255, .2);
+  color: var(--text-md);
+  font-size: .11rem;
+}
+
+.dr__ctx-x:hover { color: #fff; border-color: var(--red); }
+
+/* 四个投放方式按钮 */
+.placegrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+}
+
+.place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .02rem;
+  padding: .05rem .02rem .04rem;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .12);
+  color: var(--text-md);
+  font-size: .1rem;
+  line-height: 1.2;
+}
+
+.place i { font-style: normal; font-size: .15rem; }
+.place:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.place.is-on { color: var(--gold); border-color: var(--gold); background: rgba(242, 201, 76, .14); }
+
+/* 连续放置勾选 */
+.cont {
+  display: inline-flex;
+  align-items: center;
+  gap: .04rem;
+  padding: .02rem .06rem;
+  font-size: .1rem;
+  color: var(--text-md);
+  border: 1px dashed rgba(255, 255, 255, .2);
+}
+
+.cont input { width: .12rem; height: .12rem; accent-color: var(--gold); }
+
+/* 路线栏 */
+.rtpanel {
+  display: flex;
+  flex-direction: column;
+  gap: .05rem;
+  padding: .06rem;
+  background: rgba(0, 0, 0, .2);
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.rtpanel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .04rem .08rem;
+  font-size: .1rem;
+  color: var(--text-dim);
+}
+
+.rtpanel__head b { color: var(--gold); font-weight: 600; }
+
+.rtpts { display: flex; flex-wrap: wrap; gap: 3px; }
+
+.rtpt {
+  display: inline-flex;
+  align-items: center;
+  gap: .04rem;
+  padding: .02rem .06rem;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .16);
+  font-size: .1rem;
+  color: var(--text-md);
+}
+
+.rtpt b { color: var(--gold); font-family: var(--font-num); }
+.rtpt em { font-style: normal; color: #ffd166; }
+.rtpt.is-on { border-color: var(--gold); background: rgba(242, 201, 76, .16); color: #fff; }
+
+.rtpop {
+  display: flex;
+  flex-direction: column;
+  gap: .04rem;
+  padding: .05rem;
+  background: rgba(255, 255, 255, .05);
+  border-left: 2px solid var(--gold);
+}
+
+.rtpop__row { display: flex; align-items: center; gap: .05rem; font-size: .1rem; color: var(--text-md); }
+.rtpop__row input {
+  width: .6rem;
+  height: .24rem;
+  padding: 0 .05rem;
+  background: rgba(0, 0, 0, .35);
+  border: 1px solid rgba(255, 255, 255, .14);
+  color: #fff;
+  font-family: var(--font-num);
+}
+
+/* 批量删除的框选矩形 */
+.hud__marquee {
+  position: absolute;
+  z-index: 8;
+  display: none;
+  pointer-events: none;
+  border: 1px solid rgba(255, 194, 122, .9);
+  background: rgba(255, 194, 122, .14);
+  box-shadow: 0 0 .12rem rgba(255, 194, 122, .35) inset;
+}
+
+.dr__foot .dr__hint {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.ecard {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: .02rem;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .1);
+  overflow: hidden;
+}
+
+.ecard img {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  filter: drop-shadow(0 .02rem .04rem rgba(0, 0, 0, .8));
+}
+
+.ecard span {
+  position: relative;
+  font-size: .1rem;
+  color: var(--text-md);
+  text-align: center;
+  line-height: 1.15;
+  max-width: 100%;
+  padding: 0 .02rem;
+  text-shadow: 0 1px 2px #000;
+}
+
+.ecard:hover { border-color: var(--hair-2); background: rgba(255, 255, 255, .1); }
+.ecard.is-on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; background: rgba(242, 201, 76, .12); }
+.ecard.is-dummy { border-color: rgba(255, 74, 61, .5); }
+
+/* 通用行 / 按钮 */
+.dr__row { display: flex; gap: 4px; }
+
+.dbtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .05rem;
+  height: .32rem;
+  padding: 0 .08rem;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .16);
+  color: var(--text-hi);
+  font-size: .11rem;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.dbtn:hover { background: rgba(255, 255, 255, .14); }
+.dbtn.is-on { border-color: var(--gold); color: var(--gold); background: rgba(242, 201, 76, .14); }
+.dbtn--pri { background: var(--gold); color: #101214; font-weight: 700; border-color: transparent; }
+.dbtn--pri:hover { background: #ffd968; }
+.dbtn--blue { border-color: rgba(0, 176, 255, .5); color: var(--blue); }
+.dbtn--red { border-color: rgba(255, 74, 61, .5); color: #ff8f86; }
+
+/* 改地形：五个方形图块按钮 */
+.terrgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.terr {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .02rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, .05);
+  color: var(--text-md);
+  font-size: .1rem;
+  line-height: 1;
+  transition: box-shadow 120ms, transform 120ms;
+}
+
+.terr i {
+  font-style: normal;
+  font-size: .16rem;
+  line-height: 1;
+}
+
+.terr--r { background: linear-gradient(160deg, #3a3f45, #22262a); }
+.terr--f { background: linear-gradient(160deg, #31363b, #1d2125); border-style: dashed; }
+.terr--h { background: linear-gradient(160deg, #6b5f4a, #3a332a); border-top-width: 3px; border-top-color: #b39b74; }
+.terr--X { background: repeating-linear-gradient(45deg, #2a2d31 0 3px, #191b1e 3px 6px); }
+.terr--0 { background: #0d0f11; border-style: dotted; color: #5b636a; }
+.terr--S { background: linear-gradient(160deg, #5a1b18, #2a0d0c); border-color: #ff4a3d; color: #ffb3ac; }
+.terr--E { background: linear-gradient(160deg, #123449, #0a1822); border-color: #00d0ff; color: #9fe6ff; }
+
+.terr:hover { transform: translateY(-1px); }
+
+.terr.is-on {
+  box-shadow: 0 0 0 1px var(--gold), 0 0 .14rem rgba(242, 201, 76, .65);
+  color: #fff;
+}
+
+/* 战场范围：四个数字 + 应用 */
+.rcgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.rcgrid label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: .09rem;
+  color: var(--text-dim);
+}
+
+.rcgrid input {
+  width: 100%;
+  padding: .02rem .03rem;
+  background: rgba(0, 0, 0, .45);
+  border: 1px solid rgba(255, 255, 255, .16);
+  color: var(--text-hi);
+  font-family: var(--font-mono);
+  font-size: .12rem;
+  text-align: center;
+}
+
+.rcgrid input:focus { outline: none; border-color: var(--gold); background: rgba(242, 201, 76, .1); }
+
+.rcgrid .dbtn {
+  grid-column: 1 / -1;
+  height: .22rem;
+  font-size: .1rem;
+}
+
+/* 折叠起来的 JSON 区 */
+.dr__json {
+  width: 100%;
+  min-height: .9rem;
+  max-height: 1.6rem;
+  padding: .05rem;
+  background: rgba(0, 0, 0, .5);
+  border: 1px solid rgba(255, 255, 255, .14);
+  color: var(--text-md);
+  font-family: var(--font-mono);
+  font-size: .1rem;
+  resize: vertical;
+}
+
+/* ---- 干员选择器（手牌的 ✚） --------------------------------------------------------------------------------------- */
+.hud__picker {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 6, 8, .72);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms;
+}
+
+.hud__picker.is-on { opacity: 1; pointer-events: auto; }
+
+.pk {
+  /* 牌库只有自设干员，人少的时候盒子跟着收窄，别撑出一个大空壳 */
+  width: fit-content;
+  min-width: 4.8rem;
+  max-width: 8.6rem;
+  max-height: 6.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  padding: .16rem;
+  background: var(--glass-solid);
+  border: 1px solid var(--hair-2);
+  box-shadow: 0 .2rem .6rem rgba(0, 0, 0, .7);
+  clip-path: polygon(0 0, calc(100% - .16rem) 0, 100% .16rem, 100% 100%, .16rem 100%, 0 calc(100% - .16rem));
+}
+
+.pk__head { display: flex; align-items: center; gap: .12rem; }
+.pk__head h2 { font-size: .18rem; font-weight: 700; letter-spacing: .04em; margin: 0; }
+.pk__head input {
+  flex: 1;
+  min-width: 2rem;
+  height: .32rem;
+  padding: 0 .1rem;
+  background: rgba(0, 0, 0, .45);
+  border: 1px solid rgba(255, 255, 255, .16);
+  color: var(--text-hi);
+  font: inherit;
+  font-size: .12rem;
+}
+
+.pk__grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: .04rem;
+}
+
+.pk__op {
+  width: .82rem;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .03rem;
+  padding: .03rem;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .1);
+}
+
+.pk__op:hover { border-color: var(--gold); background: rgba(242, 201, 76, .12); }
+.pk__op img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.pk__op span { font-size: .09rem; color: var(--text-md); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* ---- toast ------------------------------------------------------------------------------------------------------ */
+.hud__msg {
+  left: 50%;
+  top: 1.02rem;
+  transform: translateX(-50%) translateY(-.06rem);
+  padding: .06rem .18rem;
+  background: rgba(8, 10, 12, .92);
+  border: 1px solid var(--hair-2);
+  border-left: 3px solid var(--gold);
+  color: var(--text-hi);
+  font-size: .12rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms, transform 160ms;
+  z-index: 8;
+}
+
+.hud__msg.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+.hud__msg.is-on.is-bad { border-left-color: var(--red); }
+.hud__msg.is-bad { border-left-color: var(--red); color: #ffb3ac; }
+
+/* ---- 纯净模式（H） ------------------------------------------------------------------------------------------------ */
+.hud.is-pure .hud__drawer,
+.hud.is-pure .hud__hand,
+.hud.is-pure .hud__detail,
+.hud.is-pure .caps--sub { display: none; }
+
+.pure-exit {
+  left: 50%;
+  top: 1.02rem;
+  transform: translateX(-50%);
+  margin-top: .42rem;
+  padding: .04rem .14rem;
+  background: rgba(8, 10, 12, .7);
+  border: 1px solid rgba(255, 255, 255, .18);
+  color: var(--text-dim);
+  font-size: .11rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms;
+}
+
+.hud.is-pure .pure-exit { opacity: 1; }
+
+/* 方向轮盘：官方组件自己铺满全屏（fixed），宿主要放行指针事件，否则轮盘只能看不能点 */
+#hud-wheel > * { pointer-events: auto; }
+
+/* ---- 场上「选中了谁」：压暗一圈 + 金色角框 + 名字牌 ------------------------------------------------------------- */
+/* main.js 每帧把格子中心的屏幕坐标写进 --sel-x / --sel-y，格子边长写进 --sel-size，所以镜头一动角框就跟着走。 */
+.hud__spot {
+  position: absolute;
+  inset: 0;
+  z-index: 1 !important;               /* 压在画布之上、所有面板之下 */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+  background: radial-gradient(circle at var(--sel-x, 50%) var(--sel-y, 50%),
+    rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) calc(var(--sel-size, 60px) * .9),
+    rgba(0, 0, 0, .30) calc(var(--sel-size, 60px) * 2.6), rgba(0, 0, 0, .46) 100%);
+}
+
+.hud__spot.is-on { opacity: 1; }
+
+.hud__sel {
+  position: absolute;
+  left: var(--sel-x, -999px);
+  top: var(--sel-y, -999px);
+  width: var(--sel-size, 60px);
+  height: var(--sel-size, 60px);
+  transform: translate(-50%, -50%);
+  z-index: 3 !important;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease-out;
+}
+
+.hud__sel.is-on { opacity: 1; }
+
+/* 四个角框：八条线拼的，不占额外元素 */
+.hud__sel::before {
+  content: '';
+  position: absolute;
+  inset: -9%;
+  background:
+    linear-gradient(var(--gold), var(--gold)) left top / 32% 3px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left top / 3px 32% no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right top / 32% 3px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right top / 3px 32% no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 32% 3px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 3px 32% no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right bottom / 32% 3px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right bottom / 3px 32% no-repeat;
+  filter: drop-shadow(0 0 6px rgba(242, 201, 76, .85));
+  animation: selBreath 1.9s ease-in-out infinite;
+}
+
+.hud__sel.is-bump::before { animation: selBump 420ms var(--ease-out), selBreath 1.9s ease-in-out 420ms infinite; }
+
+.hud__sel .sel__name {
+  position: absolute;
+  left: 50%;
+  bottom: -4%;
+  transform: translate(-50%, 100%);
+  padding: .02rem .08rem;
+  white-space: nowrap;
+  font-size: .13rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(20, 22, 26, .88);
+  border-left: 2px solid var(--gold);
+  border-right: 2px solid var(--gold);
+  box-shadow: 0 .02rem .1rem rgba(0, 0, 0, .6);
+}
+
+@keyframes selBreath {
+  0%, 100% { opacity: .72; transform: scale(.985); }
+  50% { opacity: 1; transform: scale(1.012); }
+}
+
+@keyframes selBump {
+  0% { transform: scale(.72); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 详情卡出现时弹一下 + 右上角「已选中」标 */
+.hud__detail.is-bump { animation: dtBump 340ms var(--ease-out); }
+
+@keyframes dtBump {
+  0% { transform: translateY(.14rem) scale(.985); opacity: .35; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ---- 可点元素的手感：悬停 / 按下 / 点一下的那帧反馈 -------------------------------------------------------------- */
+.hud button,
+.hud .ocard { -webkit-tap-highlight-color: transparent; }
+
+.chip, .dbtn, .ecard, .pk__op, .dr__tab, .place, .rtpt,
+.terr, .hand__more, .cap, .dt__retreat, .dt__skill, .ocard__box {
+  transition: transform 120ms var(--ease-out), background 140ms, border-color 140ms,
+    box-shadow 140ms, color 140ms, filter 140ms;
+}
+
+/* 按下：缩一点 + 提亮（cap 有斜切，单独写，别把 skew 顶掉） */
+.chip:active, .dbtn:active, .ecard:active, .pk__op:active, .place:active,
+.rtpt:active, .dr__tab:active, .dr__ctx-x:active,
+.terr:active, .hand__more:active, .dt__retreat:active, .dt__skill:active {
+  transform: scale(.95);
+  filter: brightness(1.18);
+}
+
+.cap:active { transform: skewX(-9deg) translateY(1.5px) scale(.97); filter: brightness(1.22); }
+.ocard:active .ocard__box { transform: scale(.965); }
+
+/* 键盘也能看见焦点 */
+.hud button:focus-visible,
+.hud .ocard:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* pulse() 打的 is-tap：一圈金光滑开，手感上「按到了」 */
+.is-tap { animation: tapFlash 240ms ease-out; }
+
+@keyframes tapFlash {
+  0% { box-shadow: 0 0 0 0 rgba(242, 201, 76, .7), 0 0 .1rem rgba(242, 201, 76, .5); }
+  100% { box-shadow: 0 0 0 .1rem rgba(242, 201, 76, 0), 0 0 0 rgba(242, 201, 76, 0); }
+}
+
+/* 选人器里的预留槽位（自设维娜 / 结城理） */
+.pk__op--hold {
+  position: relative;
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, .18);
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, .03) 0 4px, transparent 4px 8px);
+  cursor: not-allowed;
+  opacity: .72;
+}
+
+.pk__op--hold:hover { border-color: rgba(242, 201, 76, .5); background: rgba(242, 201, 76, .06); }
+
+.pk__ph {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-size: .1rem;
+  letter-spacing: .1em;
+  color: var(--gold-dim);
+  border: 1px solid rgba(255, 255, 255, .1);
+}
+
+/* 小屏（窗口窄于 1100px）收紧一点，避免手牌压住 DP */
+@media (max-width: 1100px) {
+  .hud__dock { max-width: calc(100vw - .3rem); }
+  /* 这里只收高度，**不再改宽度**。
+     曾经写过 `.hud__detail { width: 2.7rem }` 和 `width: min(58vw, 5.4rem)` —— 两次都是拿 rem 当上限，
+     而 1rem 本身就随窗口缩小（theme.css: min(vw/19.2, vh/10.8)），乘下来 1076 宽时只剩 252px，
+     文字就被挤成一条缝。宽度统一交给主规则里的 clamp()，随视口走、有下限兜底。 */
+  .hud__detail { max-height: max(3rem, min(50vh, 5rem)); }
+  .hud__drawer.is-open .dr__panel, .dr__inner { width: 3.1rem; }
+}

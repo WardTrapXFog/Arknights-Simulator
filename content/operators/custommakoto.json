@@ -1,0 +1,2302 @@
+{
+  "version": 1,
+  "chessId": "chess_char_6_99_custommakoto_a",
+  "charId": "char_9902_custommakoto",
+  "record": {
+    "chessId": "chess_char_6_99_custommakoto_a",
+    "baseId": "chess_char_6_99_custommakoto_a",
+    "goldenId": null,
+    "isGolden": false,
+    "tier": 6,
+    "identifier": 1002,
+    "isHidden": false,
+    "isDiy": false,
+    "visible": false,
+    "chessType": "NORMAL",
+    "backup": null,
+    "shopSortId": 99,
+    "charId": "char_9902_custommakoto",
+    "name": "结城理（自设）",
+    "appellation": "Makoto Yuki",
+    "rarity": 6,
+    "profession": "WARRIOR",
+    "subProfessionId": "mercenary",
+    "subProfessionName": "佣兵",
+    "position": "MELEE",
+    "nationId": "sees",
+    "bonds": [],
+    "garrisonIds": [],
+    "price": 4,
+    "sellPrice": 1,
+    "upgradeNum": 0,
+    "upgradeChessId": null,
+    "status": {
+      "phase": 2,
+      "level": 90,
+      "skillLevel": 10,
+      "equipLevel": 3
+    },
+    "stats": {
+      "maxHp": 3640,
+      "atk": 780,
+      "def": 420,
+      "res": 10,
+      "cost": 6,
+      "blockCnt": 2,
+      "bat": 1.25,
+      "aspd": 100,
+      "respawnTime": 70,
+      "spRecovery": 1,
+      "hpRecoveryPerSec": 0,
+      "moveSpeed": 1,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "deployLimit": 1,
+      "deckStack": 0
+    },
+    "immunities": {
+      "stun": false,
+      "silence": false,
+      "sleep": false,
+      "frozen": false,
+      "levitate": false
+    },
+    "rangeId": "custom_custommakoto",
+    "rangeGrid": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "dmgType": "phys",
+    "attackKind": "melee",
+    "projectile": "none",
+    "canHitFly": false,
+    "targetPriority": null,
+    "trait": {
+      "desc": "可消耗部署费用来强化作战能力",
+      "descRaw": "可消耗部署费用来强化作战能力",
+      "bb": {
+        "spend_atk": 0.02,
+        "spend_cap": 10,
+        "spend_duration": 30
+      },
+      "bbStr": {},
+      "rangeGrid": null
+    },
+    "skill": {
+      "skillId": "skchr_custommakoto_1",
+      "iconId": "skchr_custommakoto_1",
+      "name": "俄耳甫斯——月影华章",
+      "level": 10,
+      "desc": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+      "descRaw": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+      "skillType": "AUTO",
+      "durationType": "NONE",
+      "duration": 0,
+      "spType": "INCREASE_WITH_TIME",
+      "spCost": 18,
+      "initSp": 0,
+      "maxChargeTime": 1,
+      "increment": 1,
+      "bb": {
+        "atk": 1.2,
+        "bat_add": -0.25,
+        "split": 0.7,
+        "targets": 3,
+        "equipment_scale": 4,
+        "equipment_cost": 3,
+        "sandbox": 1
+      },
+      "bbStr": {},
+      "rangeId": "custom_custommakoto_1",
+      "rangeGrid": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "prefabId": "skchr_custommakoto_1",
+      "trigger": {
+        "rule": "DEFAULT",
+        "rawRule": "DEFAULT",
+        "customRangeGrid": null
+      },
+      "index": 0,
+      "overrideTokenKey": null,
+      "isDefault": true
+    },
+    "skills": [
+      {
+        "skillId": "skchr_custommakoto_1",
+        "iconId": "skchr_custommakoto_1",
+        "name": "俄耳甫斯——月影华章",
+        "level": 10,
+        "desc": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+        "descRaw": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+        "skillType": "AUTO",
+        "durationType": "NONE",
+        "duration": 0,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 18,
+        "initSp": 0,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "atk": 1.2,
+          "bat_add": -0.25,
+          "split": 0.7,
+          "targets": 3,
+          "equipment_scale": 4,
+          "equipment_cost": 3,
+          "sandbox": 1
+        },
+        "bbStr": {},
+        "rangeId": "custom_custommakoto_1",
+        "rangeGrid": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "prefabId": "skchr_custommakoto_1",
+        "trigger": {
+          "rule": "DEFAULT",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 0,
+        "overrideTokenKey": null,
+        "isDefault": true
+      },
+      {
+        "skillId": "skchr_custommakoto_2",
+        "iconId": "skchr_custommakoto_2",
+        "name": "塔纳托斯——死亡宣告",
+        "level": 10,
+        "desc": "立即扣除自身30%的最大生命值，攻击力+150%，攻击速度+50，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害100%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加2层麻痹，并赋予30%脆弱",
+        "descRaw": "立即扣除自身30%的最大生命值，攻击力+150%，攻击速度+50，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害100%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加2层麻痹，并赋予30%脆弱",
+        "skillType": "MANUAL",
+        "durationType": "NONE",
+        "duration": 15,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 10,
+        "initSp": 7,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "hp_loss": 0.3,
+          "atk": 1.5,
+          "aspd": 50,
+          "record_scale": 1,
+          "paralysis": 2,
+          "vulnerable": 0.3,
+          "equipment_cost": 8,
+          "sandbox": 1
+        },
+        "bbStr": {},
+        "rangeId": "custom_custommakoto_2",
+        "rangeGrid": [
+          [
+            -2,
+            0
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            3
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "prefabId": "skchr_custommakoto_2",
+        "trigger": {
+          "rule": "MANUAL",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 1,
+        "overrideTokenKey": null,
+        "isDefault": false
+      },
+      {
+        "skillId": "skchr_custommakoto_3",
+        "iconId": "skchr_custommakoto_3",
+        "name": "弥赛亚——世界的救济",
+        "level": 10,
+        "desc": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+100%，攻击速度+50，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到3次额外相当于该次伤害40%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和300%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+        "descRaw": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+100%，攻击速度+50，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到3次额外相当于该次伤害40%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和300%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+        "skillType": "MANUAL",
+        "durationType": "NONE",
+        "duration": 60,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 5,
+        "initSp": 5,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "atk_aura": 1,
+          "aspd_aura": 50,
+          "echoes": 3,
+          "echo_scale": 0.4,
+          "equipment_scale": 3,
+          "equipment_cost": 50,
+          "sandbox": 1
+        },
+        "bbStr": {},
+        "rangeId": "custom_custommakoto_3",
+        "rangeGrid": [
+          [
+            -3,
+            -1
+          ],
+          [
+            -3,
+            0
+          ],
+          [
+            -3,
+            1
+          ],
+          [
+            -2,
+            -2
+          ],
+          [
+            -2,
+            -1
+          ],
+          [
+            -2,
+            0
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            -1,
+            -2
+          ],
+          [
+            -1,
+            -1
+          ],
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            3
+          ],
+          [
+            0,
+            -2
+          ],
+          [
+            0,
+            -1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            -2
+          ],
+          [
+            1,
+            -1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            -2
+          ],
+          [
+            2,
+            -1
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            -1
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "prefabId": "skchr_custommakoto_3",
+        "trigger": {
+          "rule": "MANUAL",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 2,
+        "overrideTokenKey": null,
+        "isDefault": false
+      }
+    ],
+    "talents": [
+      {
+        "index": 0,
+        "name": "不羁之魂",
+        "desc": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+        "descRaw": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+        "bb": {
+          "switch_cost": 10,
+          "switch_cd": 5,
+          "orpheus_hp": 2000,
+          "orpheus_def": 500,
+          "thanatos": 0.5,
+          "messiah": 0.25
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      },
+      {
+        "index": 1,
+        "name": "永夜裁决",
+        "desc": "攻击时额外造成相当于攻击力12%的真实伤害",
+        "descRaw": "攻击时额外造成相当于攻击力12%的真实伤害",
+        "bb": {
+          "true_scale": 0.2,
+          "abnormal_scale": 0.5
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      }
+    ],
+    "tokens": [],
+    "module": {
+      "id": "uniequip_custom_custommakoto",
+      "name": "月的尽头",
+      "type": "MCN-X",
+      "level": 3,
+      "active": true
+    },
+    "assets": {
+      "avatar": "char_9902_custommakoto",
+      "avatarGolden": "char_9902_custommakoto",
+      "portrait": "char_9902_custommakoto",
+      "portraitGolden": "char_9902_custommakoto",
+      "spine": "char_9902_custommakoto",
+      "spineGolden": "char_9902_custommakoto",
+      "subProfIcon": "sub_merchant_icon",
+      "voice": "char_4217_makoto"
+    },
+    "moduleNames": {
+      "uniequip_custom_custommakoto": {
+        "name": "月的尽头",
+        "typeName": "MCN-X"
+      }
+    },
+    "kitRef": "char_9902_custommakoto",
+    "displayTokens": [],
+    "modules": [
+      {
+        "uniEquipId": "uniequip_custom_custommakoto",
+        "name": "月的尽头",
+        "typeName": "MCN-X",
+        "typeIcon": "mcn-x",
+        "icon": "uniequip_custom_custommakoto",
+        "level": 3,
+        "attr": {
+          "maxHp": 300,
+          "atk": 60
+        },
+        "traitOverride": {
+          "desc": "可消耗部署费用来强化作战能力",
+          "descRaw": "可消耗部署费用来强化作战能力",
+          "bb": {
+            "spend_atk": 0.02,
+            "spend_cap": 10,
+            "spend_duration": 30
+          },
+          "bbStr": {},
+          "rangeGrid": null
+        },
+        "talentChanges": [
+          {
+            "talentIndex": 1,
+            "desc": "天赋【永夜裁决】更新：攻击时额外造成相当于攻击力20%的真实伤害；若目标处于任意异常状态，真实伤害倍率提升至50%",
+            "descRaw": "天赋【永夜裁决】更新：攻击时额外造成相当于攻击力20%的真实伤害；若目标处于任意异常状态，真实伤害倍率提升至50%",
+            "bb": {
+              "true_scale": 0.2,
+              "abnormal_scale": 0.5
+            },
+            "bbStr": {},
+            "rangeGrid": null,
+            "tokenKey": null,
+            "hidden": false
+          }
+        ]
+      }
+    ],
+    "statsBase": {
+      "maxHp": 3340,
+      "atk": 720,
+      "def": 420,
+      "res": 10,
+      "cost": 6,
+      "blockCnt": 2,
+      "bat": 1.25,
+      "aspd": 100,
+      "respawnTime": 70,
+      "spRecovery": 1,
+      "hpRecoveryPerSec": 0,
+      "moveSpeed": 1,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "deployLimit": 1,
+      "deckStack": 0
+    },
+    "talentsBase": [
+      {
+        "index": 0,
+        "name": "不羁之魂",
+        "desc": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+        "descRaw": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+        "bb": {
+          "switch_cost": 10,
+          "switch_cd": 5,
+          "orpheus_hp": 2000,
+          "orpheus_def": 500,
+          "thanatos": 0.5,
+          "messiah": 0.25
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      },
+      {
+        "index": 1,
+        "name": "永夜裁决",
+        "desc": "攻击时额外造成相当于攻击力12%的真实伤害",
+        "descRaw": "攻击时额外造成相当于攻击力12%的真实伤害",
+        "bb": {
+          "true_scale": 0.12,
+          "abnormal_scale": 0.12
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      }
+    ]
+  },
+  "art": {
+    "avatar": "/assets/custom/char_9902_custommakoto/avatar.png",
+    "portrait": "/assets/custom/char_9902_custommakoto/portrait.png",
+    "portraitE2": "/assets/custom/char_9902_custommakoto/portrait_e2.png",
+    "illust": "/assets/custom/char_9902_custommakoto/portrait_e2.png",
+    "spine": {
+      "front": {
+        "skel": "/assets/spine/op/char_4217_makoto/front/char_4217_makoto.skel",
+        "atlas": "/assets/spine/op/char_4217_makoto/front/char_4217_makoto.atlas",
+        "textures": [
+          "/assets/spine/op/char_4217_makoto/front/char_4217_makoto.png"
+        ],
+        "pma": false,
+        "anims": {
+          "idle": "Idle",
+          "deploy": "Start",
+          "attack": {
+            "begin": null,
+            "loop": "Attack_A",
+            "end": null
+          },
+          "attackDown": null,
+          "skill": {
+            "begin": null,
+            "loop": "Doll_Skill_1_Attack",
+            "end": null
+          },
+          "die": "SwitchOut",
+          "move": null,
+          "stun": "Stun",
+          "skills": {
+            "0": {
+              "begin": "Doll_Skill_1_SwitchIn",
+              "loop": "Doll_Skill_1_Attack",
+              "end": "Doll_Skill_1_SwitchOut",
+              "index": 0,
+              "idle": "Doll_Skill_1_Idle"
+            },
+            "1": {
+              "begin": "Doll_Skill_2_SwitchIn",
+              "loop": "Doll_Skill_2_Loop",
+              "end": "Doll_Skill_2_SwitchOut",
+              "index": 1,
+              "idle": null
+            },
+            "2": {
+              "begin": null,
+              "loop": "Idle",
+              "end": null,
+              "index": 2,
+              "idle": "Idle"
+            }
+          }
+        },
+        "animations": {
+          "Attack_A": 1.2,
+          "Attack_B": 1.2,
+          "Default": 0,
+          "Doll_Skill_1_Attack": 1.8,
+          "Doll_Skill_1_Die": 1,
+          "Doll_Skill_1_Idle": 2,
+          "Doll_Skill_1_Stun": 1,
+          "Doll_Skill_1_SwitchIn": 1,
+          "Doll_Skill_1_SwitchOut": 1,
+          "Doll_Skill_2_Die": 1,
+          "Doll_Skill_2_Loop": 2,
+          "Doll_Skill_2_Stun": 1,
+          "Doll_Skill_2_SwitchIn": 1,
+          "Doll_Skill_2_SwitchOut": 1,
+          "Doll_Skill_3_P1_Attack_A": 1.8,
+          "Doll_Skill_3_P1_Attack_B": 1.8,
+          "Doll_Skill_3_P1_Idle": 2,
+          "Doll_Skill_3_P1_Stun": 1,
+          "Doll_Skill_3_P1_SwitchIn": 1,
+          "Doll_Skill_3_P1_SwitchOut": 1,
+          "Doll_Skill_3_P1toP2_ChangeBegin": 0.5,
+          "Doll_Skill_3_P1toP2_ChangeEnd": 1,
+          "Doll_Skill_3_P2_Die": 1,
+          "Doll_Skill_3_P2_Loop": 2,
+          "Doll_Skill_3_P2_Stun": 1,
+          "Doll_Skill_3_P2_SwitchOut": 1,
+          "Idle": 12,
+          "Skill_AllOutAttack_End": 1.433,
+          "Skill_AllOutAttack_Loop": 0.167,
+          "Start": 1,
+          "Stun": 1,
+          "SwitchOut": 1
+        },
+        "events": [
+          "OnActivateEffect",
+          "OnAttack",
+          "OnDeactivateEffect",
+          "OnStart"
+        ],
+        "hits": {
+          "Attack_A": [
+            0.533
+          ],
+          "Attack_B": [
+            0.533
+          ],
+          "Doll_Skill_1_Attack": [
+            0.8
+          ],
+          "Doll_Skill_3_P1_Attack_A": [
+            0.8
+          ],
+          "Doll_Skill_3_P1_Attack_B": [
+            0.8
+          ],
+          "Doll_Skill_3_P1toP2_ChangeEnd": [
+            0.8
+          ],
+          "Skill_AllOutAttack_End": [
+            0.133
+          ]
+        },
+        "bounds": null
+      },
+      "back": {
+        "skel": "/assets/spine/op/char_4217_makoto/back/char_4217_makoto.skel",
+        "atlas": "/assets/spine/op/char_4217_makoto/back/char_4217_makoto.atlas",
+        "textures": [
+          "/assets/spine/op/char_4217_makoto/back/char_4217_makoto.png"
+        ],
+        "pma": false,
+        "anims": {
+          "idle": "Idle",
+          "deploy": "Start",
+          "attack": {
+            "begin": null,
+            "loop": "Attack_A",
+            "end": null
+          },
+          "attackDown": null,
+          "skill": {
+            "begin": null,
+            "loop": "Doll_Skill_1_Attack",
+            "end": null
+          },
+          "die": null,
+          "move": null,
+          "stun": null,
+          "skills": {
+            "0": {
+              "begin": null,
+              "loop": "Doll_Skill_1_Attack",
+              "end": null,
+              "index": 0,
+              "idle": "Doll_Skill_1_Idle"
+            },
+            "1": {
+              "begin": null,
+              "loop": "Doll_Skill_2_Loop",
+              "end": null,
+              "index": 1,
+              "idle": null
+            },
+            "2": {
+              "begin": null,
+              "loop": "Idle",
+              "end": null,
+              "index": 2,
+              "idle": "Idle"
+            }
+          }
+        },
+        "animations": {
+          "Attack_A": 1.2,
+          "Attack_B": 1.2,
+          "Default": 0,
+          "Doll_Skill_1_Attack": 1.8,
+          "Doll_Skill_1_Idle": 2,
+          "Doll_Skill_2_Loop": 2,
+          "Doll_Skill_3_P1_Attack_A": 1.8,
+          "Doll_Skill_3_P1_Attack_B": 1.8,
+          "Doll_Skill_3_P1_Idle": 2,
+          "Idle": 12,
+          "Start": 1
+        },
+        "events": [
+          "OnActivateEffect",
+          "OnAttack",
+          "OnDeactivateEffect",
+          "OnStart"
+        ],
+        "hits": {
+          "Attack_A": [
+            0.533
+          ],
+          "Attack_B": [
+            0.533
+          ],
+          "Doll_Skill_1_Attack": [
+            0.8
+          ],
+          "Doll_Skill_3_P1_Attack_A": [
+            0.8
+          ],
+          "Doll_Skill_3_P1_Attack_B": [
+            0.8
+          ]
+        },
+        "bounds": null
+      }
+    }
+  },
+  "skillAssets": {
+    "skchr_custommakoto_1": "/assets/custom/char_9902_custommakoto/skill_1.png",
+    "skchr_custommakoto_2": "/assets/custom/char_9902_custommakoto/skill_2.png",
+    "skchr_custommakoto_3": "/assets/custom/char_9902_custommakoto/skill_3.png"
+  },
+  "skillAliases": {
+    "skchr_custommakoto_1": "skchr_custommakoto_1",
+    "skchr_custommakoto_2": "skchr_custommakoto_2",
+    "skchr_custommakoto_3": "skchr_custommakoto_3"
+  },
+  "moduleAssets": {
+    "uniequip_custom_custommakoto": "/assets/custom/char_9902_custommakoto/module.png"
+  },
+  "selection": {
+    "unit": {
+      "charId": "char_9902_custommakoto",
+      "name": "结城理（自设）",
+      "appellation": "Makoto Yuki",
+      "rarity": 6,
+      "profession": "WARRIOR",
+      "subProfessionId": "mercenary",
+      "subProfessionName": "佣兵",
+      "position": "MELEE",
+      "nationId": "sees",
+      "assets": {
+        "avatar": "char_9902_custommakoto",
+        "avatarGolden": "char_9902_custommakoto",
+        "portrait": "char_9902_custommakoto",
+        "portraitGolden": "char_9902_custommakoto",
+        "spine": "char_9902_custommakoto",
+        "spineGolden": "char_9902_custommakoto",
+        "subProfIcon": "sub_merchant_icon"
+      },
+      "moduleNames": {
+        "uniequip_custom_custommakoto": {
+          "name": "月的尽头",
+          "typeName": "MCN-X"
+        }
+      },
+      "forms": {
+        "2/1/4/0": {
+          "stats": {
+            "maxHp": 2405,
+            "atk": 518,
+            "def": 357,
+            "res": 10,
+            "cost": 6,
+            "blockCnt": 2,
+            "bat": 1.25,
+            "aspd": 100,
+            "respawnTime": 70,
+            "spRecovery": 1,
+            "hpRecoveryPerSec": 0,
+            "moveSpeed": 1,
+            "tauntLevel": 0,
+            "massLevel": 0,
+            "deployLimit": 1,
+            "deckStack": 0
+          },
+          "immunities": {
+            "stun": false,
+            "silence": false,
+            "sleep": false,
+            "frozen": false,
+            "levitate": false
+          },
+          "rangeId": "custom_custommakoto",
+          "rangeGrid": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "dmgType": "phys",
+          "attackKind": "melee",
+          "projectile": "none",
+          "canHitFly": false,
+          "targetPriority": null,
+          "trait": {
+            "desc": "可消耗部署费用来强化作战能力",
+            "descRaw": "可消耗部署费用来强化作战能力",
+            "bb": {},
+            "bbStr": {},
+            "rangeGrid": null
+          },
+          "talents": [
+            {
+              "index": 0,
+              "name": "不羁之魂",
+              "desc": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+              "descRaw": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+              "bb": {
+                "switch_cost": 10,
+                "switch_cd": 5,
+                "orpheus_hp": 2000,
+                "orpheus_def": 500,
+                "thanatos": 0.5,
+                "messiah": 0.25
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            },
+            {
+              "index": 1,
+              "name": "永夜裁决",
+              "desc": "攻击时额外造成相当于攻击力12%的真实伤害",
+              "descRaw": "攻击时额外造成相当于攻击力12%的真实伤害",
+              "bb": {
+                "true_scale": 0.12,
+                "abnormal_scale": 0.12
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            }
+          ],
+          "skills": [
+            {
+              "skillId": "skchr_custommakoto_1",
+              "iconId": "skchr_custommakoto_1",
+              "name": "俄耳甫斯——月影华章",
+              "level": 1,
+              "desc": "攻击力+30%，攻击间隔缩短(-0.25)，攻击各造成攻击力50%的物理和法术伤害，攻击目标数+1\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力200%的物理伤害和攻击力200%的法术伤害",
+              "descRaw": "攻击力+30%，攻击间隔缩短(-0.25)，攻击各造成攻击力50%的物理和法术伤害，攻击目标数+1\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力200%的物理伤害和攻击力200%的法术伤害",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 30,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk": 0.3,
+                "bat_add": -0.25,
+                "split": 0.5,
+                "targets": 2,
+                "equipment_scale": 2,
+                "equipment_cost": 3,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_1",
+              "rangeGrid": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_1",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 0,
+              "overrideTokenKey": null,
+              "isDefault": true
+            },
+            {
+              "skillId": "skchr_custommakoto_2",
+              "iconId": "skchr_custommakoto_2",
+              "name": "塔纳托斯——死亡宣告",
+              "level": 1,
+              "desc": "立即扣除自身50%的最大生命值，攻击力+30%，攻击速度+20，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害20%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加1层麻痹，并赋予10%脆弱",
+              "descRaw": "立即扣除自身50%的最大生命值，攻击力+30%，攻击速度+20，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害20%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加1层麻痹，并赋予10%脆弱",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 15,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 20,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "hp_loss": 0.5,
+                "atk": 0.3,
+                "aspd": 20,
+                "record_scale": 0.2,
+                "paralysis": 1,
+                "vulnerable": 0.1,
+                "equipment_cost": 8,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_2",
+              "rangeGrid": [
+                [
+                  -2,
+                  0
+                ],
+                [
+                  -2,
+                  1
+                ],
+                [
+                  -2,
+                  2
+                ],
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_2",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 1,
+              "overrideTokenKey": null,
+              "isDefault": false
+            },
+            {
+              "skillId": "skchr_custommakoto_3",
+              "iconId": "skchr_custommakoto_3",
+              "name": "弥赛亚——世界的救济",
+              "level": 1,
+              "desc": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+20%，攻击速度+20，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到1次额外相当于该次伤害20%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和20%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+              "descRaw": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+20%，攻击速度+20，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到1次额外相当于该次伤害20%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和20%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 35,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 10,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk_aura": 0.2,
+                "aspd_aura": 20,
+                "echoes": 1,
+                "echo_scale": 0.2,
+                "equipment_scale": 0.2,
+                "equipment_cost": 50,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_3",
+              "rangeGrid": [
+                [
+                  -3,
+                  -1
+                ],
+                [
+                  -3,
+                  0
+                ],
+                [
+                  -3,
+                  1
+                ],
+                [
+                  -2,
+                  -2
+                ],
+                [
+                  -2,
+                  -1
+                ],
+                [
+                  -2,
+                  0
+                ],
+                [
+                  -2,
+                  1
+                ],
+                [
+                  -2,
+                  2
+                ],
+                [
+                  -1,
+                  -2
+                ],
+                [
+                  -1,
+                  -1
+                ],
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  -2
+                ],
+                [
+                  0,
+                  -1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  1,
+                  -2
+                ],
+                [
+                  1,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  -2
+                ],
+                [
+                  2,
+                  -1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  3,
+                  -1
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_3",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 2,
+              "overrideTokenKey": null,
+              "isDefault": false
+            }
+          ],
+          "displayTokens": [],
+          "tokens": [],
+          "modules": [],
+          "kitRef": "char_9902_custommakoto",
+          "status": {
+            "phase": 2,
+            "level": 1,
+            "skillLevel": 4,
+            "equipLevel": 0
+          }
+        },
+        "2/60/7/1": {
+          "stats": {
+            "maxHp": 3006,
+            "atk": 648,
+            "def": 420,
+            "res": 10,
+            "cost": 6,
+            "blockCnt": 2,
+            "bat": 1.25,
+            "aspd": 100,
+            "respawnTime": 70,
+            "spRecovery": 1,
+            "hpRecoveryPerSec": 0,
+            "moveSpeed": 1,
+            "tauntLevel": 0,
+            "massLevel": 0,
+            "deployLimit": 1,
+            "deckStack": 0
+          },
+          "immunities": {
+            "stun": false,
+            "silence": false,
+            "sleep": false,
+            "frozen": false,
+            "levitate": false
+          },
+          "rangeId": "custom_custommakoto",
+          "rangeGrid": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "dmgType": "phys",
+          "attackKind": "melee",
+          "projectile": "none",
+          "canHitFly": false,
+          "targetPriority": null,
+          "trait": {
+            "desc": "可消耗部署费用来强化作战能力",
+            "descRaw": "可消耗部署费用来强化作战能力",
+            "bb": {},
+            "bbStr": {},
+            "rangeGrid": null
+          },
+          "talents": [
+            {
+              "index": 0,
+              "name": "不羁之魂",
+              "desc": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+              "descRaw": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+              "bb": {
+                "switch_cost": 10,
+                "switch_cd": 5,
+                "orpheus_hp": 2000,
+                "orpheus_def": 500,
+                "thanatos": 0.5,
+                "messiah": 0.25
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            },
+            {
+              "index": 1,
+              "name": "永夜裁决",
+              "desc": "攻击时额外造成相当于攻击力12%的真实伤害",
+              "descRaw": "攻击时额外造成相当于攻击力12%的真实伤害",
+              "bb": {
+                "true_scale": 0.12,
+                "abnormal_scale": 0.12
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            }
+          ],
+          "skills": [
+            {
+              "skillId": "skchr_custommakoto_1",
+              "iconId": "skchr_custommakoto_1",
+              "name": "俄耳甫斯——月影华章",
+              "level": 10,
+              "desc": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+              "descRaw": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 18,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk": 1.2,
+                "bat_add": -0.25,
+                "split": 0.7,
+                "targets": 3,
+                "equipment_scale": 4,
+                "equipment_cost": 3,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_1",
+              "rangeGrid": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_1",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 0,
+              "overrideTokenKey": null,
+              "isDefault": true
+            },
+            {
+              "skillId": "skchr_custommakoto_2",
+              "iconId": "skchr_custommakoto_2",
+              "name": "塔纳托斯——死亡宣告",
+              "level": 10,
+              "desc": "立即扣除自身30%的最大生命值，攻击力+150%，攻击速度+50，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害100%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加2层麻痹，并赋予30%脆弱",
+              "descRaw": "立即扣除自身30%的最大生命值，攻击力+150%，攻击速度+50，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害100%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加2层麻痹，并赋予30%脆弱",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 15,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 10,
+              "initSp": 7,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "hp_loss": 0.3,
+                "atk": 1.5,
+                "aspd": 50,
+                "record_scale": 1,
+                "paralysis": 2,
+                "vulnerable": 0.3,
+                "equipment_cost": 8,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_2",
+              "rangeGrid": [
+                [
+                  -2,
+                  0
+                ],
+                [
+                  -2,
+                  1
+                ],
+                [
+                  -2,
+                  2
+                ],
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_2",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 1,
+              "overrideTokenKey": null,
+              "isDefault": false
+            },
+            {
+              "skillId": "skchr_custommakoto_3",
+              "iconId": "skchr_custommakoto_3",
+              "name": "弥赛亚——世界的救济",
+              "level": 10,
+              "desc": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+100%，攻击速度+50，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到3次额外相当于该次伤害40%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和300%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+              "descRaw": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+100%，攻击速度+50，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到3次额外相当于该次伤害40%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和300%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 60,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 5,
+              "initSp": 5,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk_aura": 1,
+                "aspd_aura": 50,
+                "echoes": 3,
+                "echo_scale": 0.4,
+                "equipment_scale": 3,
+                "equipment_cost": 50,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_3",
+              "rangeGrid": [
+                [
+                  -3,
+                  -1
+                ],
+                [
+                  -3,
+                  0
+                ],
+                [
+                  -3,
+                  1
+                ],
+                [
+                  -2,
+                  -2
+                ],
+                [
+                  -2,
+                  -1
+                ],
+                [
+                  -2,
+                  0
+                ],
+                [
+                  -2,
+                  1
+                ],
+                [
+                  -2,
+                  2
+                ],
+                [
+                  -1,
+                  -2
+                ],
+                [
+                  -1,
+                  -1
+                ],
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  -2
+                ],
+                [
+                  0,
+                  -1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  1,
+                  -2
+                ],
+                [
+                  1,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  -2
+                ],
+                [
+                  2,
+                  -1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  3,
+                  -1
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_3",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 2,
+              "overrideTokenKey": null,
+              "isDefault": false
+            }
+          ],
+          "displayTokens": [],
+          "tokens": [],
+          "modules": [
+            {
+              "uniEquipId": "uniequip_custom_custommakoto",
+              "name": "月的尽头",
+              "typeName": "MCN-X",
+              "typeIcon": "mcn-x",
+              "icon": "uniequip_custom_custommakoto",
+              "level": 1,
+              "attr": {
+                "maxHp": 200,
+                "atk": 40
+              },
+              "traitOverride": {
+                "desc": "可消耗部署费用来强化作战能力",
+                "descRaw": "可消耗部署费用来强化作战能力",
+                "bb": {
+                  "spend_atk": 0.02,
+                  "spend_cap": 10,
+                  "spend_duration": 30
+                },
+                "bbStr": {},
+                "rangeGrid": null
+              },
+              "talentChanges": []
+            }
+          ],
+          "kitRef": "char_9902_custommakoto",
+          "status": {
+            "phase": 2,
+            "level": 60,
+            "skillLevel": 7,
+            "equipLevel": 1
+          }
+        },
+        "2/60/7/3": {
+          "stats": {
+            "maxHp": 3006,
+            "atk": 648,
+            "def": 420,
+            "res": 10,
+            "cost": 6,
+            "blockCnt": 2,
+            "bat": 1.25,
+            "aspd": 100,
+            "respawnTime": 70,
+            "spRecovery": 1,
+            "hpRecoveryPerSec": 0,
+            "moveSpeed": 1,
+            "tauntLevel": 0,
+            "massLevel": 0,
+            "deployLimit": 1,
+            "deckStack": 0
+          },
+          "immunities": {
+            "stun": false,
+            "silence": false,
+            "sleep": false,
+            "frozen": false,
+            "levitate": false
+          },
+          "rangeId": "custom_custommakoto",
+          "rangeGrid": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "dmgType": "phys",
+          "attackKind": "melee",
+          "projectile": "none",
+          "canHitFly": false,
+          "targetPriority": null,
+          "trait": {
+            "desc": "可消耗部署费用来强化作战能力",
+            "descRaw": "可消耗部署费用来强化作战能力",
+            "bb": {},
+            "bbStr": {},
+            "rangeGrid": null
+          },
+          "talents": [
+            {
+              "index": 0,
+              "name": "不羁之魂",
+              "desc": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+              "descRaw": "可以消耗10点部署费用切换人格面具，可以施放对应的技能（切换冷却5秒），获得对应人格面具的效果：\n俄耳甫斯：自身防御力+500，生命值+2000；\n塔纳托斯：自身造成伤害+50%，受到伤害+50%；\n弥赛亚：使在场所有S.E.E.S.成员造成伤害+25%，受到伤害-25%\n人格面具的技力互相独立，且可在后台恢复",
+              "bb": {
+                "switch_cost": 10,
+                "switch_cd": 5,
+                "orpheus_hp": 2000,
+                "orpheus_def": 500,
+                "thanatos": 0.5,
+                "messiah": 0.25
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            },
+            {
+              "index": 1,
+              "name": "永夜裁决",
+              "desc": "攻击时额外造成相当于攻击力12%的真实伤害",
+              "descRaw": "攻击时额外造成相当于攻击力12%的真实伤害",
+              "bb": {
+                "true_scale": 0.12,
+                "abnormal_scale": 0.12
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            }
+          ],
+          "skills": [
+            {
+              "skillId": "skchr_custommakoto_1",
+              "iconId": "skchr_custommakoto_1",
+              "name": "俄耳甫斯——月影华章",
+              "level": 10,
+              "desc": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+              "descRaw": "攻击力+120%，攻击间隔缩短(-0.25)，攻击各造成攻击力70%的物理和法术伤害，攻击目标数+2\n持续时间无限\n装备应变：消耗3点部署费用，立即对攻击范围内所有敌人造成一次攻击力400%的物理伤害和攻击力400%的法术伤害",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 18,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk": 1.2,
+                "bat_add": -0.25,
+                "split": 0.7,
+                "targets": 3,
+                "equipment_scale": 4,
+                "equipment_cost": 3,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_1",
+              "rangeGrid": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_1",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 0,
+              "overrideTokenKey": null,
+              "isDefault": true
+            },
+            {
+              "skillId": "skchr_custommakoto_2",
+              "iconId": "skchr_custommakoto_2",
+              "name": "塔纳托斯——死亡宣告",
+              "level": 10,
+              "desc": "立即扣除自身30%的最大生命值，攻击力+150%，攻击速度+50，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害100%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加2层麻痹，并赋予30%脆弱",
+              "descRaw": "立即扣除自身30%的最大生命值，攻击力+150%，攻击速度+50，对技能范围内的所有敌人施加死亡宣告，死亡宣告会记录敌人在技能持续时间内受到的所有伤害，在技能结束时爆发，造成相当于记录伤害100%的真实伤害\n装备应变：消耗8点部署费用，立即对技能范围内的所有敌人施加2层麻痹，并赋予30%脆弱",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 15,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 10,
+              "initSp": 7,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "hp_loss": 0.3,
+                "atk": 1.5,
+                "aspd": 50,
+                "record_scale": 1,
+                "paralysis": 2,
+                "vulnerable": 0.3,
+                "equipment_cost": 8,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_2",
+              "rangeGrid": [
+                [
+                  -2,
+                  0
+                ],
+                [
+                  -2,
+                  1
+                ],
+                [
+                  -2,
+                  2
+                ],
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_2",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 1,
+              "overrideTokenKey": null,
+              "isDefault": false
+            },
+            {
+              "skillId": "skchr_custommakoto_3",
+              "iconId": "skchr_custommakoto_3",
+              "name": "弥赛亚——世界的救济",
+              "level": 10,
+              "desc": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+100%，攻击速度+50，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到3次额外相当于该次伤害40%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和300%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+              "descRaw": "立即起飞，攻击范围扩大，攻击范围内的所有友方干员攻击力+100%，攻击速度+50，所有在攻击范围内的敌方单位被施加伟大封印，所有遭受伟大封印的单位受到的任意来源伤害都会受到3次额外相当于该次伤害40%的真实伤害，且都会使攻击范围内的友方单位受到等额的治疗，技能结束后结城理强制退场，并返还该次部署的部署费用，并在接下来的战斗中无法再上场\n装备应变：消耗50点部署费用，使攻击范围内的所有敌方单位受到一次相当于攻击范围内所有友方干员攻击力之和300%的真实伤害，并且攻击范围内的所有友方干员不会退场，该效果会持续到结城理退场后10秒为止",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 60,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 5,
+              "initSp": 5,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk_aura": 1,
+                "aspd_aura": 50,
+                "echoes": 3,
+                "echo_scale": 0.4,
+                "equipment_scale": 3,
+                "equipment_cost": 50,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_custommakoto_3",
+              "rangeGrid": [
+                [
+                  -3,
+                  -1
+                ],
+                [
+                  -3,
+                  0
+                ],
+                [
+                  -3,
+                  1
+                ],
+                [
+                  -2,
+                  -2
+                ],
+                [
+                  -2,
+                  -1
+                ],
+                [
+                  -2,
+                  0
+                ],
+                [
+                  -2,
+                  1
+                ],
+                [
+                  -2,
+                  2
+                ],
+                [
+                  -1,
+                  -2
+                ],
+                [
+                  -1,
+                  -1
+                ],
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  -2
+                ],
+                [
+                  0,
+                  -1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  1,
+                  -2
+                ],
+                [
+                  1,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  2,
+                  -2
+                ],
+                [
+                  2,
+                  -1
+                ],
+                [
+                  2,
+                  0
+                ],
+                [
+                  2,
+                  1
+                ],
+                [
+                  2,
+                  2
+                ],
+                [
+                  3,
+                  -1
+                ],
+                [
+                  3,
+                  0
+                ],
+                [
+                  3,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_custommakoto_3",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 2,
+              "overrideTokenKey": null,
+              "isDefault": false
+            }
+          ],
+          "displayTokens": [],
+          "tokens": [],
+          "modules": [
+            {
+              "uniEquipId": "uniequip_custom_custommakoto",
+              "name": "月的尽头",
+              "typeName": "MCN-X",
+              "typeIcon": "mcn-x",
+              "icon": "uniequip_custom_custommakoto",
+              "level": 3,
+              "attr": {
+                "maxHp": 300,
+                "atk": 60
+              },
+              "traitOverride": {
+                "desc": "可消耗部署费用来强化作战能力",
+                "descRaw": "可消耗部署费用来强化作战能力",
+                "bb": {
+                  "spend_atk": 0.02,
+                  "spend_cap": 10,
+                  "spend_duration": 30
+                },
+                "bbStr": {},
+                "rangeGrid": null
+              },
+              "talentChanges": [
+                {
+                  "talentIndex": 1,
+                  "desc": "天赋【永夜裁决】更新：攻击时额外造成相当于攻击力20%的真实伤害；若目标处于任意异常状态，真实伤害倍率提升至50%",
+                  "descRaw": "天赋【永夜裁决】更新：攻击时额外造成相当于攻击力20%的真实伤害；若目标处于任意异常状态，真实伤害倍率提升至50%",
+                  "bb": {
+                    "true_scale": 0.2,
+                    "abnormal_scale": 0.5
+                  },
+                  "bbStr": {},
+                  "rangeGrid": null,
+                  "tokenKey": null,
+                  "hidden": false
+                }
+              ]
+            }
+          ],
+          "kitRef": "char_9902_custommakoto",
+          "status": {
+            "phase": 2,
+            "level": 90,
+            "skillLevel": 10,
+            "equipLevel": 3
+          }
+        }
+      },
+      "kitRef": "char_9902_custommakoto"
+    },
+    "operator": {
+      "name": "结城理（自设）",
+      "rarity": 6,
+      "profession": "WARRIOR",
+      "subProfessionId": "mercenary",
+      "obtainable": true,
+      "powers": [
+        "sees"
+      ],
+      "bonds": [
+        "emptyShip",
+        "swiftShip"
+      ]
+    },
+    "owned": true
+  },
+  "voiceAssets": {
+    "voice": {
+      "start": "/assets/audio/voice/jp/char_4217_makoto/cn_019.mp3",
+      "faceEnemy": "/assets/audio/voice/jp/char_4217_makoto/cn_020.mp3",
+      "select": [
+        "/assets/audio/voice/jp/char_4217_makoto/cn_021.mp3",
+        "/assets/audio/voice/jp/char_4217_makoto/cn_022.mp3"
+      ],
+      "place": [
+        "/assets/audio/voice/jp/char_4217_makoto/cn_023.mp3",
+        "/assets/audio/voice/jp/char_4217_makoto/cn_024.mp3"
+      ],
+      "skill1": "/assets/audio/voice/jp/char_4217_makoto/cn_025.mp3",
+      "skill2": "/assets/audio/voice/jp/char_4217_makoto/cn_026.mp3",
+      "skill3": "/assets/audio/voice/jp/char_4217_makoto/cn_027.mp3",
+      "skill4": "/assets/audio/voice/jp/char_4217_makoto/cn_028.mp3",
+      "resultFour": "/assets/audio/voice/jp/char_4217_makoto/cn_029.mp3",
+      "resultThree": "/assets/audio/voice/jp/char_4217_makoto/cn_030.mp3",
+      "resultTwo": "/assets/audio/voice/jp/char_4217_makoto/cn_031.mp3",
+      "resultLose": "/assets/audio/voice/jp/char_4217_makoto/cn_032.mp3"
+    },
+    "voiceJp": {
+      "start": "/assets/audio/voice/jp/char_4217_makoto/cn_019.mp3",
+      "faceEnemy": "/assets/audio/voice/jp/char_4217_makoto/cn_020.mp3",
+      "select": [
+        "/assets/audio/voice/jp/char_4217_makoto/cn_021.mp3",
+        "/assets/audio/voice/jp/char_4217_makoto/cn_022.mp3"
+      ],
+      "place": [
+        "/assets/audio/voice/jp/char_4217_makoto/cn_023.mp3",
+        "/assets/audio/voice/jp/char_4217_makoto/cn_024.mp3"
+      ],
+      "skill1": "/assets/audio/voice/jp/char_4217_makoto/cn_025.mp3",
+      "skill2": "/assets/audio/voice/jp/char_4217_makoto/cn_026.mp3",
+      "skill3": "/assets/audio/voice/jp/char_4217_makoto/cn_027.mp3",
+      "skill4": "/assets/audio/voice/jp/char_4217_makoto/cn_028.mp3",
+      "resultFour": "/assets/audio/voice/jp/char_4217_makoto/cn_029.mp3",
+      "resultThree": "/assets/audio/voice/jp/char_4217_makoto/cn_030.mp3",
+      "resultTwo": "/assets/audio/voice/jp/char_4217_makoto/cn_031.mp3",
+      "resultLose": "/assets/audio/voice/jp/char_4217_makoto/cn_032.mp3"
+    }
+  }
+}

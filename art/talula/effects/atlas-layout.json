@@ -1,0 +1,1485 @@
+{
+  "version": 1,
+  "coordinateSystem": {
+    "unit": "px",
+    "origin": "top-left",
+    "x": "right",
+    "y": "down"
+  },
+  "palette": {
+    "darkRed": "#8B2500",
+    "orangeRed": "#FF6A2A",
+    "whiteHot": "#FFE9A8",
+    "gold": "#FFC600"
+  },
+  "sourceFormat": {
+    "type": "SVG horizontal frame strip",
+    "frameOrder": "left-to-right",
+    "frameId": "frame-00 ... frame-NN",
+    "alpha": "straight",
+    "background": "transparent",
+    "colorSpace": "sRGB",
+    "rasterScale": 1
+  },
+  "sampling": {
+    "filter": "linear",
+    "wrap": "clamp-to-edge",
+    "mipmaps": false,
+    "paddingPixels": 12,
+    "edgeExpansion": {
+      "pixels": 2,
+      "mode": "nearest-visible-RGB into transparent texels",
+      "alpha": "preserve zero",
+      "stage": "after rasterization, before packing",
+      "appliedToSVG": false
+    }
+  },
+  "anchors": {
+    "sword": {
+      "bone": "R_Weapon",
+      "localBase": [
+        0,
+        0
+      ],
+      "localTip": [
+        336.3710021972656,
+        0
+      ],
+      "transform": "final bone matrix, facing, scale, airborne outer transform, projection"
+    },
+    "palm": {
+      "bone": "L_Hand",
+      "localPoint": [
+        20.878971099853516,
+        0
+      ]
+    },
+    "back": {
+      "source": "character back after final pose and outer transform",
+      "bone": null,
+      "placement": "由接入侧使用角色背部挂点；animation-spec 未给出背部骨名。"
+    },
+    "wave": {
+      "source": "mechanism waveId/front",
+      "inheritsAirborne": false
+    },
+    "ground": {
+      "source": "mechanism fire tile",
+      "inheritsAirborne": false
+    },
+    "target": {
+      "source": "actual hit target"
+    },
+    "targetGround": {
+      "source": "actual target ground position"
+    },
+    "emitter": {
+      "source": "actual sword, feather or ground-fire position"
+    }
+  },
+  "timing": {
+    "clock": "game seconds",
+    "swordFireLagSeconds": 0.06,
+    "hitMarkerDelaySeconds": 0,
+    "waveDelaySeconds": 0,
+    "s3RecoilSourceFrames30": [
+      80,
+      110
+    ],
+    "s3RecoilEmitsSwordTrail": false
+  },
+  "review": {
+    "file": "effects-sheet.png",
+    "size": [
+      2240,
+      3000
+    ],
+    "background": "dark checkerboard",
+    "fireComposite": "lighter",
+    "smokeComposite": "source-over",
+    "frames": "all source frames rendered at source aspect ratio",
+    "assembledExamples": [
+      "six feathers per wing with phase offsets",
+      "wall body + backward crest + four ground tongues",
+      "hit slash + delayed burst + smoke"
+    ]
+  },
+  "groups": [
+    {
+      "id": "flame-crescent",
+      "name": "火焰月牙",
+      "source": "flame-crescent.svg",
+      "frameCount": 8,
+      "frameSize": [
+        256,
+        256
+      ],
+      "stripSize": [
+        2048,
+        256
+      ],
+      "originPixels": [
+        128,
+        128
+      ],
+      "originNormalized": [
+        0.5,
+        0.5
+      ],
+      "fps": 24,
+      "durationSeconds": 0.333333,
+      "loop": true,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "sword",
+      "placement": "薄刃沿 +X 飞行；先按最终剑矩阵定向，再转入目标方向。禁止拉成环段。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            256,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            512,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            768,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            1024,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            1280,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1536,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1792,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-feather",
+      "name": "羽状火翼单片",
+      "source": "fire-feather.svg",
+      "frameCount": 8,
+      "frameSize": [
+        256,
+        256
+      ],
+      "stripSize": [
+        2048,
+        256
+      ],
+      "originPixels": [
+        32,
+        228
+      ],
+      "originNormalized": [
+        0.125,
+        0.890625
+      ],
+      "fps": 16,
+      "durationSeconds": 0.5,
+      "loop": true,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "back",
+      "placement": "根部固定于背后；每侧 5–7 片，错相位排列，镜像右侧，保留羽片间透明缝。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            256,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            512,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            768,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            1024,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            1280,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1536,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1792,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            32,
+            228
+          ]
+        }
+      ],
+      "assembly": {
+        "countPerSide": 6,
+        "rootOffsetsPixels": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            4,
+            8
+          ],
+          [
+            6,
+            12
+          ],
+          [
+            8,
+            16
+          ],
+          [
+            10,
+            20
+          ]
+        ],
+        "rotationDegrees": [
+          -28,
+          -14,
+          0,
+          14,
+          28,
+          42
+        ],
+        "scale": [
+          0.7,
+          0.82,
+          0.94,
+          1.04,
+          1.12,
+          1.18
+        ],
+        "frameOffsets": [
+          0,
+          3,
+          6,
+          1,
+          4,
+          7
+        ],
+        "transparentGapRequired": true
+      }
+    },
+    {
+      "id": "wall-body",
+      "name": "竖直火墙主体",
+      "source": "wall-body.svg",
+      "frameCount": 8,
+      "frameSize": [
+        192,
+        320
+      ],
+      "stripSize": [
+        1536,
+        320
+      ],
+      "originPixels": [
+        96,
+        296
+      ],
+      "originNormalized": [
+        0.5,
+        0.925
+      ],
+      "fps": 16,
+      "durationSeconds": 0.5,
+      "loop": true,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "wave",
+      "placement": "机制波前地面坐标；直立平面，不跟随浮空；+X 为推进方向。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            192,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            384,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            576,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            768,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            960,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1152,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1344,
+            0,
+            192,
+            320
+          ],
+          "origin": [
+            96,
+            296
+          ]
+        }
+      ],
+      "crestSocketPixels": [
+        96,
+        160
+      ]
+    },
+    {
+      "id": "wall-crest",
+      "name": "向后翻卷顶缘",
+      "source": "wall-crest.svg",
+      "frameCount": 8,
+      "frameSize": [
+        256,
+        192
+      ],
+      "stripSize": [
+        2048,
+        192
+      ],
+      "originPixels": [
+        128,
+        164
+      ],
+      "originNormalized": [
+        0.5,
+        0.854167
+      ],
+      "fps": 16,
+      "durationSeconds": 0.5,
+      "loop": true,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "wave",
+      "placement": "原点贴合 wall-body 的 crestSocketPixels；朝 -X 翻卷，随推进方向整体旋转或镜像。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            256,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            512,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            768,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            1024,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            1280,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1536,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1792,
+            0,
+            256,
+            192
+          ],
+          "origin": [
+            128,
+            164
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ground-tongues",
+      "name": "地面火舌簇",
+      "source": "ground-tongues.svg",
+      "frameCount": 8,
+      "frameSize": [
+        192,
+        192
+      ],
+      "stripSize": [
+        1536,
+        192
+      ],
+      "originPixels": [
+        96,
+        162
+      ],
+      "originNormalized": [
+        0.5,
+        0.84375
+      ],
+      "fps": 12,
+      "durationSeconds": 0.666667,
+      "loop": true,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "ground",
+      "placement": "四个火舌相位分别偏移 0、1.61、3.22、4.83 弧度；根部贴地，不添加圆形火斑。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            192,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            384,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            576,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            768,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            960,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1152,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1344,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            162
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hit-slash",
+      "name": "即时命中刀痕",
+      "source": "hit-slash.svg",
+      "frameCount": 6,
+      "frameSize": [
+        192,
+        192
+      ],
+      "stripSize": [
+        1152,
+        192
+      ],
+      "originPixels": [
+        96,
+        96
+      ],
+      "originNormalized": [
+        0.5,
+        0.5
+      ],
+      "fps": 60,
+      "durationSeconds": 0.1,
+      "loop": false,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "target",
+      "placement": "真实命中 t=0 显示；白热细刀痕，不延迟伤害反馈。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            96
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            192,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            96
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            384,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            96
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            576,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            96
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            768,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            96
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            960,
+            0,
+            192,
+            192
+          ],
+          "origin": [
+            96,
+            96
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delayed-burst",
+      "name": "延迟爆燃",
+      "source": "delayed-burst.svg",
+      "frameCount": 8,
+      "frameSize": [
+        256,
+        256
+      ],
+      "stripSize": [
+        2048,
+        256
+      ],
+      "originPixels": [
+        128,
+        198
+      ],
+      "originNormalized": [
+        0.5,
+        0.773438
+      ],
+      "fps": 24,
+      "durationSeconds": 0.333333,
+      "loop": false,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "target",
+      "placement": "真实命中后 0.06 游戏秒出现，向上裂解，不画球形爆炸或圆形冲击波。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            256,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            512,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            768,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            1024,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            1280,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1536,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1792,
+            0,
+            256,
+            256
+          ],
+          "origin": [
+            128,
+            198
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fire-column",
+      "name": "白心橙边火柱",
+      "source": "fire-column.svg",
+      "frameCount": 8,
+      "frameSize": [
+        192,
+        384
+      ],
+      "stripSize": [
+        1536,
+        384
+      ],
+      "originPixels": [
+        96,
+        356
+      ],
+      "originNormalized": [
+        0.5,
+        0.927083
+      ],
+      "fps": 16,
+      "durationSeconds": 0.5,
+      "loop": false,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "targetGround",
+      "placement": "S1 目标地面落点；源头为同期 L_Hand 掌心；不是从天而降。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            192,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            384,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            576,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            768,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            960,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1152,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1344,
+            0,
+            192,
+            384
+          ],
+          "origin": [
+            96,
+            356
+          ]
+        }
+      ]
+    },
+    {
+      "id": "embers",
+      "name": "余烬",
+      "source": "embers.svg",
+      "frameCount": 6,
+      "frameSize": [
+        96,
+        96
+      ],
+      "stripSize": [
+        576,
+        96
+      ],
+      "originPixels": [
+        48,
+        72
+      ],
+      "originNormalized": [
+        0.5,
+        0.75
+      ],
+      "fps": 10,
+      "durationSeconds": 0.6,
+      "loop": false,
+      "blendMode": "add",
+      "canvasComposite": "lighter",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "emitter",
+      "placement": "每组仅三颗；发射位置取剑、火羽或地面火的实际位置。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            96,
+            96
+          ],
+          "origin": [
+            48,
+            72
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            96,
+            0,
+            96,
+            96
+          ],
+          "origin": [
+            48,
+            72
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            192,
+            0,
+            96,
+            96
+          ],
+          "origin": [
+            48,
+            72
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            288,
+            0,
+            96,
+            96
+          ],
+          "origin": [
+            48,
+            72
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            384,
+            0,
+            96,
+            96
+          ],
+          "origin": [
+            48,
+            72
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            480,
+            0,
+            96,
+            96
+          ],
+          "origin": [
+            48,
+            72
+          ]
+        }
+      ]
+    },
+    {
+      "id": "smoke",
+      "name": "烟",
+      "source": "smoke.svg",
+      "frameCount": 8,
+      "frameSize": [
+        192,
+        256
+      ],
+      "stripSize": [
+        1536,
+        256
+      ],
+      "originPixels": [
+        96,
+        228
+      ],
+      "originNormalized": [
+        0.5,
+        0.890625
+      ],
+      "fps": 12,
+      "durationSeconds": 0.666667,
+      "loop": false,
+      "blendMode": "normal",
+      "canvasComposite": "source-over",
+      "edgeExpansionPixels": 2,
+      "transparentPaddingPixels": 12,
+      "anchor": "emitter",
+      "placement": "使用普通透明混合；从火焰余势向上漂散。",
+      "frames": [
+        {
+          "id": "frame-00",
+          "rect": [
+            0,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-01",
+          "rect": [
+            192,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-02",
+          "rect": [
+            384,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-03",
+          "rect": [
+            576,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-04",
+          "rect": [
+            768,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-05",
+          "rect": [
+            960,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-06",
+          "rect": [
+            1152,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        },
+        {
+          "id": "frame-07",
+          "rect": [
+            1344,
+            0,
+            192,
+            256
+          ],
+          "origin": [
+            96,
+            228
+          ]
+        }
+      ]
+    }
+  ]
+}

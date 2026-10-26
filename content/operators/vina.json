@@ -1,0 +1,2140 @@
+{
+  "version": 1,
+  "chessId": "chess_char_6_98_vina_a",
+  "charId": "char_9901_vina",
+  "record": {
+    "chessId": "chess_char_6_98_vina_a",
+    "baseId": "chess_char_6_98_vina_a",
+    "goldenId": null,
+    "isGolden": false,
+    "tier": 6,
+    "identifier": 1001,
+    "isHidden": false,
+    "isDiy": false,
+    "visible": false,
+    "chessType": "NORMAL",
+    "backup": null,
+    "shopSortId": 99,
+    "charId": "char_9901_vina",
+    "name": "维娜·维多利亚（自设）",
+    "appellation": "Vina Victoria",
+    "rarity": 6,
+    "profession": "WARRIOR",
+    "subProfessionId": "lord",
+    "subProfessionName": "领主",
+    "position": "MELEE",
+    "nationId": "victoria",
+    "bonds": [],
+    "garrisonIds": [],
+    "price": 4,
+    "sellPrice": 1,
+    "upgradeNum": 0,
+    "upgradeChessId": null,
+    "status": {
+      "phase": 2,
+      "level": 90,
+      "skillLevel": 10,
+      "equipLevel": 3
+    },
+    "stats": {
+      "maxHp": 2960,
+      "atk": 1170,
+      "def": 430,
+      "res": 10,
+      "cost": 16,
+      "blockCnt": 2,
+      "bat": 1.3,
+      "aspd": 100,
+      "respawnTime": 70,
+      "spRecovery": 1,
+      "hpRecoveryPerSec": 0,
+      "moveSpeed": 1,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "deployLimit": 1,
+      "deckStack": 0
+    },
+    "immunities": {
+      "stun": false,
+      "silence": false,
+      "sleep": false,
+      "frozen": false,
+      "levitate": false
+    },
+    "rangeId": "custom_vina",
+    "rangeGrid": [
+      [
+        -1,
+        0
+      ],
+      [
+        -1,
+        1
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "dmgType": "phys",
+    "attackKind": "ranged",
+    "projectile": "beam",
+    "canHitFly": true,
+    "targetPriority": null,
+    "trait": {
+      "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+      "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+      "bb": {
+        "extra_arts": 0.1
+      },
+      "bbStr": {},
+      "rangeGrid": null
+    },
+    "skill": {
+      "skillId": "skchr_vina_1",
+      "iconId": "skchr_vina_1",
+      "name": "辉光斩",
+      "level": 10,
+      "desc": "下次攻击对攻击范围内至多5个敌人额外造成相当于攻击力220%的真实伤害，使目标在5秒内受到的真实伤害提高20%",
+      "descRaw": "下次攻击对攻击范围内至多5个敌人额外造成相当于攻击力220%的真实伤害，使目标在5秒内受到的真实伤害提高20%",
+      "skillType": "AUTO",
+      "durationType": "NONE",
+      "duration": 0,
+      "spType": "INCREASE_WHEN_ATTACK",
+      "spCost": 4,
+      "initSp": 0,
+      "maxChargeTime": 1,
+      "increment": 1,
+      "bb": {
+        "scale": 2.2,
+        "targets": 5,
+        "vulnerable": 0.2,
+        "debuff": 5,
+        "sandbox": 1
+      },
+      "bbStr": {},
+      "rangeId": "custom_vina_1",
+      "rangeGrid": [
+        [
+          -1,
+          0
+        ],
+        [
+          -1,
+          1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "prefabId": "skchr_vina_1",
+      "trigger": {
+        "rule": "DEFAULT",
+        "rawRule": "DEFAULT",
+        "customRangeGrid": null
+      },
+      "index": 0,
+      "overrideTokenKey": null,
+      "isDefault": true
+    },
+    "skills": [
+      {
+        "skillId": "skchr_vina_1",
+        "iconId": "skchr_vina_1",
+        "name": "辉光斩",
+        "level": 10,
+        "desc": "下次攻击对攻击范围内至多5个敌人额外造成相当于攻击力220%的真实伤害，使目标在5秒内受到的真实伤害提高20%",
+        "descRaw": "下次攻击对攻击范围内至多5个敌人额外造成相当于攻击力220%的真实伤害，使目标在5秒内受到的真实伤害提高20%",
+        "skillType": "AUTO",
+        "durationType": "NONE",
+        "duration": 0,
+        "spType": "INCREASE_WHEN_ATTACK",
+        "spCost": 4,
+        "initSp": 0,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "scale": 2.2,
+          "targets": 5,
+          "vulnerable": 0.2,
+          "debuff": 5,
+          "sandbox": 1
+        },
+        "bbStr": {},
+        "rangeId": "custom_vina_1",
+        "rangeGrid": [
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "prefabId": "skchr_vina_1",
+        "trigger": {
+          "rule": "DEFAULT",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 0,
+        "overrideTokenKey": null,
+        "isDefault": true
+      },
+      {
+        "skillId": "skchr_vina_2",
+        "iconId": "skchr_vina_2",
+        "name": "“归乡”",
+        "level": 10,
+        "desc": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.2/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+260%，攻击目标数+2\n持续时间无限",
+        "descRaw": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.2/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+260%，攻击目标数+2\n持续时间无限",
+        "skillType": "AUTO",
+        "durationType": "NONE",
+        "duration": 0,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 70,
+        "initSp": 0,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "atk": 2.6,
+          "bat_add": -0.3,
+          "targets": 4,
+          "sp_aura": 0.2,
+          "sandbox": 1
+        },
+        "bbStr": {},
+        "rangeId": "custom_vina_2",
+        "rangeGrid": [
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            3
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "prefabId": "skchr_vina_2",
+        "trigger": {
+          "rule": "SP_FULL",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 1,
+        "overrideTokenKey": null,
+        "isDefault": false
+      },
+      {
+        "skillId": "skchr_vina_3",
+        "iconId": "skchr_vina_3",
+        "name": "以维多利亚之名",
+        "level": 10,
+        "desc": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力2200%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高30%，持续6秒。",
+        "descRaw": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力2200%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高30%，持续6秒。",
+        "skillType": "MANUAL",
+        "durationType": "NONE",
+        "duration": 0,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 12,
+        "initSp": 0,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "scale": 22,
+          "vulnerable": 0.3,
+          "fear": 4,
+          "debuff": 6,
+          "sandbox": 1
+        },
+        "bbStr": {},
+        "rangeId": "custom_vina_3",
+        "rangeGrid": [
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            3
+          ],
+          [
+            -1,
+            4
+          ],
+          [
+            -1,
+            5
+          ],
+          [
+            -1,
+            6
+          ],
+          [
+            -1,
+            7
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            5
+          ],
+          [
+            0,
+            6
+          ],
+          [
+            0,
+            7
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ]
+        ],
+        "prefabId": "skchr_vina_3",
+        "trigger": {
+          "rule": "MANUAL",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 2,
+        "overrideTokenKey": null,
+        "isDefault": false
+      }
+    ],
+    "talents": [
+      {
+        "index": 0,
+        "name": "属于我的荣耀",
+        "desc": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+        "descRaw": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+        "bb": {
+          "protect": 0.2,
+          "atk": 0.55
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      },
+      {
+        "index": 1,
+        "name": "诸王叹息",
+        "desc": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+        "descRaw": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+        "bb": {
+          "tremble": 7,
+          "first_scale": 1.3
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      }
+    ],
+    "tokens": [],
+    "module": {
+      "id": "uniequip_custom_vina",
+      "name": "“城主的冒险”",
+      "type": "LOR-X",
+      "level": 3,
+      "active": true
+    },
+    "assets": {
+      "avatar": "char_9901_vina",
+      "avatarGolden": "char_9901_vina",
+      "portrait": "char_9901_vina",
+      "portraitGolden": "char_9901_vina",
+      "spine": "char_9901_vina",
+      "spineGolden": "char_9901_vina",
+      "subProfIcon": "sub_lord_icon",
+      "voice": "char_1019_siege2"
+    },
+    "moduleNames": {
+      "uniequip_custom_vina": {
+        "name": "“城主的冒险”",
+        "typeName": "LOR-X"
+      }
+    },
+    "kitRef": "char_9901_vina",
+    "displayTokens": [],
+    "modules": [
+      {
+        "uniEquipId": "uniequip_custom_vina",
+        "name": "“城主的冒险”",
+        "typeName": "LOR-X",
+        "typeIcon": "lor-x",
+        "icon": "uniequip_custom_vina",
+        "level": 3,
+        "attr": {
+          "maxHp": 0,
+          "atk": 120
+        },
+        "traitOverride": {
+          "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+          "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+          "bb": {
+            "extra_arts": 0.1
+          },
+          "bbStr": {},
+          "rangeGrid": null
+        },
+        "talentChanges": [
+          {
+            "talentIndex": 1,
+            "desc": "天赋【诸王叹息】更新：维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，此次伤害提升至130%，使其战栗6（+1）秒",
+            "descRaw": "天赋【诸王叹息】更新：维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，此次伤害提升至130%，使其战栗6（+1）秒",
+            "bb": {
+              "tremble": 7,
+              "first_scale": 1.3
+            },
+            "bbStr": {},
+            "rangeGrid": null,
+            "tokenKey": null,
+            "hidden": false
+          }
+        ]
+      }
+    ],
+    "statsBase": {
+      "maxHp": 2960,
+      "atk": 1050,
+      "def": 430,
+      "res": 10,
+      "cost": 16,
+      "blockCnt": 2,
+      "bat": 1.3,
+      "aspd": 100,
+      "respawnTime": 70,
+      "spRecovery": 1,
+      "hpRecoveryPerSec": 0,
+      "moveSpeed": 1,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "deployLimit": 1,
+      "deckStack": 0
+    },
+    "talentsBase": [
+      {
+        "index": 0,
+        "name": "属于我的荣耀",
+        "desc": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+        "descRaw": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+        "bb": {
+          "protect": 0.2,
+          "atk": 0.55
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      },
+      {
+        "index": 1,
+        "name": "诸王叹息",
+        "desc": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+        "descRaw": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+        "bb": {
+          "tremble": 7,
+          "first_scale": 1
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      }
+    ]
+  },
+  "art": {
+    "avatar": "/assets/custom/char_9901_vina/avatar.png",
+    "portrait": "/assets/custom/char_9901_vina/portrait.png",
+    "portraitE2": "/assets/custom/char_9901_vina/portrait.png",
+    "illust": "/assets/custom/char_9901_vina/portrait.png",
+    "spine": {
+      "front": {
+        "skel": "/assets/spine/op/char_1019_siege2/front/char_1019_siege2.skel",
+        "atlas": "/assets/spine/op/char_1019_siege2/front/char_1019_siege2.atlas",
+        "textures": [
+          "/assets/spine/op/char_1019_siege2/front/char_1019_siege2.png"
+        ],
+        "pma": false,
+        "anims": {
+          "idle": "Idle",
+          "deploy": "Start",
+          "attack": {
+            "begin": null,
+            "loop": "Attack_1",
+            "end": null,
+            "via": "attackAny"
+          },
+          "attackDown": null,
+          "skill": {
+            "begin": "Skill_3_Begin",
+            "loop": "Skill_3_Loop",
+            "end": "Skill_3_End",
+            "index": 2,
+            "idle": "Skill_3_Idle"
+          },
+          "die": "Die",
+          "move": null,
+          "stun": null,
+          "skills": {
+            "0": {
+              "begin": null,
+              "loop": "Skill_1",
+              "end": null,
+              "index": 0,
+              "idle": null
+            },
+            "1": {
+              "begin": "Skill_2_Begin",
+              "loop": "Skill_2_Loop",
+              "end": null,
+              "index": 1,
+              "idle": "Skill_2_Idle"
+            },
+            "2": {
+              "begin": null,
+              "loop": "Skill_3_Loop",
+              "end": "Skill_3_End",
+              "index": 2,
+              "idle": null
+            }
+          }
+        },
+        "animations": {
+          "Attack_1": 1.267,
+          "Attack_2": 1.267,
+          "Default": 0,
+          "Die": 1,
+          "Idle": 4,
+          "Skill_1": 1.267,
+          "Skill_2_Begin": 0.5,
+          "Skill_2_Idle": 3.5,
+          "Skill_2_Loop": 1.267,
+          "Skill_3_Begin": 0.4,
+          "Skill_3_End": 0.833,
+          "Skill_3_Idle": 1,
+          "Skill_3_Loop": 1.267,
+          "Skill_Down_2_Loop": 1.267,
+          "Start": 1
+        },
+        "events": [
+          "OnAttack",
+          "OnStart"
+        ],
+        "hits": {
+          "Attack_1": [
+            0.5
+          ],
+          "Attack_2": [
+            0.5
+          ],
+          "Skill_1": [
+            0.633
+          ],
+          "Skill_2_Loop": [
+            0.5
+          ],
+          "Skill_3_Loop": [
+            0.433
+          ],
+          "Skill_Down_2_Loop": [
+            0.5
+          ]
+        },
+        "bounds": {
+          "x": -171.001,
+          "y": -110.338,
+          "width": 312.422,
+          "height": 536.339
+        }
+      },
+      "back": {
+        "skel": "/assets/spine/op/char_1019_siege2/back/char_1019_siege2.skel",
+        "atlas": "/assets/spine/op/char_1019_siege2/back/char_1019_siege2.atlas",
+        "textures": [
+          "/assets/spine/op/char_1019_siege2/back/char_1019_siege2.png"
+        ],
+        "pma": false,
+        "anims": {
+          "idle": "Idle",
+          "deploy": "Start",
+          "attack": {
+            "begin": null,
+            "loop": "Attack_1",
+            "end": null,
+            "via": "attackAny"
+          },
+          "attackDown": null,
+          "skill": {
+            "begin": "Skill_3_Begin",
+            "loop": "Skill_3_Loop",
+            "end": "Skill_3_End",
+            "index": 2,
+            "idle": "Skill_3_Idle"
+          },
+          "die": null,
+          "move": null,
+          "stun": null,
+          "skills": {
+            "0": {
+              "begin": null,
+              "loop": "Skill_1",
+              "end": null,
+              "index": 0,
+              "idle": null
+            },
+            "1": {
+              "begin": "Skill_2_Begin",
+              "loop": "Skill_2_Loop",
+              "end": null,
+              "index": 1,
+              "idle": "Skill_2_Idle"
+            },
+            "2": {
+              "begin": null,
+              "loop": "Skill_3_Loop",
+              "end": "Skill_3_End",
+              "index": 2,
+              "idle": null
+            }
+          }
+        },
+        "animations": {
+          "Attack_1": 1.267,
+          "Attack_2": 1.267,
+          "Default": 0,
+          "Idle": 4,
+          "Skill_1": 1.267,
+          "Skill_2_Begin": 0.5,
+          "Skill_2_Idle": 3.5,
+          "Skill_2_Loop": 1.267,
+          "Skill_3_Begin": 0.4,
+          "Skill_3_End": 0.833,
+          "Skill_3_Idle": 1,
+          "Skill_3_Loop": 1.267,
+          "Start": 1
+        },
+        "events": [
+          "OnAttack",
+          "OnStart"
+        ],
+        "hits": {
+          "Attack_1": [
+            0.5
+          ],
+          "Attack_2": [
+            0.5
+          ],
+          "Skill_1": [
+            0.633
+          ],
+          "Skill_2_Loop": [
+            0.533
+          ],
+          "Skill_3_Loop": [
+            0.433
+          ]
+        },
+        "bounds": {
+          "x": -173.524,
+          "y": -110.345,
+          "width": 327.248,
+          "height": 534.872
+        }
+      }
+    }
+  },
+  "skillAssets": {
+    "skchr_vina_1": "/assets/custom/char_9901_vina/skill_1.png",
+    "skchr_vina_2": "/assets/custom/char_9901_vina/skill_2.png",
+    "skchr_vina_3": "/assets/custom/char_9901_vina/skill_3.png"
+  },
+  "skillAliases": {
+    "skchr_vina_1": "skchr_vina_1",
+    "skchr_vina_2": "skchr_vina_2",
+    "skchr_vina_3": "skchr_vina_3"
+  },
+  "moduleAssets": {
+    "uniequip_custom_vina": "/assets/custom/char_9901_vina/module.png"
+  },
+  "selection": {
+    "unit": {
+      "charId": "char_9901_vina",
+      "name": "维娜·维多利亚（自设）",
+      "appellation": "Vina Victoria",
+      "rarity": 6,
+      "profession": "WARRIOR",
+      "subProfessionId": "lord",
+      "subProfessionName": "领主",
+      "position": "MELEE",
+      "nationId": "victoria",
+      "assets": {
+        "avatar": "char_9901_vina",
+        "avatarGolden": "char_9901_vina",
+        "portrait": "char_9901_vina",
+        "portraitGolden": "char_9901_vina",
+        "spine": "char_9901_vina",
+        "spineGolden": "char_9901_vina",
+        "subProfIcon": "sub_lord_icon"
+      },
+      "moduleNames": {
+        "uniequip_custom_vina": {
+          "name": "“城主的冒险”",
+          "typeName": "LOR-X"
+        }
+      },
+      "forms": {
+        "2/1/4/0": {
+          "stats": {
+            "maxHp": 2131,
+            "atk": 756,
+            "def": 366,
+            "res": 10,
+            "cost": 16,
+            "blockCnt": 2,
+            "bat": 1.3,
+            "aspd": 100,
+            "respawnTime": 70,
+            "spRecovery": 1,
+            "hpRecoveryPerSec": 0,
+            "moveSpeed": 1,
+            "tauntLevel": 0,
+            "massLevel": 0,
+            "deployLimit": 1,
+            "deckStack": 0
+          },
+          "immunities": {
+            "stun": false,
+            "silence": false,
+            "sleep": false,
+            "frozen": false,
+            "levitate": false
+          },
+          "rangeId": "custom_vina",
+          "rangeGrid": [
+            [
+              -1,
+              0
+            ],
+            [
+              -1,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "dmgType": "phys",
+          "attackKind": "ranged",
+          "projectile": "beam",
+          "canHitFly": true,
+          "targetPriority": null,
+          "trait": {
+            "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+            "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+            "bb": {},
+            "bbStr": {},
+            "rangeGrid": null
+          },
+          "talents": [
+            {
+              "index": 0,
+              "name": "属于我的荣耀",
+              "desc": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+              "descRaw": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+              "bb": {
+                "protect": 0.2,
+                "atk": 0.55
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            },
+            {
+              "index": 1,
+              "name": "诸王叹息",
+              "desc": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+              "descRaw": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+              "bb": {
+                "tremble": 7,
+                "first_scale": 1
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            }
+          ],
+          "skills": [
+            {
+              "skillId": "skchr_vina_1",
+              "iconId": "skchr_vina_1",
+              "name": "辉光斩",
+              "level": 4,
+              "desc": "下次攻击对攻击范围内至多3个敌人额外造成相当于攻击力130%的真实伤害，使目标在3秒内受到的真实伤害提高10%",
+              "descRaw": "下次攻击对攻击范围内至多3个敌人额外造成相当于攻击力130%的真实伤害，使目标在3秒内受到的真实伤害提高10%",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WHEN_ATTACK",
+              "spCost": 6,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "scale": 1.3,
+                "targets": 3,
+                "vulnerable": 0.1,
+                "debuff": 3,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_1",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_vina_1",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 0,
+              "overrideTokenKey": null,
+              "isDefault": true
+            },
+            {
+              "skillId": "skchr_vina_2",
+              "iconId": "skchr_vina_2",
+              "name": "“归乡”",
+              "level": 4,
+              "desc": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.1/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+170%，攻击目标数+1\n持续时间无限",
+              "descRaw": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.1/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+170%，攻击目标数+1\n持续时间无限",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 80,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk": 1.7,
+                "bat_add": -0.3,
+                "targets": 3,
+                "sp_aura": 0.1,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_2",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ],
+              "prefabId": "skchr_vina_2",
+              "trigger": {
+                "rule": "SP_FULL",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 1,
+              "overrideTokenKey": null,
+              "isDefault": false
+            },
+            {
+              "skillId": "skchr_vina_3",
+              "iconId": "skchr_vina_3",
+              "name": "以维多利亚之名",
+              "level": 4,
+              "desc": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力1200%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高10%，持续6秒。",
+              "descRaw": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力1200%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高10%，持续6秒。",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 20,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "scale": 12,
+                "vulnerable": 0.1,
+                "fear": 4,
+                "debuff": 6,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_3",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  -1,
+                  4
+                ],
+                [
+                  -1,
+                  5
+                ],
+                [
+                  -1,
+                  6
+                ],
+                [
+                  -1,
+                  7
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  5
+                ],
+                [
+                  0,
+                  6
+                ],
+                [
+                  0,
+                  7
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  1,
+                  5
+                ],
+                [
+                  1,
+                  6
+                ],
+                [
+                  1,
+                  7
+                ]
+              ],
+              "prefabId": "skchr_vina_3",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 2,
+              "overrideTokenKey": null,
+              "isDefault": false
+            }
+          ],
+          "displayTokens": [],
+          "tokens": [],
+          "modules": [],
+          "kitRef": "char_9901_vina",
+          "status": {
+            "phase": 2,
+            "level": 1,
+            "skillLevel": 4,
+            "equipLevel": 0
+          }
+        },
+        "2/60/7/1": {
+          "stats": {
+            "maxHp": 2664,
+            "atk": 945,
+            "def": 430,
+            "res": 10,
+            "cost": 16,
+            "blockCnt": 2,
+            "bat": 1.3,
+            "aspd": 100,
+            "respawnTime": 70,
+            "spRecovery": 1,
+            "hpRecoveryPerSec": 0,
+            "moveSpeed": 1,
+            "tauntLevel": 0,
+            "massLevel": 0,
+            "deployLimit": 1,
+            "deckStack": 0
+          },
+          "immunities": {
+            "stun": false,
+            "silence": false,
+            "sleep": false,
+            "frozen": false,
+            "levitate": false
+          },
+          "rangeId": "custom_vina",
+          "rangeGrid": [
+            [
+              -1,
+              0
+            ],
+            [
+              -1,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "dmgType": "phys",
+          "attackKind": "ranged",
+          "projectile": "beam",
+          "canHitFly": true,
+          "targetPriority": null,
+          "trait": {
+            "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+            "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+            "bb": {},
+            "bbStr": {},
+            "rangeGrid": null
+          },
+          "talents": [
+            {
+              "index": 0,
+              "name": "属于我的荣耀",
+              "desc": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+              "descRaw": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+              "bb": {
+                "protect": 0.2,
+                "atk": 0.55
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            },
+            {
+              "index": 1,
+              "name": "诸王叹息",
+              "desc": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+              "descRaw": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+              "bb": {
+                "tremble": 7,
+                "first_scale": 1
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            }
+          ],
+          "skills": [
+            {
+              "skillId": "skchr_vina_1",
+              "iconId": "skchr_vina_1",
+              "name": "辉光斩",
+              "level": 7,
+              "desc": "下次攻击对攻击范围内至多4个敌人额外造成相当于攻击力170%的真实伤害，使目标在3秒内受到的真实伤害提高15%",
+              "descRaw": "下次攻击对攻击范围内至多4个敌人额外造成相当于攻击力170%的真实伤害，使目标在3秒内受到的真实伤害提高15%",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WHEN_ATTACK",
+              "spCost": 5,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "scale": 1.7,
+                "targets": 4,
+                "vulnerable": 0.15,
+                "debuff": 3,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_1",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_vina_1",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 0,
+              "overrideTokenKey": null,
+              "isDefault": true
+            },
+            {
+              "skillId": "skchr_vina_2",
+              "iconId": "skchr_vina_2",
+              "name": "“归乡”",
+              "level": 7,
+              "desc": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.1/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+210%，攻击目标数+1\n持续时间无限",
+              "descRaw": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.1/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+210%，攻击目标数+1\n持续时间无限",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 70,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk": 2.1,
+                "bat_add": -0.3,
+                "targets": 3,
+                "sp_aura": 0.1,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_2",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ],
+              "prefabId": "skchr_vina_2",
+              "trigger": {
+                "rule": "SP_FULL",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 1,
+              "overrideTokenKey": null,
+              "isDefault": false
+            },
+            {
+              "skillId": "skchr_vina_3",
+              "iconId": "skchr_vina_3",
+              "name": "以维多利亚之名",
+              "level": 7,
+              "desc": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力1600%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高20%，持续6秒。",
+              "descRaw": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力1600%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高20%，持续6秒。",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 18,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "scale": 16,
+                "vulnerable": 0.2,
+                "fear": 4,
+                "debuff": 6,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_3",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  -1,
+                  4
+                ],
+                [
+                  -1,
+                  5
+                ],
+                [
+                  -1,
+                  6
+                ],
+                [
+                  -1,
+                  7
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  5
+                ],
+                [
+                  0,
+                  6
+                ],
+                [
+                  0,
+                  7
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  1,
+                  5
+                ],
+                [
+                  1,
+                  6
+                ],
+                [
+                  1,
+                  7
+                ]
+              ],
+              "prefabId": "skchr_vina_3",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 2,
+              "overrideTokenKey": null,
+              "isDefault": false
+            }
+          ],
+          "displayTokens": [],
+          "tokens": [],
+          "modules": [
+            {
+              "uniEquipId": "uniequip_custom_vina",
+              "name": "“城主的冒险”",
+              "typeName": "LOR-X",
+              "typeIcon": "lor-x",
+              "icon": "uniequip_custom_vina",
+              "level": 1,
+              "attr": {
+                "maxHp": 0,
+                "atk": 70
+              },
+              "traitOverride": {
+                "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+                "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+                "bb": {
+                  "extra_arts": 0.1
+                },
+                "bbStr": {},
+                "rangeGrid": null
+              },
+              "talentChanges": []
+            }
+          ],
+          "kitRef": "char_9901_vina",
+          "status": {
+            "phase": 2,
+            "level": 60,
+            "skillLevel": 7,
+            "equipLevel": 1
+          }
+        },
+        "2/60/7/3": {
+          "stats": {
+            "maxHp": 2664,
+            "atk": 945,
+            "def": 430,
+            "res": 10,
+            "cost": 16,
+            "blockCnt": 2,
+            "bat": 1.3,
+            "aspd": 100,
+            "respawnTime": 70,
+            "spRecovery": 1,
+            "hpRecoveryPerSec": 0,
+            "moveSpeed": 1,
+            "tauntLevel": 0,
+            "massLevel": 0,
+            "deployLimit": 1,
+            "deckStack": 0
+          },
+          "immunities": {
+            "stun": false,
+            "silence": false,
+            "sleep": false,
+            "frozen": false,
+            "levitate": false
+          },
+          "rangeId": "custom_vina",
+          "rangeGrid": [
+            [
+              -1,
+              0
+            ],
+            [
+              -1,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "dmgType": "phys",
+          "attackKind": "ranged",
+          "projectile": "beam",
+          "canHitFly": true,
+          "targetPriority": null,
+          "trait": {
+            "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+            "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+            "bb": {},
+            "bbStr": {},
+            "rangeGrid": null
+          },
+          "talents": [
+            {
+              "index": 0,
+              "name": "属于我的荣耀",
+              "desc": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+              "descRaw": "自身与周围8格友方单位获得20%的庇护，且此范围内同时存在敌方单位与除自身外的友方单位时，维娜的攻击力+45%（+10%）",
+              "bb": {
+                "protect": 0.2,
+                "atk": 0.55
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            },
+            {
+              "index": 1,
+              "name": "诸王叹息",
+              "desc": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+              "descRaw": "维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，使其战栗6（+1）秒",
+              "bb": {
+                "tremble": 7,
+                "first_scale": 1
+              },
+              "bbStr": {},
+              "rangeGrid": null,
+              "tokenKey": null,
+              "hidden": false,
+              "fromModule": false
+            }
+          ],
+          "skills": [
+            {
+              "skillId": "skchr_vina_1",
+              "iconId": "skchr_vina_1",
+              "name": "辉光斩",
+              "level": 7,
+              "desc": "下次攻击对攻击范围内至多4个敌人额外造成相当于攻击力170%的真实伤害，使目标在3秒内受到的真实伤害提高15%",
+              "descRaw": "下次攻击对攻击范围内至多4个敌人额外造成相当于攻击力170%的真实伤害，使目标在3秒内受到的真实伤害提高15%",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WHEN_ATTACK",
+              "spCost": 5,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "scale": 1.7,
+                "targets": 4,
+                "vulnerable": 0.15,
+                "debuff": 3,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_1",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ],
+              "prefabId": "skchr_vina_1",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 0,
+              "overrideTokenKey": null,
+              "isDefault": true
+            },
+            {
+              "skillId": "skchr_vina_2",
+              "iconId": "skchr_vina_2",
+              "name": "“归乡”",
+              "level": 7,
+              "desc": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.1/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+210%，攻击目标数+1\n持续时间无限",
+              "descRaw": "被动效果：天赋一生效范围内友方干员的技力自然回复速度+0.1/秒（同类效果取最高）\n自动开启：攻击间隔缩短(-0.3)，攻击范围扩大，攻击力+210%，攻击目标数+1\n持续时间无限",
+              "skillType": "AUTO",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 70,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "atk": 2.1,
+                "bat_add": -0.3,
+                "targets": 3,
+                "sp_aura": 0.1,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_2",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ],
+              "prefabId": "skchr_vina_2",
+              "trigger": {
+                "rule": "SP_FULL",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 1,
+              "overrideTokenKey": null,
+              "isDefault": false
+            },
+            {
+              "skillId": "skchr_vina_3",
+              "iconId": "skchr_vina_3",
+              "name": "以维多利亚之名",
+              "level": 7,
+              "desc": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力1600%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高20%，持续6秒。",
+              "descRaw": "立即向前方斩出一道无限远的剑刃，对剑刃波及到的目标造成相当于攻击力1600%的真实伤害，使目标恐惧4秒，同时目标受到的所有来源伤害提高20%，持续6秒。",
+              "skillType": "MANUAL",
+              "durationType": "NONE",
+              "duration": 0,
+              "spType": "INCREASE_WITH_TIME",
+              "spCost": 18,
+              "initSp": 0,
+              "maxChargeTime": 1,
+              "increment": 1,
+              "bb": {
+                "scale": 16,
+                "vulnerable": 0.2,
+                "fear": 4,
+                "debuff": 6,
+                "sandbox": 0
+              },
+              "bbStr": {},
+              "rangeId": "custom_vina_3",
+              "rangeGrid": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ],
+                [
+                  -1,
+                  4
+                ],
+                [
+                  -1,
+                  5
+                ],
+                [
+                  -1,
+                  6
+                ],
+                [
+                  -1,
+                  7
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  5
+                ],
+                [
+                  0,
+                  6
+                ],
+                [
+                  0,
+                  7
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  1,
+                  5
+                ],
+                [
+                  1,
+                  6
+                ],
+                [
+                  1,
+                  7
+                ]
+              ],
+              "prefabId": "skchr_vina_3",
+              "trigger": {
+                "rule": "DEFAULT",
+                "rawRule": "DEFAULT",
+                "customRangeGrid": null
+              },
+              "index": 2,
+              "overrideTokenKey": null,
+              "isDefault": false
+            }
+          ],
+          "displayTokens": [],
+          "tokens": [],
+          "modules": [
+            {
+              "uniEquipId": "uniequip_custom_vina",
+              "name": "“城主的冒险”",
+              "typeName": "LOR-X",
+              "typeIcon": "lor-x",
+              "icon": "uniequip_custom_vina",
+              "level": 3,
+              "attr": {
+                "maxHp": 0,
+                "atk": 120
+              },
+              "traitOverride": {
+                "desc": "可以进行远程攻击，但此时攻击力降低至80%",
+                "descRaw": "可以进行远程攻击，但此时攻击力降低至80%",
+                "bb": {
+                  "extra_arts": 0.1
+                },
+                "bbStr": {},
+                "rangeGrid": null
+              },
+              "talentChanges": [
+                {
+                  "talentIndex": 1,
+                  "desc": "天赋【诸王叹息】更新：维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，此次伤害提升至130%，使其战栗6（+1）秒",
+                  "descRaw": "天赋【诸王叹息】更新：维娜可以同时攻击两个敌人，且对每个敌人首次造成伤害时，此次伤害提升至130%，使其战栗6（+1）秒",
+                  "bb": {
+                    "tremble": 7,
+                    "first_scale": 1.3
+                  },
+                  "bbStr": {},
+                  "rangeGrid": null,
+                  "tokenKey": null,
+                  "hidden": false
+                }
+              ]
+            }
+          ],
+          "kitRef": "char_9901_vina",
+          "status": {
+            "phase": 2,
+            "level": 90,
+            "skillLevel": 10,
+            "equipLevel": 3
+          }
+        }
+      },
+      "kitRef": "char_9901_vina"
+    },
+    "operator": {
+      "name": "维娜·维多利亚（自设）",
+      "rarity": 6,
+      "profession": "WARRIOR",
+      "subProfessionId": "lord",
+      "obtainable": true,
+      "powers": [
+        "victoria"
+      ],
+      "bonds": [
+        "victoriaShip",
+        "deputShip"
+      ]
+    },
+    "owned": true
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "key": "enemy_2133_shdopl",
+  "record": {
+    "key": "enemy_2133_shdopl",
+    "name": "空值体",
+    "level": 0,
+    "rank": "NORMAL",
+    "handbookIndex": "BF0",
+    "desc": "初始伪装成一个单位，受到伤害后现身",
+    "descRaw": "初始伪装成一个单位，受到伤害后现身",
+    "applyWay": "MELEE",
+    "stats": {
+      "maxHp": 5000,
+      "atk": 320,
+      "def": 100,
+      "res": 20,
+      "moveSpeed": 1.5,
+      "bat": 1.4,
+      "aspd": 100,
+      "rangeRadius": 0,
+      "rawRangeRadius": 0,
+      "blockCnt": 0,
+      "massLevel": 0,
+      "lpr": 1,
+      "hpRecoveryPerSec": 0,
+      "elementRes": 0,
+      "elementDmgRes": 0,
+      "hitRatePhys": 0,
+      "hitRateArts": 0,
+      "dmgType": "phys",
+      "dmgTypes": [
+        "phys"
+      ],
+      "motion": "WALK",
+      "immunities": {
+        "stun": false,
+        "silence": false,
+        "sleep": false,
+        "frozen": false,
+        "levitate": false
+      },
+      "otherImmunities": [],
+      "tauntLevel": 0
+    },
+    "abilities": [
+      {
+        "text": "初始伪装成一个单位，受到伤害后现身",
+        "textRaw": "初始伪装成一个单位，受到伤害后现身",
+        "format": "NORMAL"
+      }
+    ],
+    "talents": {
+      "bb": {
+        "summon.enemy_key": "enemy_1000_gopro_3"
+      },
+      "bbStr": {
+        "summon.enemy_key": "enemy_1000_gopro_3"
+      }
+    },
+    "skills": [],
+    "notCountInTotal": false,
+    "tags": [],
+    "be": 5000,
+    "beFactor": 1,
+    "attrPower": 5000,
+    "isFlyEnemy": false,
+    "tokenOnly": false,
+    "acTypes": [],
+    "acType": "SPECIAL",
+    "templateSlot": "T",
+    "summons": [],
+    "inactiveIn": [],
+    "seasonOverride": null,
+    "iconId": "enemy_2133_shdopl",
+    "spine": "enemy_2133_shdopl",
+    "modelScale": 1,
+    "attackAnim": {
+      "clip": "Attack",
+      "dur": 1.5,
+      "hit": 0.6
+    }
+  },
+  "art": {
+    "icon": "/assets/custom/enemy_2133_shdopl/avatar.png",
+    "spine": {
+      "skel": "/assets/custom/enemy_2133_shdopl/enemy_2133_shdopl.skel",
+      "atlas": "/assets/custom/enemy_2133_shdopl/enemy_2133_shdopl.atlas",
+      "textures": [
+        "/assets/custom/enemy_2133_shdopl/enemy_2133_shdopl.png"
+      ],
+      "pma": true,
+      "anims": {
+        "idle": "Idle",
+        "deploy": "Idle",
+        "attack": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null
+        },
+        "attackDown": null,
+        "skill": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null,
+          "via": "attack",
+          "index": 0,
+          "idle": null
+        },
+        "die": "Die",
+        "move": {
+          "begin": null,
+          "loop": "Move",
+          "end": null
+        },
+        "stun": null
+      },
+      "animations": {
+        "Attack": 1.5,
+        "Default": 0,
+        "Die": 1,
+        "Idle": 2.667,
+        "Move": 0.667,
+        "Start": 1
+      },
+      "events": [
+        "OnAttack",
+        "OnStart"
+      ],
+      "hits": {
+        "Attack": [
+          0.6
+        ]
+      },
+      "bounds": null
+    }
+  }
+}

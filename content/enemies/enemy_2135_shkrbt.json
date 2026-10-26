@@ -1,0 +1,149 @@
+{
+ "key": "enemy_2135_shkrbt",
+ "record": {
+  "key": "enemy_2135_shkrbt",
+  "name": "聆风猎手",
+  "level": 0,
+  "rank": "ELITE",
+  "handbookIndex": "BF2",
+  "desc": "受到攻击时传送到攻击者身边",
+  "descRaw": "受到攻击时传送到攻击者身边",
+  "applyWay": "RANGED",
+  "stats": {
+   "maxHp": 15000,
+   "atk": 600,
+   "def": 300,
+   "res": 20,
+   "moveSpeed": 0.7,
+   "bat": 1.2,
+   "aspd": 100,
+   "rangeRadius": 1.1,
+   "rawRangeRadius": 1.1,
+   "blockCnt": 0,
+   "massLevel": 2,
+   "lpr": 1,
+   "hpRecoveryPerSec": 0,
+   "elementRes": 0,
+   "elementDmgRes": 0,
+   "hitRatePhys": 0,
+   "hitRateArts": 0,
+   "dmgType": "arts",
+   "dmgTypes": [
+    "arts"
+   ],
+   "motion": "WALK",
+   "immunities": {
+    "stun": false,
+    "silence": false,
+    "sleep": false,
+    "frozen": false,
+    "levitate": false
+   },
+   "otherImmunities": [],
+   "tauntLevel": 0
+  },
+  "abilities": [
+   {
+    "text": "受到攻击时传送到攻击者身边",
+    "textRaw": "受到攻击时传送到攻击者身边",
+    "format": "NORMAL"
+   }
+  ],
+  "talents": {
+   "bb": {},
+   "bbStr": {}
+  },
+  "skills": [
+   {
+    "prefabKey": "Blink",
+    "priority": 0,
+    "cooldown": 30,
+    "initCooldown": 0,
+    "spCost": 0,
+    "blackboard": [
+     {
+      "key": "cooldown",
+      "value": 30,
+      "valueStr": null
+     }
+    ]
+   }
+  ],
+  "notCountInTotal": false,
+  "tags": [],
+  "be": 15000,
+  "beFactor": 1,
+  "attrPower": 15000,
+  "isFlyEnemy": false,
+  "tokenOnly": false,
+  "acTypes": [],
+  "acType": "SPECIAL",
+  "templateSlot": "T",
+  "summons": [],
+  "inactiveIn": [],
+  "seasonOverride": null,
+  "iconId": "enemy_2135_shkrbt",
+  "spine": "enemy_2135_shkrbt",
+  "modelScale": 1,
+  "attackAnim": {
+   "clip": "Attack",
+   "dur": 1.3,
+   "hit": 0.433
+  }
+ },
+ "art": {
+  "icon": "/assets/custom/enemy_2135_shkrbt/avatar.png",
+  "spine": {
+   "skel": "/assets/custom/enemy_2135_shkrbt/enemy_2135_shkrbt.skel",
+   "atlas": "/assets/custom/enemy_2135_shkrbt/enemy_2135_shkrbt.atlas",
+   "textures": [
+    "/assets/custom/enemy_2135_shkrbt/enemy_2135_shkrbt.png"
+   ],
+   "pma": true,
+   "anims": {
+    "idle": "Idle",
+    "deploy": "Idle",
+    "attack": {
+     "begin": null,
+     "loop": "Attack",
+     "end": null
+    },
+    "attackDown": null,
+    "skill": {
+     "begin": null,
+     "loop": "Attack",
+     "end": null,
+     "via": "attack",
+     "index": 0,
+     "idle": null
+    },
+    "die": "Die",
+    "move": {
+     "begin": null,
+     "loop": "Move",
+     "end": null
+    },
+    "stun": null
+   },
+   "animations": {
+    "Attack": 1.3,
+    "Default": 0,
+    "Die": 1,
+    "Idle": 1.667,
+    "Move": 1.667,
+    "Skill_Begin": 0.333,
+    "Skill_End": 0.5,
+    "Skill_Loop": 0
+   },
+   "events": [
+    "OnAttack"
+   ],
+   "hits": {
+    "Attack": [
+     0.433
+    ]
+   },
+   "bounds": null
+  }
+ }
+}

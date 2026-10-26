@@ -1,0 +1,52 @@
+[
+  {
+    "key": "enemy_10150_nsheat",
+    "file": "enemy_10150_nsheat.json",
+    "name": "炙烤螺旋桨"
+  },
+  {
+    "key": "enemy_10150_nsheat_2",
+    "file": "enemy_10150_nsheat_2.json",
+    "name": "焦香螺旋桨"
+  },
+  {
+    "key": "enemy_1080_sotidp_2",
+    "file": "enemy_1080_sotidp_2.json",
+    "name": "游击队传令兵组长"
+  },
+  {
+    "key": "enemy_10221_agporc_2",
+    "file": "enemy_10221_agporc_2.json",
+    "name": "入戏太深的孩童"
+  },
+  {
+    "key": "enemy_10224_agmess_2",
+    "file": "enemy_10224_agmess_2.json",
+    "name": "“大披风”"
+  },
+  {
+    "key": "enemy_10228_agball_2",
+    "file": "enemy_10228_agball_2.json",
+    "name": "“美食的奴隶”"
+  },
+  {
+    "key": "enemy_10229_agactr_2",
+    "file": "enemy_10229_agactr_2.json",
+    "name": "炫目刀技厨师"
+  },
+  {
+    "key": "enemy_2133_shdopl",
+    "file": "enemy_2133_shdopl.json",
+    "name": "空值体"
+  },
+  {
+    "key": "enemy_2135_shkrbt",
+    "file": "enemy_2135_shkrbt.json",
+    "name": "聆风猎手"
+  },
+  {
+    "key": "enemy_2137_shsdgo",
+    "file": "enemy_2137_shsdgo.json",
+    "name": "猎犬proto"
+  }
+]

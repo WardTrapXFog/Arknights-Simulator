@@ -1,0 +1,154 @@
+{
+ "key": "enemy_10224_agmess_2",
+ "record": {
+  "key": "enemy_10224_agmess_2",
+  "name": "“大披风”",
+  "level": 0,
+  "rank": "NORMAL",
+  "handbookIndex": "TO08",
+  "desc": "【飞行单位】自身未携带时，会夺取攻击范围内的。进入保护目标后，不扣除目标生命值。",
+  "descRaw": "【飞行单位】自身未携带时，会夺取攻击范围内的。进入保护目标后，不扣除目标生命值。",
+  "applyWay": "RANGED",
+  "stats": {
+   "maxHp": 9600,
+   "atk": 240,
+   "def": 0,
+   "res": 20,
+   "moveSpeed": 0.8,
+   "bat": 4,
+   "aspd": 100,
+   "rangeRadius": 1.2,
+   "rawRangeRadius": 1.2,
+   "blockCnt": 0,
+   "massLevel": 1,
+   "lpr": 0,
+   "hpRecoveryPerSec": 0,
+   "elementRes": 0,
+   "elementDmgRes": 0,
+   "hitRatePhys": 0,
+   "hitRateArts": 0,
+   "dmgType": "arts",
+   "dmgTypes": [
+    "arts"
+   ],
+   "motion": "FLY",
+   "immunities": {
+    "stun": false,
+    "silence": false,
+    "sleep": false,
+    "frozen": false,
+    "levitate": false
+   },
+   "otherImmunities": [],
+   "tauntLevel": 0
+  },
+  "abilities": [
+   {
+    "text": "【飞行单位】自身未携带时，会夺取攻击范围内的。进入保护目标后，不扣除目标生命值。",
+    "textRaw": "【飞行单位】自身未携带时，会夺取攻击范围内的。进入保护目标后，不扣除目标生命值。",
+    "format": "NORMAL"
+   }
+  ],
+  "talents": {
+   "bb": {
+    "BornSwitch.born_carry_package": 0
+   },
+   "bbStr": {}
+  },
+  "skills": [
+   {
+    "prefabKey": "TryPickAgpack",
+    "priority": 0,
+    "cooldown": 30,
+    "initCooldown": 0,
+    "spCost": 0,
+    "blackboard": null
+   }
+  ],
+  "notCountInTotal": true,
+  "tags": [],
+  "be": 9600,
+  "beFactor": 1,
+  "attrPower": 9600,
+  "isFlyEnemy": true,
+  "tokenOnly": false,
+  "acTypes": [],
+  "acType": "SPECIAL",
+  "templateSlot": "T",
+  "summons": [],
+  "inactiveIn": [],
+  "seasonOverride": null,
+  "iconId": "enemy_10224_agmess_2",
+  "spine": "enemy_10224_agmess_2",
+  "modelScale": 1,
+  "attackAnim": {
+   "clip": "Attack_A",
+   "dur": 1.167,
+   "hit": 0.4
+  }
+ },
+ "art": {
+  "icon": "/assets/custom/enemy_10224_agmess_2/avatar.png",
+  "spine": {
+   "skel": "/assets/custom/enemy_10224_agmess_2/enemy_10224_agmess_2.skel",
+   "atlas": "/assets/custom/enemy_10224_agmess_2/enemy_10224_agmess_2.atlas",
+   "textures": [
+    "/assets/custom/enemy_10224_agmess_2/enemy_10224_agmess_2.png"
+   ],
+   "pma": true,
+   "anims": {
+    "idle": "Idle_A",
+    "deploy": "Idle_A",
+    "attack": {
+     "begin": null,
+     "loop": "Attack_A",
+     "end": null
+    },
+    "attackDown": null,
+    "skill": {
+     "begin": null,
+     "loop": "Attack_A",
+     "end": null,
+     "via": "attack",
+     "index": 0,
+     "idle": null
+    },
+    "die": "Die_A",
+    "move": {
+     "begin": null,
+     "loop": "Move_A",
+     "end": null
+    },
+    "stun": null
+   },
+   "animations": {
+    "Attack_A": 1.167,
+    "Attack_B": 1.167,
+    "Default_A": 0,
+    "Default_B": 0,
+    "Die_A": 1,
+    "Die_B": 1,
+    "Idle_A": 1.333,
+    "Idle_B": 1.333,
+    "Move_A": 1,
+    "Move_B": 1,
+    "Skill_A": 1
+   },
+   "events": [
+    "OnAttack"
+   ],
+   "hits": {
+    "Attack_A": [
+     0.4
+    ],
+    "Attack_B": [
+     0.4
+    ],
+    "Skill_A": [
+     1
+    ]
+   },
+   "bounds": null
+  }
+ }
+}

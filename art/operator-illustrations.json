@@ -1,0 +1,1029 @@
+{
+  "source": "3aKHP/arknights-data-pipeline",
+  "version": "26-10-22-14-02-11-51447808",
+  "index": "https://github.com/3aKHP/arknights-data-pipeline/releases/tag/images-26-10-22-14-02-11-51447808",
+  "operators": {
+    "char_498_inside": {
+      "artwork": "char_498_inside#2",
+      "file": "char_498_inside#2.large.png",
+      "sha256": "019a06b34bbc5326c94cb7bc070287b8fa303ed76f8262ff51e26dd972b2f137"
+    },
+    "char_199_yak": {
+      "artwork": "char_199_yak#2",
+      "file": "char_199_yak#2.large.png",
+      "sha256": "4df1d76f69b04dba9d1829cdd3b2def40422b15e8d362ea8a40968f3741cbf1b"
+    },
+    "char_306_leizi": {
+      "artwork": "char_306_leizi#2",
+      "file": "char_306_leizi#2.large.png",
+      "sha256": "a9cc7195df757cce7e8701d6e8d857b7a33c2b65607ed6c3a4535e66be071ce5"
+    },
+    "char_4137_udflow": {
+      "artwork": "char_4137_udflow#2",
+      "file": "char_4137_udflow#2.large.png",
+      "sha256": "ee672cec2739ae173166e146c448b5381d423719fd86993f2a6359581a1928ac"
+    },
+    "char_290_vigna": {
+      "artwork": "char_290_vigna#2",
+      "file": "char_290_vigna#2.large.png",
+      "sha256": "1ea83042cb2918007c1ec588f8b7344efee50fed4a39cfd1e4d7146e51970d39"
+    },
+    "char_494_vendla": {
+      "artwork": "char_494_vendla#2",
+      "file": "char_494_vendla#2.large.png",
+      "sha256": "fac9e1cb9f002c0ff6433506384b5e6ce352ceaf221e58ec78c6e16ca9ed72d8"
+    },
+    "char_145_prove": {
+      "artwork": "char_145_prove#2",
+      "file": "char_145_prove#2.large.png",
+      "sha256": "480076f049682a7d89ea0dc22b2f6252d2ae7eb39007a683e1f379998f955a29"
+    },
+    "char_102_texas": {
+      "artwork": "char_102_texas#2",
+      "file": "char_102_texas#2.large.png",
+      "sha256": "148fa217eb0e4578a4e9a36ce7f21c9ad7c0b262ee3a7bfcae3d4fbcfd090069"
+    },
+    "char_4100_caper": {
+      "artwork": "char_4100_caper#2",
+      "file": "char_4100_caper#2.large.png",
+      "sha256": "b0000a177cef9939b1454ae45a39f46639dc75a8ec967524665c4ea5d5808454"
+    },
+    "char_196_sunbr": {
+      "artwork": "char_196_sunbr#2",
+      "file": "char_196_sunbr#2.large.png",
+      "sha256": "c4dccf0d71b657f54d6f2ee4e8dd035f37243e397e77dad06a320f27f0829d83"
+    },
+    "char_183_skgoat": {
+      "artwork": "char_183_skgoat#2",
+      "file": "char_183_skgoat#2.large.png",
+      "sha256": "80f30bc93a0c86cec55de4e68ed8f94d28366d9b89ef9704da81376dcb2ab74a"
+    },
+    "char_127_estell": {
+      "artwork": "char_127_estell#2",
+      "file": "char_127_estell#2.large.png",
+      "sha256": "e823457f0a328d789cac333a20b4c138db5683f7a5d5250ffea40ce03a9d09c4"
+    },
+    "char_258_podego": {
+      "artwork": "char_258_podego#2",
+      "file": "char_258_podego#2.large.png",
+      "sha256": "4ea972d578cefef79943c77e2aaa95c32d123c7c89a483289170f51d245a2d39"
+    },
+    "char_253_greyy": {
+      "artwork": "char_253_greyy#2",
+      "file": "char_253_greyy#2.large.png",
+      "sha256": "bbc76d020146c071c531208c3598a86a722226ae511ef800968f0a2bdd430751"
+    },
+    "char_616_pithst": {
+      "artwork": "char_616_pithst#2",
+      "file": "char_616_pithst#2.large.png",
+      "sha256": "709e4c5c56880be8249685f677ee485e9894cc63241d2487819d31dbebefbed4"
+    },
+    "char_4151_tinman": {
+      "artwork": "char_4151_tinman#2",
+      "file": "char_4151_tinman#2.large.png",
+      "sha256": "1b8ad611f2fa37038ac8c35b47b032dc18f5cc4e4c92e6d12ea7ebef7d3748a0"
+    },
+    "char_469_indigo": {
+      "artwork": "char_469_indigo#2",
+      "file": "char_469_indigo#2.large.png",
+      "sha256": "cf3f3ce167ed1aa4ca5c3a9828f9f7756eba120af45c7648511e9b08135a9ecf"
+    },
+    "char_337_utage": {
+      "artwork": "char_337_utage#2",
+      "file": "char_337_utage#2.large.png",
+      "sha256": "813853157c3512b9a3e9f3850084da97a8e363ea51a3b044f29474f9edae7368"
+    },
+    "char_496_wildmn": {
+      "artwork": "char_496_wildmn#2",
+      "file": "char_496_wildmn#2.large.png",
+      "sha256": "1965bec17d30380ada445f9431065310e19c41a3877a8424162707a9daad297a"
+    },
+    "char_107_liskam": {
+      "artwork": "char_107_liskam#2",
+      "file": "char_107_liskam#2.large.png",
+      "sha256": "dd8e3993521cb495f2f47d42a491bbdce49caad40f8b4df8eeacf33129516205"
+    },
+    "char_279_excu": {
+      "artwork": "char_279_excu#2",
+      "file": "char_279_excu#2.large.png",
+      "sha256": "e20d3b3437c5e55ab59a0dc12c9cf2e0f16419682aec7aac4984ad5d3c921e6e"
+    },
+    "char_108_silent": {
+      "artwork": "char_108_silent#2",
+      "file": "char_108_silent#2.large.png",
+      "sha256": "1bcc76eaf38c6d4e5ca1e718f21c281432fe84e0255fc0c9e650168e1a913b6b"
+    },
+    "char_173_slchan": {
+      "artwork": "char_173_slchan#2",
+      "file": "char_173_slchan#2.large.png",
+      "sha256": "a3993a7a18ffb004183bb2e23cc05814b8270e11bbe0ac4ce8d1331f62f11361"
+    },
+    "char_4122_grabds": {
+      "artwork": "char_4122_grabds#2",
+      "file": "char_4122_grabds#2.large.png",
+      "sha256": "d3c1bf11d0e08f59a963faed5f7ff07fe3779df7f5cfad5cb2fbee0edd32e425"
+    },
+    "char_4114_harold": {
+      "artwork": "char_4114_harold#2",
+      "file": "char_4114_harold#2.large.png",
+      "sha256": "a6da34d498dec938492e1cac99ee7898f992f32d4ac384e36d22d973256d8908"
+    },
+    "char_4139_papyrs": {
+      "artwork": "char_4139_papyrs#2",
+      "file": "char_4139_papyrs#2.large.png",
+      "sha256": "0034b7209afdc2e202f862538b57074903a814087704754d0bade68668340db7"
+    },
+    "char_143_ghost": {
+      "artwork": "char_143_ghost#2",
+      "file": "char_143_ghost#2.large.png",
+      "sha256": "f9d1ceb750cab7c6e60b8b15880120351e03f3ea08c97aa4fe11ef36a46bc7d4"
+    },
+    "char_381_bubble": {
+      "artwork": "char_381_bubble#2",
+      "file": "char_381_bubble#2.large.png",
+      "sha256": "216c8c1753fcc158a10094ac8d7d0976065b78351d328e9b271e37f22dadff37"
+    },
+    "char_491_humus": {
+      "artwork": "char_491_humus#2",
+      "file": "char_491_humus#2.large.png",
+      "sha256": "f01e0141bbb8543c444d1f1893e12d571602618d52df7d25b80506d8385adb6c"
+    },
+    "char_4040_rockr": {
+      "artwork": "char_4040_rockr#2",
+      "file": "char_4040_rockr#2.large.png",
+      "sha256": "267e96cb17bc453db86a9b8666789e11742f7e0767181775a29e33063438757f"
+    },
+    "char_4016_kazema": {
+      "artwork": "char_4016_kazema#2",
+      "file": "char_4016_kazema#2.large.png",
+      "sha256": "9157adafd03d12f2d7868015a8f31923c76e35851aa239e6e060957e5f27bcaf"
+    },
+    "char_237_gravel": {
+      "artwork": "char_237_gravel#2",
+      "file": "char_237_gravel#2.large.png",
+      "sha256": "64647cfef981fdd689bb16bf9167cb50806c47120fd35e03a4ba290fd6d8658c"
+    },
+    "char_4191_tippi": {
+      "artwork": "char_4191_tippi#2",
+      "file": "char_4191_tippi#2.large.png",
+      "sha256": "c9a99ef498f747167a3c7604cac35cf195793e55d83d4dbac122d28fcc10c2cf"
+    },
+    "char_181_flower": {
+      "artwork": "char_181_flower#2",
+      "file": "char_181_flower#2.large.png",
+      "sha256": "6809028c0371fbcc183317e8233792bf91ddcb5bdac4672c8f0132e95b6ee5da"
+    },
+    "char_4051_akkord": {
+      "artwork": "char_4051_akkord#2",
+      "file": "char_4051_akkord#2.large.png",
+      "sha256": "1c5950f5f1397fc85c3403b7e73dae80870c5d69dd21904fb4b09cfb1669f62e"
+    },
+    "char_140_whitew": {
+      "artwork": "char_140_whitew#2",
+      "file": "char_140_whitew#2.large.png",
+      "sha256": "f3eed52e2e17b23ab3d130f69acaf908fb1acffcd572d29ad369cbe40c7994d9"
+    },
+    "char_4207_branch": {
+      "artwork": "char_4207_branch#2",
+      "file": "char_4207_branch#2.large.png",
+      "sha256": "cbcfff37429a9ac1d528e9866d08441a33b395031907e72f91a1d7bed257f64b"
+    },
+    "char_431_ashlok": {
+      "artwork": "char_431_ashlok#2",
+      "file": "char_431_ashlok#2.large.png",
+      "sha256": "1d1e00f6daf387901cccc14fad98937aa63ddb76eaf8b8b36203024632ef791e"
+    },
+    "char_103_angel": {
+      "artwork": "char_103_angel#2",
+      "file": "char_103_angel#2.large.png",
+      "sha256": "2c117ea0de8aae6dd1420c1bbf3643a3a0acb218c60609e6811b0415a02530f6"
+    },
+    "char_294_ayer": {
+      "artwork": "char_294_ayer#2",
+      "file": "char_294_ayer#2.large.png",
+      "sha256": "1bf262a335ff521c9d5b70585e18ff0788a68065ed7c9867f2d3d1873162699c"
+    },
+    "char_308_swire": {
+      "artwork": "char_308_swire#2",
+      "file": "char_308_swire#2.large.png",
+      "sha256": "7e24168ca09ed73f8408f688a049a361d8d41c0ef031d370958ffb1a22423bec"
+    },
+    "char_1033_swire2": {
+      "artwork": "char_1033_swire2#2",
+      "file": "char_1033_swire2#2.large.png",
+      "sha256": "32e189282982de9dc71036787cfd4b30e49a8282eb5b7e48b18d698cef251a6f"
+    },
+    "char_263_skadi": {
+      "artwork": "char_263_skadi#2",
+      "file": "char_263_skadi#2.large.png",
+      "sha256": "a675af7970342807b540a46cadcbda50dd4054e1536ca7b5f50a3505e8a86070"
+    },
+    "char_4148_philae": {
+      "artwork": "char_4148_philae#2",
+      "file": "char_4148_philae#2.large.png",
+      "sha256": "cf5669fedd037aefca8a1e5b8710df445af4fecd829a77b834836fc3dac9bcb9"
+    },
+    "char_4036_forcer": {
+      "artwork": "char_4036_forcer#2",
+      "file": "char_4036_forcer#2.large.png",
+      "sha256": "141debe18ebef1ef92173112b211e4390a8bb8680dee3406c2fb22ea9d37196c"
+    },
+    "char_388_mint": {
+      "artwork": "char_388_mint#2",
+      "file": "char_388_mint#2.large.png",
+      "sha256": "5a34860abe8d0c6d4ac5dea2fc057bd4870a185fec9a210036f3842af68b61c7"
+    },
+    "char_4079_haini": {
+      "artwork": "char_4079_haini#2",
+      "file": "char_4079_haini#2.large.png",
+      "sha256": "3bfac855033e3329e3cabd051a00ea96f7a30f3623a1aea604e8786d2bb374fd"
+    },
+    "char_440_pinecn": {
+      "artwork": "char_440_pinecn#2",
+      "file": "char_440_pinecn#2.large.png",
+      "sha256": "079468958d9a5038fffaa715d3eaffe8a1493fc25517ee4d45ba19eb2d9b8d7a"
+    },
+    "char_4211_snhunt": {
+      "artwork": "char_4211_snhunt#2",
+      "file": "char_4211_snhunt#2.large.png",
+      "sha256": "b7202e3414712a46ff74f84c9596db9cf5e3bb6a57a1d266ece26e3a9f2cde6a"
+    },
+    "char_423_blemsh": {
+      "artwork": "char_423_blemsh#2",
+      "file": "char_423_blemsh#2.large.png",
+      "sha256": "99e63b395420031d2444cdf2d70fb46204a8d1bb4fe575a7443275fd22dc0a21"
+    },
+    "char_4054_malist": {
+      "artwork": "char_4054_malist#2",
+      "file": "char_4054_malist#2.large.png",
+      "sha256": "b9e4bbc752f827f41990a754582fc6d2f03e4e6966383919750dc99472351180"
+    },
+    "char_174_slbell": {
+      "artwork": "char_174_slbell#2",
+      "file": "char_174_slbell#2.large.png",
+      "sha256": "ef3fa0c3a31dd9ec635ac02d0643fc0f6a650cc19b1519c75fd23e6a7a8bea6e"
+    },
+    "char_254_vodfox": {
+      "artwork": "char_254_vodfox#2",
+      "file": "char_254_vodfox#2.large.png",
+      "sha256": "a91e1bd8ace91b0bb721c0655a38181707a48de0fe976132426cdb606fe3de84"
+    },
+    "char_150_snakek": {
+      "artwork": "char_150_snakek#2",
+      "file": "char_150_snakek#2.large.png",
+      "sha256": "2e5029552e7c6175847e7f7e5e20ca8ff0dbf13952e5f495b0e9d81f019e7935"
+    },
+    "char_126_shotst": {
+      "artwork": "char_126_shotst#2",
+      "file": "char_126_shotst#2.large.png",
+      "sha256": "33c9d6414c90f40997c96394ffabc5ba7a09f7d771f1f828212ade56678da619"
+    },
+    "char_4026_vulpis": {
+      "artwork": "char_4026_vulpis#2",
+      "file": "char_4026_vulpis#2.large.png",
+      "sha256": "3d722967b779410aec5e9d2c4bf7c9c6fad927aa81bdbae82aa6a99265dd6990"
+    },
+    "char_427_vigil": {
+      "artwork": "char_427_vigil#2",
+      "file": "char_427_vigil#2.large.png",
+      "sha256": "7aca3010698837d7ee28e7e5dea72f4c66071734a69d6ade35eb358f1eb41437"
+    },
+    "char_4013_kjera": {
+      "artwork": "char_4013_kjera#2",
+      "file": "char_4013_kjera#2.large.png",
+      "sha256": "ec5a8b1c26de8874465a1dc5faa04a31f0bd7a038d0fd9fc977ea30d9096f563"
+    },
+    "char_332_archet": {
+      "artwork": "char_332_archet#2",
+      "file": "char_332_archet#2.large.png",
+      "sha256": "d054ee01893f4230280d34fccbb4704bf1dd01510fcccb9be00b415d3d2e5d2b"
+    },
+    "char_4194_rmixer": {
+      "artwork": "char_4194_rmixer#2",
+      "file": "char_4194_rmixer#2.large.png",
+      "sha256": "f3d49ac698dd31fdb37240466d6616b772f24bed3b49529b393e68700ff27b58"
+    },
+    "char_213_mostma": {
+      "artwork": "char_213_mostma#2",
+      "file": "char_213_mostma#2.large.png",
+      "sha256": "d404afa131e3e7600a65bc5be2e47f973dee54930d0774169a20548e82707cd6"
+    },
+    "char_4087_ines": {
+      "artwork": "char_4087_ines#2",
+      "file": "char_4087_ines#2.large.png",
+      "sha256": "caa8916488700f42b7d8b1ee2f8b6e251be77b0c89084bf910a0db579b5f17e0"
+    },
+    "char_344_beewax": {
+      "artwork": "char_344_beewax#2",
+      "file": "char_344_beewax#2.large.png",
+      "sha256": "96c0d371bf17942c327984b2569a30925108c0f7a71a3003d3c9a6e23e6d76b9"
+    },
+    "char_1021_kroos2": {
+      "artwork": "char_1021_kroos2#2",
+      "file": "char_1021_kroos2#2.large.png",
+      "sha256": "2c6ebe825d9fb0a1b83a93b6154677e5a9edf970ff3eccc874637bb6b331507c"
+    },
+    "char_222_bpipe": {
+      "artwork": "char_222_bpipe#2",
+      "file": "char_222_bpipe#2.large.png",
+      "sha256": "ff7c3c77071ea0b2ff0d085a4a29fd2f84a4fffb17de20e5c52a18b3bfca1680"
+    },
+    "char_4163_rosesa": {
+      "artwork": "char_4163_rosesa#2",
+      "file": "char_4163_rosesa#2.large.png",
+      "sha256": "328bf6a3f86680632c68f2455c7a8bb5d08c8b272e8f017753b6aeac02f949b0"
+    },
+    "char_437_mizuki": {
+      "artwork": "char_437_mizuki#2",
+      "file": "char_437_mizuki#2.large.png",
+      "sha256": "23448f2425e819072378683dc14b30971ebbef61a6f445ffcfb82dcedc0ef033"
+    },
+    "char_446_aroma": {
+      "artwork": "char_446_aroma#2",
+      "file": "char_446_aroma#2.large.png",
+      "sha256": "f498fd930708805eeead743470aba34963302a982ce972d5c07eb93acfa27846"
+    },
+    "char_4162_cathy": {
+      "artwork": "char_4162_cathy#2",
+      "file": "char_4162_cathy#2.large.png",
+      "sha256": "f1a1be571c39219c833e5a57648f248936973f1d32ba5eb5b552cef18d837b73"
+    },
+    "char_474_glady": {
+      "artwork": "char_474_glady#2",
+      "file": "char_474_glady#2.large.png",
+      "sha256": "b94b4cbbbcee20556958704cc244b10412c1b11a556358d84b6f6741da0e728b"
+    },
+    "char_206_gnosis": {
+      "artwork": "char_206_gnosis#2",
+      "file": "char_206_gnosis#2.large.png",
+      "sha256": "1adf04ada01d5b9e41121c4b3a6c80ae4cafbd27c186eca292073c87e052b337"
+    },
+    "char_373_lionhd": {
+      "artwork": "char_373_lionhd#2",
+      "file": "char_373_lionhd#2.large.png",
+      "sha256": "d082023f945737c6dcbc20cafb5c94d68d6a1f7626a556abb21249863b9d0804"
+    },
+    "char_4196_reckpr": {
+      "artwork": "char_4196_reckpr#2",
+      "file": "char_4196_reckpr#2.large.png",
+      "sha256": "c0ef83f41e103bafee3fa1edc6f4aa9c152d05c3c8d96f9801a1e623e3cb691e"
+    },
+    "char_1028_texas2": {
+      "artwork": "char_1028_texas2#2",
+      "file": "char_1028_texas2#2.large.png",
+      "sha256": "e6c4fe412ae74c32c1533ece8a5faba25fcc8c236deff7cc47b9b2ddf4b169bc"
+    },
+    "char_136_hsguma": {
+      "artwork": "char_136_hsguma#2",
+      "file": "char_136_hsguma#2.large.png",
+      "sha256": "1a7eddecd0fffe41962e9a6b3ab08cb8ec7ba98e3ec16c217254be63b82e6164"
+    },
+    "char_311_mudrok": {
+      "artwork": "char_311_mudrok#2",
+      "file": "char_311_mudrok#2.large.png",
+      "sha256": "4e047736ebda317c4b9f9f51ae3c75a735974cf225b755dcd79073156af2da92"
+    },
+    "char_420_flamtl": {
+      "artwork": "char_420_flamtl#2",
+      "file": "char_420_flamtl#2.large.png",
+      "sha256": "ecfc447293e566f513272686f4e8ac8cf509f724e207d647883d2cfa08848692"
+    },
+    "char_430_fartth": {
+      "artwork": "char_430_fartth#2",
+      "file": "char_430_fartth#2.large.png",
+      "sha256": "dd8604dd6c789acb4cfb5befdd7a299cf028fa610f942c02c7169ae22bce217c"
+    },
+    "char_128_plosis": {
+      "artwork": "char_128_plosis#2",
+      "file": "char_128_plosis#2.large.png",
+      "sha256": "70908934a73ba1fe860cd0ff82b5be45985b6a0e0e2086296565290f28d7436a"
+    },
+    "char_172_svrash": {
+      "artwork": "char_172_svrash#2",
+      "file": "char_172_svrash#2.large.png",
+      "sha256": "3e2d9748360cf5f907843b718969233b946ae1c9dfa406aabf40724a0f0372c9"
+    },
+    "char_1026_gvial2": {
+      "artwork": "char_1026_gvial2#2",
+      "file": "char_1026_gvial2#2.large.png",
+      "sha256": "aa4478701d1809e3eeda41a39aa181c0ce45a6a57b7aae81e9641a1d3688bb25"
+    },
+    "char_426_billro": {
+      "artwork": "char_426_billro#2",
+      "file": "char_426_billro#2.large.png",
+      "sha256": "00947b486ed5312d387e67c585e43f340f6e0cca844286e411f2599ebbd01dcd"
+    },
+    "char_4134_cetsyr": {
+      "artwork": "char_4134_cetsyr#2",
+      "file": "char_4134_cetsyr#2.large.png",
+      "sha256": "59495757d6d19db472a07608844981b30f62fedee1181932e3b24115bb1820df"
+    },
+    "char_171_bldsk": {
+      "artwork": "char_171_bldsk#2",
+      "file": "char_171_bldsk#2.large.png",
+      "sha256": "3c75450baa284c40463e534cc063862a900964cf6a06b939c1b1de4a40bf10d4"
+    },
+    "char_1032_excu2": {
+      "artwork": "char_1032_excu2#2",
+      "file": "char_1032_excu2#2.large.png",
+      "sha256": "44fb7144e216146d2a8372b7c50da23cf4e1d7e8c9df24cbe6d9cb528077f577"
+    },
+    "char_4056_titi": {
+      "artwork": "char_4056_titi#2",
+      "file": "char_4056_titi#2.large.png",
+      "sha256": "446705430a3f2410c28cb7dafee1ab9215f1e2d16467982c11da3fe238e272d4"
+    },
+    "char_1040_blaze2": {
+      "artwork": "char_1040_blaze2#2",
+      "file": "char_1040_blaze2#2.large.png",
+      "sha256": "0e1409e4889291df32e12ca4a614ed0688fc44c2a30cb99ed3705fcb866192be"
+    },
+    "char_4145_ulpia": {
+      "artwork": "char_4145_ulpia#2",
+      "file": "char_4145_ulpia#2.large.png",
+      "sha256": "2d02dcd97afdda88b63c80eb7276e92e6c7066aefb766cfd31242faa8639f49e"
+    },
+    "char_4010_etlchi": {
+      "artwork": "char_4010_etlchi#2",
+      "file": "char_4010_etlchi#2.large.png",
+      "sha256": "cbb652bf7cf88e8e2b388641ce6350fabed9403bb669459ae6ce6a9c18eec83e"
+    },
+    "char_350_surtr": {
+      "artwork": "char_350_surtr#2",
+      "file": "char_350_surtr#2.large.png",
+      "sha256": "92d4966924432a8e8b4459b7dd86d07883635c42d1ff747ea93f1523b520ca86"
+    },
+    "char_4039_horn": {
+      "artwork": "char_4039_horn#2",
+      "file": "char_4039_horn#2.large.png",
+      "sha256": "653c713abe19e3270ec9cfe570c0ce71ec8c78fc47d9a0f250aae87a5f4d7968"
+    },
+    "char_358_lisa": {
+      "artwork": "char_358_lisa#2",
+      "file": "char_358_lisa#2.large.png",
+      "sha256": "6eda1ceea5d37be50c4867657e16a9380a2ab0627deed0fb502aec33bf27bf53"
+    },
+    "char_202_demkni": {
+      "artwork": "char_202_demkni#2",
+      "file": "char_202_demkni#2.large.png",
+      "sha256": "b81ce11f8fdfc44bba0b1154a7ad69844a7495731fcca7aae4e232965dd605cf"
+    },
+    "char_2015_dusk": {
+      "artwork": "char_2015_dusk#2",
+      "file": "char_2015_dusk#2.large.png",
+      "sha256": "81d2cf8ce999075472a9aff0d8063b54a3db629853cf793899fe5621cb807fe3"
+    },
+    "char_1023_ghost2": {
+      "artwork": "char_1023_ghost2#2",
+      "file": "char_1023_ghost2#2.large.png",
+      "sha256": "d6b3d8247b45d0eded9f0d6730450bb700fcb69a122f7e4391055b10ad5de4e0"
+    },
+    "char_1045_svash2": {
+      "artwork": "char_1045_svash2#2",
+      "file": "char_1045_svash2#2.large.png",
+      "sha256": "ff7273c4a7820c27a3489fcc9ac629421bd607eafe46fe262a4a4246960ed796"
+    },
+    "char_1039_thorn2": {
+      "artwork": "char_1039_thorn2#2",
+      "file": "char_1039_thorn2#2.large.png",
+      "sha256": "f489f7ee36da612ade7695ce253a5ae460b961110972710167e94b06520d488f"
+    },
+    "char_264_f12yin": {
+      "artwork": "char_264_f12yin#2",
+      "file": "char_264_f12yin#2.large.png",
+      "sha256": "cb46fdacea0869d818fecbc31c0840300eb7ebd6cf0fceca5a544d2a4921bf8c"
+    },
+    "char_4064_mlynar": {
+      "artwork": "char_4064_mlynar#2",
+      "file": "char_4064_mlynar#2.large.png",
+      "sha256": "9242f58bf8416f0c071fe1ed24039fae7202ab3bc156b5ebd9696a4f16fd5070"
+    },
+    "char_291_aglina": {
+      "artwork": "char_291_aglina#2",
+      "file": "char_291_aglina#2.large.png",
+      "sha256": "7cef10eeece01f1fd5fb7a05254251a8e3720fb5e598e6830856af347518d68e"
+    },
+    "char_341_sntlla": {
+      "artwork": "char_341_sntlla#2",
+      "file": "char_341_sntlla#2.large.png",
+      "sha256": "efbd277d4b5f69a368c0553150ecb0c53cc393aac28602455991802eac48dcc9"
+    },
+    "char_4146_nymph": {
+      "artwork": "char_4146_nymph#2",
+      "file": "char_4146_nymph#2.large.png",
+      "sha256": "0be7bc7eaecc41ca16f6268a30de23624438cc0a3669130bc28c2a396feda112"
+    },
+    "char_4193_lemuen": {
+      "artwork": "char_4193_lemuen#2",
+      "file": "char_4193_lemuen#2.large.png",
+      "sha256": "2db5adc560b1aedba5b89de1cda02ea20208d2d4423687e0bff0afc06b739bd2"
+    },
+    "char_1046_sbell2": {
+      "artwork": "char_1046_sbell2#2",
+      "file": "char_1046_sbell2#2.large.png",
+      "sha256": "09ab484328324bcb5375b4353f2d162183d83bab9a458121f879d3323047c100"
+    },
+    "char_2026_yu": {
+      "artwork": "char_2026_yu#2",
+      "file": "char_2026_yu#2.large.png",
+      "sha256": "efc35722e84cace77c30a9a4b398a23e1a40dc29532f2d18b7de7808ae4be601"
+    },
+    "char_1012_skadi2": {
+      "artwork": "char_1012_skadi2#2",
+      "file": "char_1012_skadi2#2.large.png",
+      "sha256": "0abee0d6b48d4ec7f0ced9326c4ba3c99a8e3a7bb0171b46fee38b8e98dc7824"
+    },
+    "char_472_pasngr": {
+      "artwork": "char_472_pasngr#2",
+      "file": "char_472_pasngr#2.large.png",
+      "sha256": "9428ba88fb3e6fb1767858c374c10fa7eac47b142489a140df5d983090730014"
+    },
+    "char_4058_pepe": {
+      "artwork": "char_4058_pepe#2",
+      "file": "char_4058_pepe#2.large.png",
+      "sha256": "5c4d3799b1937dbdd520110ef8f8fea283c36608ea6bfd1f065d69c932cbc35b"
+    },
+    "char_1019_siege2": {
+      "artwork": "char_1019_siege2#2",
+      "file": "char_1019_siege2#2.large.png",
+      "sha256": "d08081eaa926691c647bb6916352d8a48a8407c11e973c17d1497ffe3c71f02c"
+    },
+    "char_1020_reed2": {
+      "artwork": "char_1020_reed2#2",
+      "file": "char_1020_reed2#2.large.png",
+      "sha256": "2226eb042ece4d501e45f59f8e0719cb5e1130926e18ef0380d1d360365969ed"
+    },
+    "char_245_cello": {
+      "artwork": "char_245_cello#2",
+      "file": "char_245_cello#2.large.png",
+      "sha256": "576ad8ac1c365bda5fc3c62b366c99a7e728dbfbb5b35becd79a4848daf57a60"
+    },
+    "char_249_mlyss": {
+      "artwork": "char_249_mlyss#2",
+      "file": "char_249_mlyss#2.large.png",
+      "sha256": "80118cb13006380eca0d00ac8eeee2077aa4ba13e9e7364274d21555c9584a3a"
+    },
+    "char_391_rosmon": {
+      "artwork": "char_391_rosmon#2",
+      "file": "char_391_rosmon#2.large.png",
+      "sha256": "d5eec371b109e97a4c1d84d7fbe3142e61b4c4b6d4a4985df9c5cb213ee25064"
+    },
+    "char_1041_angel2": {
+      "artwork": "char_1041_angel2#2",
+      "file": "char_1041_angel2#2.large.png",
+      "sha256": "899a122e2d1bda44bd93754b35382742188a7b3008655b2c8165358fbddd9a22"
+    },
+    "char_4042_lumen": {
+      "artwork": "char_4042_lumen#2",
+      "file": "char_4042_lumen#2.large.png",
+      "sha256": "d8ae1c45675ddc98ab24c1cdd2f56e659edece0ee44906228214c778df2909eb"
+    },
+    "char_4082_qiubai": {
+      "artwork": "char_4082_qiubai#2",
+      "file": "char_4082_qiubai#2.large.png",
+      "sha256": "76fefd0f640db021738c5f02b754d90443cca23c0996e0518eb77dcc95b54044"
+    },
+    "char_1047_halo2": {
+      "artwork": "char_1047_halo2#2",
+      "file": "char_1047_halo2#2.large.png",
+      "sha256": "95d5249d3db830d8c4b4ca71d18a53d4c49c2974e484bb540ff052f4e48cd65b"
+    },
+    "char_1014_nearl2": {
+      "artwork": "char_1014_nearl2#2",
+      "file": "char_1014_nearl2#2.large.png",
+      "sha256": "a7103a6d4ceadd4cb88f5f3e4fd2e7e3615da3629a30422eb66bebecf732c7dd"
+    },
+    "char_1038_whitw2": {
+      "artwork": "char_1038_whitw2#2",
+      "file": "char_1038_whitw2#2.large.png",
+      "sha256": "f966c2ab0be8fde86eb851db2192bee5f7d1a00d35cf1bc45f6a03f5e3a73c7c"
+    },
+    "char_4116_blkkgt": {
+      "artwork": "char_4116_blkkgt#2",
+      "file": "char_4116_blkkgt#2.large.png",
+      "sha256": "56c8271e3e2f030ab83848d5784c81279b66e66a062e08a31d1f72ac5f6452e5"
+    },
+    "char_1016_agoat2": {
+      "artwork": "char_1016_agoat2#2",
+      "file": "char_1016_agoat2#2.large.png",
+      "sha256": "f852c82d839c3a593600caa0fcd307516860d4d8d5db179405ec0c6a658199f3"
+    },
+    "char_608_acpion": {
+      "artwork": "char_608_acpion#1",
+      "file": "char_608_acpion#1.large.png",
+      "sha256": "a3742bd70035989f26ae5d20fbdaaf0cfdb2361cd1b74f61aacf29e485a7bbaa"
+    },
+    "char_609_acguad": {
+      "artwork": "char_609_acguad#1",
+      "file": "char_609_acguad#1.large.png",
+      "sha256": "8cbf0ca4de0355206baad765e8853c891f234207be89284b73a2ac6df6cdf176"
+    },
+    "char_610_acfend": {
+      "artwork": "char_610_acfend#1",
+      "file": "char_610_acfend#1.large.png",
+      "sha256": "c1f3b9cd24659e861b1036e5a9d6b61b847009271c735c3c053d317ef4ad91a3"
+    },
+    "char_611_acnipe": {
+      "artwork": "char_611_acnipe#1",
+      "file": "char_611_acnipe#1.large.png",
+      "sha256": "8d7bf4b80b346946108188a8c5f6b7b3edea527b669e4de00dd4bb3515c9ddad"
+    },
+    "char_612_accast": {
+      "artwork": "char_612_accast#1",
+      "file": "char_612_accast#1.large.png",
+      "sha256": "63c1fb300ba787cd88cfb5e1a2e75441b238db6f21e66635e62fd36e8b2e18e3"
+    },
+    "char_613_acmedc": {
+      "artwork": "char_613_acmedc#1",
+      "file": "char_613_acmedc#1.large.png",
+      "sha256": "f3c72a90796b1c9d665ee3acd98ef38a8c83cc73c23ce40120fb10d696cbab02"
+    },
+    "char_614_acsupo": {
+      "artwork": "char_614_acsupo#1",
+      "file": "char_614_acsupo#1.large.png",
+      "sha256": "52acfca68fbcc10029bcd787e6d6ca2411540a7d7d0cb85a85844dc60767efcd"
+    },
+    "char_615_acspec": {
+      "artwork": "char_615_acspec#1",
+      "file": "char_615_acspec#1.large.png",
+      "sha256": "abe2c5b12f000fccfe58d9b43b8ca47ed97b9bc03a6e067c78ac78a558386ec3"
+    },
+    "char_617_sharp2": {
+      "artwork": "char_617_sharp2#2",
+      "file": "char_617_sharp2#2.large.png",
+      "sha256": "8cbf0ca4de0355206baad765e8853c891f234207be89284b73a2ac6df6cdf176"
+    },
+    "char_003_kalts": {
+      "artwork": "char_003_kalts#2",
+      "file": "char_003_kalts#2.large.png",
+      "sha256": "3d097905e7a56245c280ae3d5d2a4d32036ee6624bcc77a79fcb9725571fd268"
+    },
+    "char_010_chen": {
+      "artwork": "char_010_chen#2",
+      "file": "char_010_chen#2.large.png",
+      "sha256": "1bb99b3e56c20e1eda925654775ecc0d093445ab4c79092b5e97c8f5db7dd55d"
+    },
+    "char_017_huang": {
+      "artwork": "char_017_huang#2",
+      "file": "char_017_huang#2.large.png",
+      "sha256": "757edec6413c37ee0a4465a23f245e35e3bf16bafc0302a55f581367afd91595"
+    },
+    "char_112_siege": {
+      "artwork": "char_112_siege#2",
+      "file": "char_112_siege#2.large.png",
+      "sha256": "5caf9fee5c775c8a00e948d2e35d0b52cf21d0f163ee1993d16ccb0990a14184"
+    },
+    "char_113_cqbw": {
+      "artwork": "char_113_cqbw#2",
+      "file": "char_113_cqbw#2.large.png",
+      "sha256": "194e9bca876785aae8e5175dbccd685456e6b308b3ac08dc47df61f967b9ebcd"
+    },
+    "char_134_ifrit": {
+      "artwork": "char_134_ifrit#2",
+      "file": "char_134_ifrit#2.large.png",
+      "sha256": "e896ddd5d636a31c56cb0f4f60002f8d770cc3c213e9ae670a3c2cadf9092a5a"
+    },
+    "char_147_shining": {
+      "artwork": "char_147_shining#2",
+      "file": "char_147_shining#2.large.png",
+      "sha256": "ee335ed8740917ea90c071bce6a330b27042803711bf57f34ee31b5674cde581"
+    },
+    "char_179_cgbird": {
+      "artwork": "char_179_cgbird#2",
+      "file": "char_179_cgbird#2.large.png",
+      "sha256": "a95d1645a6435c0fc84c63b8361fc094534ad7e0eb72496260719632be778471"
+    },
+    "char_180_amgoat": {
+      "artwork": "char_180_amgoat#2",
+      "file": "char_180_amgoat#2.large.png",
+      "sha256": "22f9875ddc18ac82b51616505c6f9bdf130e6ac12389347c3a395199867161ec"
+    },
+    "char_188_helage": {
+      "artwork": "char_188_helage#2",
+      "file": "char_188_helage#2.large.png",
+      "sha256": "93a600ba766596ca40fe3d0dbf7e5c8575d7feff060d7f5ff5bb9374d94cc47f"
+    },
+    "char_197_poca": {
+      "artwork": "char_197_poca#2",
+      "file": "char_197_poca#2.large.png",
+      "sha256": "ef176e7df7bfce8c58544b654144e9d4736ec0154406bb09251ef9027d80a17d"
+    },
+    "char_225_haak": {
+      "artwork": "char_225_haak#2",
+      "file": "char_225_haak#2.large.png",
+      "sha256": "0fb8d18fc1bd68996afe3fa9d243f91fe1662c7f3509db9e3266641e0c82262b"
+    },
+    "char_248_mgllan": {
+      "artwork": "char_248_mgllan#2",
+      "file": "char_248_mgllan#2.large.png",
+      "sha256": "caf9b0136ee7288bba78fc1ab7d7c027f961642c5a88874c4d342639014a2bf7"
+    },
+    "char_250_phatom": {
+      "artwork": "char_250_phatom#2",
+      "file": "char_250_phatom#2.large.png",
+      "sha256": "02b5447f46adfd7ff8d23d5620efe35ddc58e48f3499698c4b2ef7c1dfa0f2d6"
+    },
+    "char_293_thorns": {
+      "artwork": "char_293_thorns#2",
+      "file": "char_293_thorns#2.large.png",
+      "sha256": "3b223f89a740e785c198bf11e504330232f4505eae611cf9630915fb6d1f13a8"
+    },
+    "char_300_phenxi": {
+      "artwork": "char_300_phenxi#2",
+      "file": "char_300_phenxi#2.large.png",
+      "sha256": "69c9223806b30a3090bc46436ccbf653e61bf885acc4042701c6d47e72407749"
+    },
+    "char_322_lmlee": {
+      "artwork": "char_322_lmlee#2",
+      "file": "char_322_lmlee#2.large.png",
+      "sha256": "90d5aac1ceaeb67aad91c1677072c4db48c92aa334aa1db6d8e08697f61c499f"
+    },
+    "char_340_shwaz": {
+      "artwork": "char_340_shwaz#2",
+      "file": "char_340_shwaz#2.large.png",
+      "sha256": "6c59639d403fb9586e87dc14ac676977cce44748dd5dbacf2d1074a4799dbbbc"
+    },
+    "char_362_saga": {
+      "artwork": "char_362_saga#2",
+      "file": "char_362_saga#2.large.png",
+      "sha256": "0d09a02a1a879a2d30cc06dd7449aa64e06d896414128ed329cf2c76a5d1c4de"
+    },
+    "char_377_gdglow": {
+      "artwork": "char_377_gdglow#2",
+      "file": "char_377_gdglow#2.large.png",
+      "sha256": "c7b711db370b4e3219dbf9e54e3bc46db2a412fa05940d304711712c5bfd8c98"
+    },
+    "char_400_weedy": {
+      "artwork": "char_400_weedy#2",
+      "file": "char_400_weedy#2.large.png",
+      "sha256": "0285a77a60d11ac433f572f48548c44138641dd285897ef886b18a07545f7e32"
+    },
+    "char_416_zumama": {
+      "artwork": "char_416_zumama#2",
+      "file": "char_416_zumama#2.large.png",
+      "sha256": "3c9ae5ca74d49e2d3493b11de2bad56ebef46a29223d2b1a778fe6998d0ced22"
+    },
+    "char_450_necras": {
+      "artwork": "char_450_necras#2",
+      "file": "char_450_necras#2.large.png",
+      "sha256": "8c266e8aab418fc8c9fb6b80af126f69af0c437a2659635eb81d8ccb4d86ed80"
+    },
+    "char_479_sleach": {
+      "artwork": "char_479_sleach#2",
+      "file": "char_479_sleach#2.large.png",
+      "sha256": "02314323f92b104ebda2a0782f26c4c5911ab52f6a962a6eb932fb7250095c56"
+    },
+    "char_485_pallas": {
+      "artwork": "char_485_pallas#2",
+      "file": "char_485_pallas#2.large.png",
+      "sha256": "bf8b2657d07ac06da36a821cd6eb014b9620c3a0269a63f473adc5d5b8b711ca"
+    },
+    "char_1013_chen2": {
+      "artwork": "char_1013_chen2#2",
+      "file": "char_1013_chen2#2.large.png",
+      "sha256": "660afa6fc7aa92d3622c5d499befa3a35d6dba031ae10f64a965fd217e83859b"
+    },
+    "char_1015_aglna2": {
+      "artwork": "char_1015_aglna2#2",
+      "file": "char_1015_aglna2#2.large.png",
+      "sha256": "0b70c779f924a987bcd965dfce496befb3bdc571718150968a0548d01e50468f"
+    },
+    "char_1031_slent2": {
+      "artwork": "char_1031_slent2#2",
+      "file": "char_1031_slent2#2.large.png",
+      "sha256": "aa8024c9ee2162b3c360f2332b86fec256eadaeea76aaed0e1d6369aadaa2be3"
+    },
+    "char_1034_jesca2": {
+      "artwork": "char_1034_jesca2#2",
+      "file": "char_1034_jesca2#2.large.png",
+      "sha256": "ec9c8f21be54ac3827720e41e41bcd7ab5e28d1c157017b21b08f7403c46f20c"
+    },
+    "char_1035_wisdel": {
+      "artwork": "char_1035_wisdel#2",
+      "file": "char_1035_wisdel#2.large.png",
+      "sha256": "69968c0a3dae5a5c81dbc0fa3267355b71015f1bb4991c7eb79cc18d910b8666"
+    },
+    "char_1042_phatm2": {
+      "artwork": "char_1042_phatm2#2",
+      "file": "char_1042_phatm2#2.large.png",
+      "sha256": "b2d67aa5cd52f281c7d73417bb25664ae5cde7a6e8db346ff1824af298ba2767"
+    },
+    "char_1043_leizi2": {
+      "artwork": "char_1043_leizi2#2",
+      "file": "char_1043_leizi2#2.large.png",
+      "sha256": "f05c03382630dca0779eca7307357f1b1f92ab0d6f0d93f2f57f358e4e6ba59d"
+    },
+    "char_1044_hsgma2": {
+      "artwork": "char_1044_hsgma2#2",
+      "file": "char_1044_hsgma2#2.large.png",
+      "sha256": "004bce91e6a3ba471c8f147ee694f97e7c0039a66123a6749499c1d0edb7d082"
+    },
+    "char_1050_chen3": {
+      "artwork": "char_1050_chen3#2",
+      "file": "char_1050_chen3#2.large.png",
+      "sha256": "c14cf435839f18cabe4a69b75a71ba4dc54c62e785c76becfda2cdca26738333"
+    },
+    "char_1051_headb2": {
+      "artwork": "char_1051_headb2#2",
+      "file": "char_1051_headb2#2.large.png",
+      "sha256": "209b935f5c9234c4294c4356269b5822e41fad140989069e789141cfd8125bf6"
+    },
+    "char_1052_kalts2": {
+      "artwork": "char_1052_kalts2#2",
+      "file": "char_1052_kalts2#2.large.png",
+      "sha256": "3c960369a27a1f9e61be9cd937bfe37c1fb3f598107398071ba0eccf6126ad21"
+    },
+    "char_1502_crosly": {
+      "artwork": "char_1502_crosly#2",
+      "file": "char_1502_crosly#2.large.png",
+      "sha256": "d1aea54b1b0eb1dd69c525c27d905fcce1c1283282c2bd98d1bbc0ba87895d46"
+    },
+    "char_2012_typhon": {
+      "artwork": "char_2012_typhon#2",
+      "file": "char_2012_typhon#2.large.png",
+      "sha256": "4099803e7b20e58ce72c9e8ef5d2046b0df8f326634210f9dc7b295a9b54b108"
+    },
+    "char_2013_cerber": {
+      "artwork": "char_2013_cerber#2",
+      "file": "char_2013_cerber#2.large.png",
+      "sha256": "196dd6323ab32b977ed0dd0ba7757a87a5e42dc13e2dc8a15c9ab54421eafb17"
+    },
+    "char_2014_nian": {
+      "artwork": "char_2014_nian#2",
+      "file": "char_2014_nian#2.large.png",
+      "sha256": "78ab2a0e7271e7cc592b8ef64f0e988ad2d776ae402e770581ee075660aa2342"
+    },
+    "char_2023_ling": {
+      "artwork": "char_2023_ling#2",
+      "file": "char_2023_ling#2.large.png",
+      "sha256": "452d42ffa0c2d07a54c1c3213a802367f9eb3dcf84f2d2a4fd012841c1fe6940"
+    },
+    "char_2024_chyue": {
+      "artwork": "char_2024_chyue#2",
+      "file": "char_2024_chyue#2.large.png",
+      "sha256": "304a30d4128e0afda77f58e36fce6da0be1399a9ac15a477b7a9cdd6bdae522a"
+    },
+    "char_2025_shu": {
+      "artwork": "char_2025_shu#2",
+      "file": "char_2025_shu#2.large.png",
+      "sha256": "e256cde8826d4ff963913e976b9604ffb165d0c315c331b239dad69ca4e7732c"
+    },
+    "char_2027_wang": {
+      "artwork": "char_2027_wang#2",
+      "file": "char_2027_wang#2.large.png",
+      "sha256": "a28146fc4f7e0ca56e30cb8c6a8ea56ccca63eb005cbc098ce98971882383286"
+    },
+    "char_4009_irene": {
+      "artwork": "char_4009_irene#2",
+      "file": "char_4009_irene#2.large.png",
+      "sha256": "d107a1a1d253ea38c42e4f488eb002c161f30f6bada70870d29806687a91d809"
+    },
+    "char_4011_lessng": {
+      "artwork": "char_4011_lessng#2",
+      "file": "char_4011_lessng#2.large.png",
+      "sha256": "8ae822e1bb7e9f71d5a2c3f953501c91b2e23b2476083f2345aaa0982be0d555"
+    },
+    "char_4027_heyak": {
+      "artwork": "char_4027_heyak#2",
+      "file": "char_4027_heyak#2.large.png",
+      "sha256": "cfd6f6f56f5c5779e2535cda07d34392beae2b437f3fd9ca6372c78574e234d3"
+    },
+    "char_4037_demetr": {
+      "artwork": "char_4037_demetr#2",
+      "file": "char_4037_demetr#2.large.png",
+      "sha256": "97a1448fdbc3e5e9cd331a0818578475c2407d734c73977f55cd580c1848b954"
+    },
+    "char_4046_ebnhlz": {
+      "artwork": "char_4046_ebnhlz#2",
+      "file": "char_4046_ebnhlz#2.large.png",
+      "sha256": "d87a15656bbec4a87c1731b6b25e0f590855d0edc7a10e05d0d4f4f8cfd4932f"
+    },
+    "char_4048_doroth": {
+      "artwork": "char_4048_doroth#2",
+      "file": "char_4048_doroth#2.large.png",
+      "sha256": "1c7a5e03cee562db143e55c9f79b45923ccd208b93c5ac154de6832961068427"
+    },
+    "char_4055_bgsnow": {
+      "artwork": "char_4055_bgsnow#2",
+      "file": "char_4055_bgsnow#2.large.png",
+      "sha256": "bea889a1c81cd98ade5baa01a9c15226e57f1f53684dcc77b37311788e2454d2"
+    },
+    "char_4065_judge": {
+      "artwork": "char_4065_judge#2",
+      "file": "char_4065_judge#2.large.png",
+      "sha256": "a1db8d8f5fc7e25208705903b9d976cedddd624c4d37e53ae36fc2ac6948e31a"
+    },
+    "char_4072_ironmn": {
+      "artwork": "char_4072_ironmn#2",
+      "file": "char_4072_ironmn#2.large.png",
+      "sha256": "fa8cdac5f7eec7205dc410dc08d7e95749571cb04db7e90ec009be2b1d86d6d8"
+    },
+    "char_4080_lin": {
+      "artwork": "char_4080_lin#2",
+      "file": "char_4080_lin#2.large.png",
+      "sha256": "1d9d5b2e20a4cfa214c2498f21d59408ca47b4e5512fa50a6f5db66878bf6d84"
+    },
+    "char_4088_hodrer": {
+      "artwork": "char_4088_hodrer#2",
+      "file": "char_4088_hodrer#2.large.png",
+      "sha256": "df1215ecc25c1d18fed076c07802b6b09d928b795bd909b1d00b8322c61b84cd"
+    },
+    "char_4098_vvana": {
+      "artwork": "char_4098_vvana#2",
+      "file": "char_4098_vvana#2.large.png",
+      "sha256": "79e5b40133a29a14e8176ae1db665bf423abdcdd23b06cb6dcf42b74dee5871f"
+    },
+    "char_4117_ray": {
+      "artwork": "char_4117_ray#2",
+      "file": "char_4117_ray#2.large.png",
+      "sha256": "11d0a99a81229b2a79447f2f63a25e96c3e9e36b3eed6c950178a4255ebc532f"
+    },
+    "char_4121_zuole": {
+      "artwork": "char_4121_zuole#2",
+      "file": "char_4121_zuole#2.large.png",
+      "sha256": "e89846b157ba2c1f5f53ed0e0a6543064616a393a77990ce79c3e3b47e8890e0"
+    },
+    "char_4132_ascln": {
+      "artwork": "char_4132_ascln#2",
+      "file": "char_4132_ascln#2.large.png",
+      "sha256": "b52844d961fa1e542be31306d5b26125ff15cfce88cbcccabd8afddfd1e49f1b"
+    },
+    "char_4133_logos": {
+      "artwork": "char_4133_logos#2",
+      "file": "char_4133_logos#2.large.png",
+      "sha256": "67eb840a0588589180f4acea29e8e988a6961fa0966e0ce3f2019b8a15bea3a1"
+    },
+    "char_4138_narant": {
+      "artwork": "char_4138_narant#2",
+      "file": "char_4138_narant#2.large.png",
+      "sha256": "83abcfc1b5ac9abb9246bd6256eabaab5d28bd7715443bda29c732b08441773b"
+    },
+    "char_4179_monstr": {
+      "artwork": "char_4179_monstr#2",
+      "file": "char_4179_monstr#2.large.png",
+      "sha256": "6ee0ac5509a0d9f9987a1a5c284b4d65c48f476d19e6bc27614d0ae1d5d78817"
+    },
+    "char_4195_radian": {
+      "artwork": "char_4195_radian#2",
+      "file": "char_4195_radian#2.large.png",
+      "sha256": "574e1ef30308b08b4e571252b22b8f38a6f93456d241ebb763a220786f1ad45f"
+    },
+    "char_4202_haruka": {
+      "artwork": "char_4202_haruka#2",
+      "file": "char_4202_haruka#2.large.png",
+      "sha256": "4a8180e5cb79d5a576640f55415d19a0cbe22aa71af86c4852385a6ddecdebba"
+    },
+    "char_4204_mantra": {
+      "artwork": "char_4204_mantra#2",
+      "file": "char_4204_mantra#2.large.png",
+      "sha256": "c8a247e7a7cb1a3e96c20b28910ca61afbca5b99852271f868885db509dbb770"
+    },
+    "char_4212_nasti": {
+      "artwork": "char_4212_nasti#2",
+      "file": "char_4212_nasti#2.large.png",
+      "sha256": "20ee230df0043ad11d24de4e7f25c1d219518d06e6eb9438cc15f72026d1a47e"
+    },
+    "char_4226_veen": {
+      "artwork": "char_4226_veen#2",
+      "file": "char_4226_veen#2.large.png",
+      "sha256": "214bd2e7d57cf05db7bd6979cd48343d88ce7671010f79e198423b968dd2e282"
+    },
+    "char_4228_closur": {
+      "artwork": "char_4228_closur#2",
+      "file": "char_4228_closur#2.large.png",
+      "sha256": "279f7a23d0a89f79d3b12f1a345da064ce0074f345bdaeeb5a2eddd1ce8eb3a4"
+    },
+    "char_4229_aphris": {
+      "artwork": "char_4229_aphris#2",
+      "file": "char_4229_aphris#2.large.png",
+      "sha256": "14d0fd5da93b0abf43a877367e602ae3e21554630a3d0dbc8c1592dd8540ad43"
+    },
+    "char_4230_mcnist": {
+      "artwork": "char_4230_mcnist#2",
+      "file": "char_4230_mcnist#2.large.png",
+      "sha256": "09060cd0a0e2a4ed09d32aa149d5f2b33c67fc4b3f53ac4ebab7f6fda03dbf55"
+    },
+    "char_4231_clemnt": {
+      "artwork": "char_4231_clemnt#2",
+      "file": "char_4231_clemnt#2.large.png",
+      "sha256": "bc38ab155520bc09ea2b5f59d97cdd99f72c1cbec8b2395638a7f35ee34a2f35"
+    },
+    "char_4235_thumpy": {
+      "artwork": "char_4235_thumpy#2",
+      "file": "char_4235_thumpy#2.large.png",
+      "sha256": "44ff7cbedbc1ba0471f7dafe423aad6bddcab0ff81958ac0134cdbf4a033b0ec"
+    },
+    "char_1503_talula": {
+      "file": "/assets/custom/op_talulah/portrait_e2.png",
+      "sha256": "42da06572af16675aa53fecbf27e25187a5c678bf618569e95b2a79cd5356c29"
+    },
+    "char_9901_vina": {
+      "file": "/assets/custom/char_9901_vina/portrait.png",
+      "sha256": "4d7eca6938779991fac051e892b92ee34fd3e705c402b9c026f7d71c6498d698"
+    },
+    "char_9902_custommakoto": {
+      "file": "/assets/custom/char_9902_custommakoto/portrait_e2.png",
+      "sha256": "61a42d367d8ac72791e31bab52bfe706a1d5d0d834655e0d648f9787424d2089"
+    }
+  }
+}

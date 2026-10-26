@@ -1,0 +1,27 @@
+[
+  {
+    "id": "talula",
+    "slot": "talula",
+    "name": "斗士塔露拉",
+    "owner": "自设 · 斗士塔露拉",
+    "file": "talula.json",
+    "kit": "chess_char_5_99-talula.js",
+    "tier": 5
+  },
+  {
+    "id": "vina",
+    "slot": "vina",
+    "name": "维娜·维多利亚",
+    "owner": "自设 · 领主",
+    "file": "vina.json",
+    "kit": "op-vina.js"
+  },
+  {
+    "id": "custommakoto",
+    "slot": "yuki",
+    "name": "结城理",
+    "owner": "自设 · 佣兵",
+    "file": "custommakoto.json",
+    "kit": "op-custommakoto.js"
+  }
+]

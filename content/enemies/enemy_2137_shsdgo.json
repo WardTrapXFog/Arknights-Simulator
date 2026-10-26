@@ -1,0 +1,171 @@
+{
+ "key": "enemy_2137_shsdgo",
+ "record": {
+  "key": "enemy_2137_shsdgo",
+  "name": "猎犬proto",
+  "level": 0,
+  "rank": "ELITE",
+  "handbookIndex": "BF4",
+  "desc": "攻击额外造成狂躁损伤，周期性附着于单位上撕咬攻击，大幅降低目标的命中率",
+  "descRaw": "攻击额外造成狂躁损伤，周期性附着于单位上撕咬攻击，大幅降低目标的命中率",
+  "applyWay": "MELEE",
+  "stats": {
+   "maxHp": 18000,
+   "atk": 280,
+   "def": 300,
+   "res": 20,
+   "moveSpeed": 1.3,
+   "bat": 1.8,
+   "aspd": 100,
+   "rangeRadius": 2,
+   "rawRangeRadius": 2,
+   "blockCnt": 0,
+   "massLevel": 3,
+   "lpr": 1,
+   "hpRecoveryPerSec": 0,
+   "elementRes": 0,
+   "elementDmgRes": 0,
+   "hitRatePhys": 0,
+   "hitRateArts": 0,
+   "dmgType": "phys",
+   "dmgTypes": [
+    "phys"
+   ],
+   "motion": "WALK",
+   "immunities": {
+    "stun": false,
+    "silence": true,
+    "sleep": false,
+    "frozen": false,
+    "levitate": false
+   },
+   "otherImmunities": [],
+   "tauntLevel": 0
+  },
+  "abilities": [
+   {
+    "text": "攻击额外造成狂躁损伤，周期性附着于单位上撕咬攻击，大幅降低目标的命中率",
+    "textRaw": "攻击额外造成狂躁损伤，周期性附着于单位上撕咬攻击，大幅降低目标的命中率",
+    "format": "NORMAL"
+   }
+  ],
+  "talents": {
+   "bb": {
+    "epAttack.attack@ep_damage_ratio": 0.3
+   },
+   "bbStr": {}
+  },
+  "skills": [
+   {
+    "prefabKey": "Jump",
+    "priority": 0,
+    "cooldown": 40,
+    "initCooldown": 15,
+    "spCost": 0,
+    "blackboard": [
+     {
+      "key": "duration",
+      "value": 10,
+      "valueStr": null
+     },
+     {
+      "key": "hit_interval",
+      "value": 1.5,
+      "valueStr": null
+     },
+     {
+      "key": "damage_hitrate_magical",
+      "value": -0.8,
+      "valueStr": null
+     },
+     {
+      "key": "damage_hitrate_physical",
+      "value": -0.8,
+      "valueStr": null
+     },
+     {
+      "key": "ep_damage_ratio",
+      "value": 0.3,
+      "valueStr": null
+     }
+    ]
+   }
+  ],
+  "notCountInTotal": false,
+  "tags": [],
+  "be": 18000,
+  "beFactor": 1,
+  "attrPower": 18000,
+  "isFlyEnemy": false,
+  "tokenOnly": false,
+  "acTypes": [],
+  "acType": "SPECIAL",
+  "templateSlot": "T",
+  "summons": [],
+  "inactiveIn": [],
+  "seasonOverride": null,
+  "iconId": "enemy_2137_shsdgo",
+  "spine": "enemy_2137_shsdgo",
+  "modelScale": 1,
+  "attackAnim": {
+   "clip": "Attack",
+   "dur": 1.4,
+   "hit": 0.667
+  }
+ },
+ "art": {
+  "icon": "/assets/custom/enemy_2137_shsdgo/avatar.png",
+  "spine": {
+   "skel": "/assets/custom/enemy_2137_shsdgo/enemy_2137_shsdgo.skel",
+   "atlas": "/assets/custom/enemy_2137_shsdgo/enemy_2137_shsdgo.atlas",
+   "textures": [
+    "/assets/custom/enemy_2137_shsdgo/enemy_2137_shsdgo.png"
+   ],
+   "pma": true,
+   "anims": {
+    "idle": "Idle",
+    "deploy": "Idle",
+    "attack": {
+     "begin": null,
+     "loop": "Attack",
+     "end": null
+    },
+    "attackDown": null,
+    "skill": {
+     "begin": null,
+     "loop": "Attack",
+     "end": null,
+     "via": "attack",
+     "index": 0,
+     "idle": null
+    },
+    "die": "Die",
+    "move": {
+     "begin": null,
+     "loop": "Move",
+     "end": null
+    },
+    "stun": null
+   },
+   "animations": {
+    "Attack": 1.4,
+    "Default": 0,
+    "Die": 1,
+    "Idle": 1,
+    "Move": 0.933,
+    "Skill_Begin": 0.167,
+    "Skill_End": 0.333,
+    "Skill_Loop": 10
+   },
+   "events": [
+    "OnAttack"
+   ],
+   "hits": {
+    "Attack": [
+     0.667
+    ]
+   },
+   "bounds": null
+  }
+ }
+}

@@ -1,0 +1,136 @@
+{
+  "key": "enemy_10229_agactr_2",
+  "record": {
+    "key": "enemy_10229_agactr_2",
+    "name": "炫目刀技厨师",
+    "level": 0,
+    "rank": "ELITE",
+    "handbookIndex": "TO17",
+    "desc": "使自身周围一定范围内地面敌人的攻击速度和法术抗性提升",
+    "descRaw": "使自身周围一定范围内地面敌人的攻击速度和法术抗性提升",
+    "applyWay": "MELEE",
+    "stats": {
+      "maxHp": 18000,
+      "atk": 600,
+      "def": 500,
+      "res": 20,
+      "moveSpeed": 0.8,
+      "bat": 4,
+      "aspd": 100,
+      "rangeRadius": 0,
+      "rawRangeRadius": 0,
+      "blockCnt": 0,
+      "massLevel": 0,
+      "lpr": 1,
+      "hpRecoveryPerSec": 0,
+      "elementRes": 0,
+      "elementDmgRes": 0,
+      "hitRatePhys": 0,
+      "hitRateArts": 0,
+      "dmgType": "phys",
+      "dmgTypes": [
+        "phys"
+      ],
+      "motion": "WALK",
+      "immunities": {
+        "stun": false,
+        "silence": false,
+        "sleep": false,
+        "frozen": false,
+        "levitate": false
+      },
+      "otherImmunities": [],
+      "tauntLevel": 0
+    },
+    "abilities": [
+      {
+        "text": "使自身周围一定范围内地面敌人的攻击速度和法术抗性提升",
+        "textRaw": "使自身周围一定范围内地面敌人的攻击速度和法术抗性提升",
+        "format": "NORMAL"
+      }
+    ],
+    "talents": {
+      "bb": {
+        "AuraAttributeUp.magic_resistance": 25,
+        "AuraAttributeUp.attack_speed": 50,
+        "AuraAttributeUp.range_radius": 2.5,
+        "AuraAttributeUp.def": 0
+      },
+      "bbStr": {}
+    },
+    "skills": [],
+    "notCountInTotal": false,
+    "tags": [],
+    "be": 18000,
+    "beFactor": 1,
+    "attrPower": 18000,
+    "isFlyEnemy": false,
+    "tokenOnly": false,
+    "acTypes": [],
+    "acType": "SPECIAL",
+    "templateSlot": "T",
+    "summons": [],
+    "inactiveIn": [],
+    "seasonOverride": null,
+    "iconId": "enemy_10229_agactr_2",
+    "spine": "enemy_10229_agactr_2",
+    "modelScale": 1,
+    "attackAnim": {
+      "clip": "Attack",
+      "dur": 1.833,
+      "hit": 0.733
+    }
+  },
+  "art": {
+    "icon": "/assets/custom/enemy_10229_agactr_2/avatar.png",
+    "spine": {
+      "skel": "/assets/custom/enemy_10229_agactr_2/enemy_10229_agactr_2.skel",
+      "atlas": "/assets/custom/enemy_10229_agactr_2/enemy_10229_agactr_2.atlas",
+      "textures": [
+        "/assets/custom/enemy_10229_agactr_2/enemy_10229_agactr_2.png"
+      ],
+      "pma": true,
+      "anims": {
+        "idle": "Idle",
+        "deploy": "Idle",
+        "attack": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null
+        },
+        "attackDown": null,
+        "skill": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null,
+          "via": "attack",
+          "index": 0,
+          "idle": null
+        },
+        "die": "Die",
+        "move": {
+          "begin": null,
+          "loop": "Move",
+          "end": null
+        },
+        "stun": null
+      },
+      "animations": {
+        "Attack": 1.833,
+        "Default": 0,
+        "Die": 1,
+        "Idle": 1.667,
+        "Move": 1.333
+      },
+      "events": [
+        "OnAttack"
+      ],
+      "hits": {
+        "Attack": [
+          0.733
+        ]
+      },
+      "bounds": null
+    }
+  }
+}

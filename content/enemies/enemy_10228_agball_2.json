@@ -1,0 +1,141 @@
+{
+  "key": "enemy_10228_agball_2",
+  "record": {
+    "key": "enemy_10228_agball_2",
+    "name": "“美食的奴隶”",
+    "level": 0,
+    "rank": "ELITE",
+    "handbookIndex": "TO15",
+    "desc": "受到浮空及失衡效果后会大摔一跤并瘫痪，同时对周围其他敌方单位造成真实伤害",
+    "descRaw": "受到浮空及失衡效果后会大摔一跤并瘫痪，同时对周围其他敌方单位造成真实伤害",
+    "applyWay": "MELEE",
+    "stats": {
+      "maxHp": 13000,
+      "atk": 900,
+      "def": 400,
+      "res": 20,
+      "moveSpeed": 0.8,
+      "bat": 3,
+      "aspd": 100,
+      "rangeRadius": 0,
+      "rawRangeRadius": 0,
+      "blockCnt": 0,
+      "massLevel": 1,
+      "lpr": 1,
+      "hpRecoveryPerSec": 0,
+      "elementRes": 0,
+      "elementDmgRes": 0,
+      "hitRatePhys": 0,
+      "hitRateArts": 0,
+      "dmgType": "phys",
+      "dmgTypes": [
+        "phys"
+      ],
+      "motion": "WALK",
+      "immunities": {
+        "stun": false,
+        "silence": true,
+        "sleep": false,
+        "frozen": false,
+        "levitate": false
+      },
+      "otherImmunities": [],
+      "tauntLevel": 0
+    },
+    "abilities": [
+      {
+        "text": "受到浮空及失衡效果后会大摔一跤并瘫痪，同时对周围其他敌方单位造成真实伤害",
+        "textRaw": "受到浮空及失衡效果后会大摔一跤并瘫痪，同时对周围其他敌方单位造成真实伤害",
+        "format": "NORMAL"
+      }
+    ],
+    "talents": {
+      "bb": {
+        "DefUp.def": 1200,
+        "DefUp.magic_resistance": 40,
+        "FallDownDamage.range_radius": 1.75,
+        "FallDownDamage.pure_value": 1000,
+        "FallDownDamage.confused_duration": 5,
+        "DefUp.move_speed": 2
+      },
+      "bbStr": {}
+    },
+    "skills": [],
+    "notCountInTotal": false,
+    "tags": [],
+    "be": 13000,
+    "beFactor": 1,
+    "attrPower": 13000,
+    "isFlyEnemy": false,
+    "tokenOnly": false,
+    "acTypes": [],
+    "acType": "SPECIAL",
+    "templateSlot": "T",
+    "summons": [],
+    "inactiveIn": [],
+    "seasonOverride": null,
+    "iconId": "enemy_10228_agball_2",
+    "spine": "enemy_10228_agball_2",
+    "modelScale": 1,
+    "attackAnim": {
+      "clip": "Attack",
+      "dur": 1.167,
+      "hit": 0.433
+    }
+  },
+  "art": {
+    "icon": "/assets/custom/enemy_10228_agball_2/avatar.png",
+    "spine": {
+      "skel": "/assets/custom/enemy_10228_agball_2/enemy_10228_agball_2.skel",
+      "atlas": "/assets/custom/enemy_10228_agball_2/enemy_10228_agball_2.atlas",
+      "textures": [
+        "/assets/custom/enemy_10228_agball_2/enemy_10228_agball_2.png"
+      ],
+      "pma": true,
+      "anims": {
+        "idle": "Idle",
+        "deploy": "Idle",
+        "attack": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null
+        },
+        "attackDown": null,
+        "skill": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null,
+          "via": "attack",
+          "index": 0,
+          "idle": null
+        },
+        "die": "Die",
+        "move": {
+          "begin": null,
+          "loop": "Move",
+          "end": null
+        },
+        "stun": null
+      },
+      "animations": {
+        "Attack": 1.167,
+        "Default": 0,
+        "Die": 1,
+        "Dizzy_Begin": 1,
+        "Dizzy_End": 1,
+        "Dizzy_Loop": 2.5,
+        "Idle": 1.333,
+        "Move": 1
+      },
+      "events": [
+        "OnAttack"
+      ],
+      "hits": {
+        "Attack": [
+          0.433
+        ]
+      },
+      "bounds": null
+    }
+  }
+}

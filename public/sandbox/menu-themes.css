@@ -1,0 +1,146 @@
+/* Menu palettes and materials. Component geometry remains in menu.css, terminal.css and each workspace. */
+:root[data-menu-theme] {
+  --menu-signal-accent: #63dfbf;
+  --menu-optical-accent: #9bded6;
+  --menu-graphite-accent: #edbc77;
+  --menu-bg: #191a1c;
+  --menu-raised: #2a2c2f;
+  --menu-panel: #232527;
+  --menu-inset: #121416;
+  --menu-line: #43464a;
+  --menu-text: #f0eee7;
+  --menu-muted: #b0b0aa;
+  --menu-accent: var(--menu-graphite-accent);
+  --menu-radius: 3px;
+  --menu-control-shadow: none;
+  --menu-card-shadow: 0 8px 20px #0002;
+  --menu-wash: linear-gradient(transparent, transparent);
+  --menu-scan: repeating-linear-gradient(0deg, #e2e9db02 0 1px, transparent 1px 4px);
+  --menu-soft: color-mix(in srgb, var(--menu-accent) 10%, var(--menu-panel));
+  --menu-hover: color-mix(in srgb, var(--menu-accent) 7%, var(--menu-raised));
+  --menu-faint: color-mix(in srgb, var(--menu-accent) 23%, transparent);
+  --terminal-background: radial-gradient(ellipse at 28% 20%, var(--menu-raised), var(--menu-bg) 65%);
+}
+:root[data-menu-theme="signal"] {
+  --menu-bg: #101816; --menu-raised: #1c2a24; --menu-panel: #18221e; --menu-inset: #0b1210;
+  --menu-line: #34443e; --menu-text: #e3ece7; --menu-muted: #9aaca4; --menu-accent: var(--menu-signal-accent);
+  --menu-radius: 2px; --menu-card-shadow: 0 8px 20px #0002;
+  --menu-scan: repeating-linear-gradient(0deg, #b0edd709 0 1px, transparent 1px 4px);
+}
+:root[data-menu-theme="optical"] {
+  --menu-bg: #192127; --menu-raised: #303e46; --menu-panel: #263139; --menu-inset: #131b20;
+  --menu-line: #43565f; --menu-text: #e7eeeb; --menu-muted: #a6b6bb; --menu-accent: var(--menu-optical-accent);
+  --menu-radius: 5px; --menu-control-shadow: inset 0 1px #ffffff0c, 0 2px 6px #0003;
+  --menu-card-shadow: inset 0 1px #ffffff0a, 0 8px 22px #0003;
+  --menu-wash: linear-gradient(150deg, #ffffff05, transparent 70%);
+}
+
+:root[data-menu-theme] body:not([data-terminal-mode="battle"]) {
+  color: var(--menu-text);
+  --terminal-scan: var(--menu-scan);
+
+  &.menu-screen {
+    background: linear-gradient(var(--menu-faint) 1px, transparent 1px) center / 96px 96px,
+      linear-gradient(90deg, var(--menu-faint) 1px, transparent 1px) center / 96px 96px, var(--terminal-background);
+    background-blend-mode: soft-light, soft-light, normal;
+  }
+  &.menu-screen::before {
+    border-color: var(--menu-faint);
+    background: linear-gradient(var(--menu-accent), var(--menu-accent)) left top / 28px 1px no-repeat,
+      linear-gradient(var(--menu-accent), var(--menu-accent)) left top / 1px 28px no-repeat,
+      linear-gradient(var(--menu-accent), var(--menu-accent)) right bottom / 28px 1px no-repeat,
+      linear-gradient(var(--menu-accent), var(--menu-accent)) right bottom / 1px 28px no-repeat;
+  }
+  & :is(.operation-screen,.sandbox-entry) { color: var(--menu-text); }
+  & :is(.terminal-chrome,.saves,.operation-dialog,.lv-dialog) { color: var(--menu-text); }
+  & .saves { --terminal-scan: var(--menu-scan); }
+  & .terminal-header { background: linear-gradient(var(--menu-bg) 65%, transparent); }
+  & :is(.operation-head,.lv-head,.lv-toolbar) { background: color-mix(in srgb, var(--menu-panel) 80%, transparent); border-color: var(--menu-line); }
+  & .terminal-particles i { background: var(--menu-accent); }
+  & :is(.terminal-header__end,.menu__rail,.menu__heading p,.menu-card__top,.menu-card__top > span,.menu-card__body > span,.menu__footer,.op-dim,.operation-level small,.sandbox-archive__preview p,.saves__intro,.saves__note,.saves__label,.saves__slotbody small,.saves__slotbody time,.operation-roster-tools small) { color: var(--menu-muted); }
+  & :is(.menu__eyebrow,.menu__heading h1 span,.op-eyebrow,.saves__number,.saves__mark,.settings__sections h3,.settings__row output) { color: var(--menu-accent); }
+  & .menu__heading h1 span { text-shadow: none; }
+  & :is(.menu__footer,.operation-team-bar,.operation-loadout,.settings__sections h3,.settings__row) { border-color: var(--menu-line); }
+
+  /* Navigation remains taller when selected; secondary commands keep their own compact proportions. */
+  & .terminal-tab {
+    background: var(--menu-wash), var(--menu-panel); color: var(--menu-muted);
+    border-color: var(--menu-line); border-bottom-width: 2px; box-shadow: var(--menu-control-shadow);
+  }
+  & .terminal-tab:hover { color: var(--menu-accent); background: var(--menu-hover); }
+  & .terminal-tab.is-current {
+    color: var(--menu-accent); background: var(--menu-soft); border-color: var(--menu-line);
+    border-bottom-color: var(--menu-accent); box-shadow: var(--menu-control-shadow);
+  }
+  & .terminal-tab.is-current::after { background: var(--menu-faint); }
+  & :is(.terminal-history a,.terminal-history button,.terminal-options button,.menu__button,.op-button,.lv-btn,.settings__key) {
+    color: var(--menu-text); background: var(--menu-wash), var(--menu-panel);
+    border-color: var(--menu-line); border-radius: var(--menu-radius); box-shadow: var(--menu-control-shadow);
+  }
+  & :is(.terminal-history a,.terminal-history button,.terminal-options button,.menu__button,.op-button,.lv-btn,.settings__key):hover:not(:disabled) { color: var(--menu-accent); background: var(--menu-hover); border-color: var(--menu-accent); }
+  & :is(.terminal-options [aria-pressed="true"],.op-button.is-on,.lv-btn.is-on) { color: var(--menu-accent); background: var(--menu-soft); border-color: var(--menu-accent); }
+  & :is(.menu__button--primary,.op-button--primary,.lv-btn--pri) { color: var(--menu-inset); background: var(--menu-accent); border-color: var(--menu-accent); }
+  & :is(.menu__button--primary,.op-button--primary,.lv-btn--pri):hover:not(:disabled) { color: var(--menu-inset); background: color-mix(in srgb, var(--menu-accent) 83%, var(--menu-text)); }
+  & :is(.menu__button,.op-button,.lv-btn,.settings__key):active:not(:disabled) { box-shadow: none; }
+  & :is(.menu__button--danger,.lv-btn--red) { color: #ff9d94; background: color-mix(in srgb, #ce5144 8%, var(--menu-panel)); border-color: #ce514460; }
+  & :is(.menu__button--danger,.lv-btn--red):hover:not(:disabled) { color: #ffc2ba; border-color: #ed796c; background: color-mix(in srgb, #ce5144 18%, var(--menu-panel)); }
+  & :is(.menu__button,.op-button,.lv-btn,.settings__key):disabled { color: var(--menu-muted); background: var(--menu-inset); border-color: var(--menu-line); box-shadow: none; }
+  & :is(.terminal-tab,.terminal-history a,.terminal-history button,.terminal-options button,.menu-card,.menu__button,.saves__slot,.op-button,.operation-level,.lv-btn):focus-visible { outline-color: var(--menu-accent); }
+
+  /* Entry cards retain their clipped silhouettes and separate illustration/command areas. */
+  & .menu-card { color: var(--menu-text); background: var(--terminal-scan), var(--menu-wash), var(--menu-panel); border-color: var(--menu-line); border-top-color: var(--menu-accent); box-shadow: var(--menu-card-shadow); }
+  & .menu-card:hover { background: var(--terminal-scan), var(--menu-hover); border-color: var(--menu-accent); }
+  & .menu-card::after { border-color: var(--menu-accent); }
+  & .menu-card:hover::after { background: var(--menu-accent); }
+  & .menu-card__art b { color: var(--menu-accent); text-shadow: none; }
+  & .menu-card__art i { border-color: var(--menu-faint); }
+  & .menu-card__art--editor i { background: repeating-linear-gradient(90deg, transparent 0 32px, var(--menu-faint) 32px 33px); }
+  & .menu-card__art--sandbox {
+    background: linear-gradient(var(--menu-faint), var(--menu-faint)) center / 1px 78% no-repeat,
+      linear-gradient(90deg, var(--menu-faint), var(--menu-faint)) center / 50% 1px no-repeat,
+      radial-gradient(circle at center, transparent 46px, var(--menu-faint) 47px 48px, transparent 49px 72px, var(--menu-line) 73px 74px, transparent 75px);
+  }
+  & .menu-card__foot { color: var(--menu-accent); background: color-mix(in srgb, var(--menu-bg) 35%, transparent); border-color: var(--menu-line); }
+  & .menu-card:hover .menu-card__foot { color: var(--menu-accent); background: var(--menu-soft); }
+
+  & :is(.sandbox-archive__preview,.saves__detail,.operation-level,.operation-operator,.lv-card) { color: var(--menu-text); background: var(--menu-wash), var(--menu-panel); border-color: var(--menu-line); box-shadow: var(--menu-card-shadow); }
+  & :is(.operation-level-detail,.operation-team-side,.operation-professions,.lv-timeline,.lv-tl-bar) { background: var(--menu-inset); border-color: var(--menu-line); }
+  & .lv-side > section { color: var(--menu-text); background: var(--menu-panel); border-color: var(--menu-line); }
+  & .saves__slot { color: var(--menu-text); background: var(--menu-inset); border-color: var(--menu-line); box-shadow: none; }
+  & .saves__slot:hover { border-color: var(--menu-accent); }
+  & .saves__slot.is-on { color: var(--menu-text); background: var(--menu-soft); border-color: var(--menu-accent); box-shadow: inset 3px 0 var(--menu-accent); }
+  & :is(.operation-level:hover,.operation-level.is-on,.operation-operator.is-selected,.operation-selected-slot.is-on) { border-color: var(--menu-accent); box-shadow: inset 0 0 0 1px var(--menu-accent); }
+  & .operation-operator.is-active { outline-color: var(--menu-accent); }
+  & .operation-operator-check { background: var(--menu-accent); color: var(--menu-inset); }
+  & .operation-selected-slot { color: var(--menu-text); background: var(--menu-panel); border-color: var(--menu-line); }
+  & :is(.operation-level img,.operation-operator img) { background: var(--menu-inset); }
+  & .operation-briefing-summary div { color: var(--menu-muted); background: var(--menu-panel); border-color: var(--menu-accent); }
+  & .operation-briefing-summary b { color: var(--menu-text); }
+  & .saves__status:not(.is-bad) { color: var(--menu-accent); }
+  & :is(dialog.saves,.operation-dialog,.lv-dialog) { color: var(--menu-text); background: var(--terminal-scan), var(--menu-panel); border-color: var(--menu-line); border-top-color: var(--menu-accent); }
+  & :is(.saves__label,.operation-screen,.operation-dialog,.lv-dialog,.sandbox-settings) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),select,textarea) { color: var(--menu-text); background: var(--menu-inset); border-color: var(--menu-line); }
+  & :is(.settings__row input,.settings__theme input) { accent-color: var(--menu-accent); }
+}
+
+:root[data-menu-theme="graphite"] body:not([data-terminal-mode="battle"]) .terminal-tab.is-current { color: var(--menu-text); background: var(--menu-raised); border-top: 2px solid var(--menu-accent); border-bottom-color: var(--menu-line); }
+:root[data-menu-theme="signal"] body:not([data-terminal-mode="battle"]) .terminal-tab.is-current::after { height: 1px; background: var(--menu-accent); }
+:root[data-menu-theme="optical"] body:not([data-terminal-mode="battle"]) .terminal-tab { border-radius: 5px 5px 0 0; }
+:root[data-menu-theme="optical"] body:not([data-terminal-mode="battle"]) .terminal-tab.is-current { background: var(--menu-raised); box-shadow: inset 0 1px #ffffff13, 0 3px 10px #0003; }
+
+.settings__appearance { grid-column: 1 / -1; }
+.settings__themes { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+.settings__theme { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 6px; padding: 13px; border: 1px solid var(--menu-line); border-radius: 5px; color: var(--menu-text); background: var(--menu-inset); cursor: pointer; }
+.settings__theme strong { grid-column: 1 / -1; font-size: 14px; font-weight: 500; }
+.settings__theme small { grid-column: 1 / -1; font-size: 11px; color: var(--menu-muted); }
+.settings__theme input { width: 16px; height: 16px; margin: 0; }
+.settings__theme:has(input:checked) { background: var(--menu-soft); border-color: var(--menu-accent); box-shadow: inset 0 -2px var(--menu-accent); }
+.settings__theme:hover { border-color: var(--menu-accent); }
+.settings__theme:focus-within { outline: 2px solid var(--menu-accent); outline-offset: 2px; }
+.settings__theme-swatch { display: flex; gap: 3px; height: 17px; align-items: flex-end; }
+.settings__theme-swatch i { width: 24px; height: 10px; background: var(--choice-accent); }
+.settings__theme-swatch i:nth-child(2) { height: 15px; opacity: .45; }
+.settings__theme-swatch i:nth-child(3) { width: 15px; height: 10px; opacity: .18; }
+[data-theme-choice="signal"] { --choice-accent: var(--menu-signal-accent); }
+[data-theme-choice="optical"] { --choice-accent: var(--menu-optical-accent); }
+[data-theme-choice="graphite"] { --choice-accent: var(--menu-graphite-accent); }
+@media(max-width:650px) { .settings__themes { grid-template-columns: 1fr; } .settings__theme { grid-template-columns: auto minmax(0,1fr) auto; align-items: center; } .settings__theme input { grid-column: 3; grid-row: 1 / 3; } .settings__theme strong { grid-column: 2; grid-row: 1; } .settings__theme small { grid-column: 2; grid-row: 2; } .settings__theme-swatch { grid-row: 1 / 3; } }

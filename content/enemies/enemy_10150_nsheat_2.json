@@ -1,0 +1,157 @@
+{
+  "key": "enemy_10150_nsheat_2",
+  "record": {
+    "key": "enemy_10150_nsheat_2",
+    "name": "焦香螺旋桨",
+    "level": 0,
+    "rank": "ELITE",
+    "handbookIndex": "AS10",
+    "desc": "【飞行单位】持续对周围其他单位造成灼燃损伤；处于“可浮空区块”时，提供1层浮力",
+    "descRaw": "【飞行单位】持续对周围其他单位造成<@eb.key>灼燃损伤</>；处于“可浮空区块”时，提供1层浮力",
+    "applyWay": "RANGED",
+    "stats": {
+      "maxHp": 20000,
+      "atk": 480,
+      "def": 200,
+      "res": 60,
+      "moveSpeed": 0.4,
+      "bat": 4.5,
+      "aspd": 100,
+      "rangeRadius": 2,
+      "rawRangeRadius": 2,
+      "blockCnt": 1,
+      "massLevel": 2,
+      "lpr": 1,
+      "hpRecoveryPerSec": 0,
+      "elementRes": 0,
+      "elementDmgRes": 0,
+      "hitRatePhys": 0,
+      "hitRateArts": 0,
+      "dmgType": "arts",
+      "dmgTypes": [
+        "arts"
+      ],
+      "motion": "FLY",
+      "immunities": {
+        "stun": false,
+        "silence": false,
+        "sleep": false,
+        "frozen": false,
+        "levitate": false
+      },
+      "otherImmunities": [],
+      "tauntLevel": 0
+    },
+    "abilities": [
+      {
+        "text": "飞行单位",
+        "textRaw": "飞行单位",
+        "format": "NORMAL"
+      },
+      {
+        "text": "持续对周围其他单位造成灼燃损伤",
+        "textRaw": "持续对周围其他单位造成<$ba.dt.burning>灼燃损伤</>",
+        "format": "SILENCE"
+      },
+      {
+        "text": "处于“可浮空区块”时，提供1层浮力",
+        "textRaw": "处于“可浮空区块”时，提供1层浮力",
+        "format": "NORMAL"
+      }
+    ],
+    "talents": {
+      "bb": {
+        "heat.range_radius": 2,
+        "heat.atk_scale": 0.1
+      },
+      "bbStr": {}
+    },
+    "skills": [],
+    "notCountInTotal": false,
+    "tags": [
+      "drone",
+      "fly",
+      "burn"
+    ],
+    "be": 20000,
+    "beFactor": 1,
+    "attrPower": 20000,
+    "isFlyEnemy": true,
+    "tokenOnly": false,
+    "acTypes": [
+      "FLY"
+    ],
+    "acType": "FLY",
+    "templateSlot": "EF",
+    "summons": [],
+    "inactiveIn": [],
+    "seasonOverride": null,
+    "iconId": "enemy_10150_nsheat_2",
+    "spine": "enemy_10150_nsheat_2",
+    "staticBody": true,
+    "attackAnim": {
+      "dur": 1.5,
+      "hit": 0.367
+    },
+    "modelScale": 1
+  },
+  "art": {
+    "icon": "/assets/custom/enemy_10150_nsheat_2/avatar.png",
+    "spine": {
+      "skel": "/assets/custom/enemy_10150_nsheat_2/enemy_10150_nsheat_2.skel",
+      "atlas": "/assets/custom/enemy_10150_nsheat_2/enemy_10150_nsheat_2.atlas",
+      "textures": [
+        "/assets/custom/enemy_10150_nsheat_2/enemy_10150_nsheat_2.png"
+      ],
+      "pma": true,
+      "anims": {
+        "idle": "Idle",
+        "deploy": "Start",
+        "attack": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null
+        },
+        "attackDown": null,
+        "skill": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null,
+          "via": "attack",
+          "index": 0,
+          "idle": null
+        },
+        "die": "Die",
+        "move": {
+          "begin": null,
+          "loop": "Move",
+          "end": null
+        },
+        "stun": null
+      },
+      "animations": {
+        "Attack": 1.5,
+        "Default": 0,
+        "Die": 1.333,
+        "Idle": 1.5,
+        "Move": 1,
+        "Start": 1
+      },
+      "events": [
+        "OnAttack",
+        "OnStart"
+      ],
+      "hits": {
+        "Attack": [
+          0.367
+        ]
+      },
+      "bounds": {
+        "x": -164.86,
+        "y": -108.79,
+        "width": 331,
+        "height": 256.51
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "key": "enemy_1080_sotidp_2",
+  "record": {
+    "key": "enemy_1080_sotidp_2",
+    "name": "游击队传令兵组长",
+    "level": 0,
+    "rank": "NORMAL",
+    "handbookIndex": "SI8",
+    "desc": "在场时，强化所有敌军的攻击力与防御力",
+    "descRaw": "在场时，强化所有敌军的攻击力与防御力",
+    "applyWay": "MELEE",
+    "stats": {
+      "maxHp": 10000,
+      "atk": 360,
+      "def": 120,
+      "res": 50,
+      "moveSpeed": 1,
+      "bat": 2.5,
+      "aspd": 100,
+      "rangeRadius": 0,
+      "rawRangeRadius": 0,
+      "blockCnt": 0,
+      "massLevel": 1,
+      "lpr": 1,
+      "hpRecoveryPerSec": 0,
+      "elementRes": 0,
+      "elementDmgRes": 0,
+      "hitRatePhys": 0,
+      "hitRateArts": 0,
+      "dmgType": "phys",
+      "dmgTypes": [
+        "phys"
+      ],
+      "motion": "WALK",
+      "immunities": {
+        "stun": false,
+        "silence": true,
+        "sleep": false,
+        "frozen": false,
+        "levitate": false
+      },
+      "otherImmunities": [],
+      "tauntLevel": 0
+    },
+    "abilities": [
+      {
+        "text": "在场时，强化所有敌军的攻击力与防御力",
+        "textRaw": "在场时，强化所有敌军的攻击力与防御力",
+        "format": "NORMAL"
+      }
+    ],
+    "talents": {
+      "bb": {
+        "strength.atk": 0.1,
+        "strength.def": 100
+      },
+      "bbStr": {}
+    },
+    "skills": [],
+    "notCountInTotal": false,
+    "tags": [],
+    "be": 10000,
+    "beFactor": 1,
+    "attrPower": 10000,
+    "isFlyEnemy": false,
+    "tokenOnly": false,
+    "acTypes": [],
+    "acType": "SPECIAL",
+    "templateSlot": "T",
+    "summons": [],
+    "inactiveIn": [],
+    "seasonOverride": null,
+    "iconId": "enemy_1080_sotidp_2",
+    "spine": "enemy_1080_sotidp_2",
+    "modelScale": 1,
+    "attackAnim": {
+      "clip": "Attack",
+      "dur": 1.1,
+      "hit": 0.4
+    }
+  },
+  "art": {
+    "icon": "/assets/custom/enemy_1080_sotidp_2/avatar.png",
+    "spine": {
+      "skel": "/assets/custom/enemy_1080_sotidp_2/enemy_1080_sotidp_2.skel",
+      "atlas": "/assets/custom/enemy_1080_sotidp_2/enemy_1080_sotidp_2.atlas",
+      "textures": [
+        "/assets/custom/enemy_1080_sotidp_2/enemy_1080_sotidp_2.png"
+      ],
+      "pma": true,
+      "anims": {
+        "idle": "Idle",
+        "deploy": "Idle",
+        "attack": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null
+        },
+        "attackDown": null,
+        "skill": {
+          "begin": null,
+          "loop": "Attack",
+          "end": null,
+          "via": "attack",
+          "index": 0,
+          "idle": null
+        },
+        "die": "Die",
+        "move": {
+          "begin": null,
+          "loop": "Move",
+          "end": null
+        },
+        "stun": null
+      },
+      "animations": {
+        "Attack": 1.1,
+        "Default": 0,
+        "Die": 1.2,
+        "Idle": 1,
+        "Move": 1
+      },
+      "events": [
+        "OnAttack"
+      ],
+      "hits": {
+        "Attack": [
+          0.4
+        ]
+      },
+      "bounds": {
+        "x": -147.918,
+        "y": -4.128,
+        "width": 235.918,
+        "height": 420.796
+      }
+    }
+  }
+}

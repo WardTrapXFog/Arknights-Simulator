@@ -1,0 +1,752 @@
+{
+  "version": 1,
+  "chessId": "chess_char_5_99_talula_a",
+  "charId": "char_1503_talula",
+  "record": {
+    "chessId": "chess_char_5_99_talula_a",
+    "baseId": "chess_char_5_99_talula_a",
+    "goldenId": null,
+    "isGolden": false,
+    "tier": 6,
+    "identifier": 999,
+    "isHidden": false,
+    "isDiy": false,
+    "visible": true,
+    "chessType": "NORMAL",
+    "backup": null,
+    "shopSortId": 99,
+    "charId": "char_1503_talula",
+    "name": "塔露拉",
+    "appellation": "Talulah",
+    "rarity": 6,
+    "profession": "WARRIOR",
+    "subProfessionId": "primguard",
+    "subProfessionName": "本源近卫",
+    "position": "MELEE",
+    "nationId": "ursus",
+    "bonds": [],
+    "garrisonIds": [],
+    "price": 4,
+    "sellPrice": 1,
+    "upgradeNum": 0,
+    "upgradeChessId": null,
+    "status": {
+      "phase": 2,
+      "level": 90,
+      "skillLevel": 10,
+      "equipLevel": 3
+    },
+    "stats": {
+      "maxHp": 2960,
+      "atk": 1227,
+      "def": 420,
+      "res": 10,
+      "cost": 23,
+      "blockCnt": 2,
+      "bat": 1.2,
+      "aspd": 100,
+      "respawnTime": 70,
+      "spRecovery": 1,
+      "hpRecoveryPerSec": 0,
+      "moveSpeed": 1,
+      "tauntLevel": 0,
+      "massLevel": 0,
+      "deployLimit": 1,
+      "deckStack": 0
+    },
+    "immunities": {
+      "stun": false,
+      "silence": false,
+      "sleep": false,
+      "frozen": false,
+      "levitate": false
+    },
+    "rangeId": "1-1",
+    "rangeGrid": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "dmgType": "phys",
+    "attackKind": "melee",
+    "projectile": "none",
+    "canHitFly": false,
+    "targetPriority": null,
+    "trait": {
+      "desc": "能够阻挡两个敌人，可以造成元素伤害；可以且优先攻击自身阻挡的单位（即使目标处于攻击范围外或为飞行单位）",
+      "descRaw": "能够阻挡两个敌人，可以造成<@ba.kw>元素伤害</>；可以且优先攻击自身阻挡的单位（即使目标处于攻击范围外或为飞行单位）",
+      "bb": {},
+      "bbStr": {},
+      "rangeGrid": null
+    },
+    "skill": {
+      "skillId": "skchr_talula_3",
+      "iconId": "skchr_talula_3",
+      "name": "恶火重燃",
+      "level": 7,
+      "desc": "攻击范围扩大，攻击间隔增大（+0.8），攻击力+30%，同时攻击攻击范围内的所有敌人，攻击力提升至380%；每次攻击都会释放一道从塔露拉身后向身前发射并席卷整个战场的【焰浪】：对触碰到的敌人立刻造成相当于攻击力120%的法术伤害，并附带700点灼燃损伤；对首次触碰到的敌人会立刻造成灼燃损伤爆发；受到焰浪影响的敌人灼燃损伤冷却恢复速度+100%，并在所经地块施加【恶火】：每秒对地块上的敌人造成相当于塔露拉攻击力15%的法术伤害和相当于塔露拉攻击力10%的元素伤害，持续到技能结束后5秒",
+      "descRaw": "攻击范围扩大，攻击间隔增大（+0.8），攻击力+30%，同时攻击攻击范围内的所有敌人，攻击力提升至380%；每次攻击都会释放一道从塔露拉身后向身前发射并席卷整个战场的【焰浪】：对触碰到的敌人立刻造成相当于攻击力120%的法术伤害，并附带700点灼燃损伤；对首次触碰到的敌人会立刻造成灼燃损伤爆发；受到焰浪影响的敌人灼燃损伤冷却恢复速度+100%，并在所经地块施加【恶火】：每秒对地块上的敌人造成相当于塔露拉攻击力15%的法术伤害和相当于塔露拉攻击力10%的元素伤害，持续到技能结束后5秒",
+      "skillType": "MANUAL",
+      "durationType": "NONE",
+      "duration": 30,
+      "spType": "INCREASE_WITH_TIME",
+      "spCost": 45,
+      "initSp": 40,
+      "maxChargeTime": 1,
+      "increment": 1,
+      "bb": {
+        "atk": 0.3,
+        "base_attack_time": 0.8,
+        "atk_to": 3.8,
+        "wave_scale": 1.2,
+        "wave_burn": 700,
+        "wave_speed": 8,
+        "burst_cd_speed": 1,
+        "fire_scale": 0.15,
+        "fire_element_scale": 0.1,
+        "fire_after": 5
+      },
+      "bbStr": {},
+      "rangeId": "talula-3",
+      "rangeGrid": [
+        [
+          -2,
+          0
+        ],
+        [
+          -2,
+          1
+        ],
+        [
+          -2,
+          2
+        ],
+        [
+          -1,
+          0
+        ],
+        [
+          -1,
+          1
+        ],
+        [
+          -1,
+          2
+        ],
+        [
+          -1,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "prefabId": "skchr_talula_3",
+      "trigger": {
+        "rule": "DEFAULT",
+        "rawRule": "DEFAULT",
+        "customRangeGrid": null
+      },
+      "index": 2,
+      "overrideTokenKey": null,
+      "isDefault": true
+    },
+    "skills": [
+      {
+        "skillId": "skchr_talula_1",
+        "iconId": "skchr_talula_1",
+        "name": "薪火裁决",
+        "level": 10,
+        "desc": "下一次攻击附带相当于攻击力120%的灼燃损伤，并额外造成相当于攻击力230%的元素伤害，对已经灼燃损伤爆发的敌人则提升至460%",
+        "descRaw": "下一次攻击附带相当于攻击力120%的灼燃损伤，并额外造成相当于攻击力230%的元素伤害，对已经灼燃损伤爆发的敌人则提升至460%",
+        "skillType": "AUTO",
+        "durationType": "NONE",
+        "duration": -1,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 3,
+        "initSp": 0,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "burn_scale": 1.2,
+          "element_scale": 2.3,
+          "element_scale_burst": 4.6
+        },
+        "bbStr": {},
+        "rangeId": null,
+        "rangeGrid": null,
+        "prefabId": "skchr_talula_1",
+        "trigger": {
+          "rule": "DEFAULT",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 0,
+        "overrideTokenKey": null,
+        "isDefault": false
+      },
+      {
+        "skillId": "skchr_talula_2",
+        "iconId": "skchr_talula_2",
+        "name": "炽翼掠火",
+        "level": 10,
+        "desc": "攻击范围扩大，攻击间隔缩短（-0.2），攻击力+110%，同时攻击最多4个敌人；对每个敌人的首次攻击会直接使目标灼燃损伤爆发；攻击时附带造成伤害40%的灼燃损伤；攻击灼燃损伤爆发的敌人时，伤害类型转变为元素伤害，且攻击力提升至135%",
+        "descRaw": "攻击范围扩大，攻击间隔缩短（-0.2），攻击力+110%，同时攻击最多4个敌人；对每个敌人的首次攻击会直接使目标灼燃损伤爆发；攻击时附带造成伤害40%的灼燃损伤；攻击灼燃损伤爆发的敌人时，伤害类型转变为元素伤害，且攻击力提升至135%",
+        "skillType": "MANUAL",
+        "durationType": "NONE",
+        "duration": 20,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 22,
+        "initSp": 18,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "atk": 1.1,
+          "base_attack_time": -0.2,
+          "attack@max_target": 4,
+          "burn_from_damage": 0.4,
+          "atk_to": 1.35
+        },
+        "bbStr": {},
+        "rangeId": "talula-2",
+        "rangeGrid": [
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            3
+          ],
+          [
+            -1,
+            4
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ],
+        "prefabId": "skchr_talula_2",
+        "trigger": {
+          "rule": "DEFAULT",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 1,
+        "overrideTokenKey": null,
+        "isDefault": false
+      },
+      {
+        "skillId": "skchr_talula_3",
+        "iconId": "skchr_talula_3",
+        "name": "恶火重燃",
+        "level": 10,
+        "desc": "攻击范围扩大，攻击间隔增大（+0.8），攻击力+30%，同时攻击攻击范围内的所有敌人，攻击力提升至380%；每次攻击都会释放一道从塔露拉身后向身前发射并席卷整个战场的【焰浪】：对触碰到的敌人立刻造成相当于攻击力120%的法术伤害，并附带700点灼燃损伤；对首次触碰到的敌人会立刻造成灼燃损伤爆发；受到焰浪影响的敌人灼燃损伤冷却恢复速度+100%，并在所经地块施加【恶火】：每秒对地块上的敌人造成相当于塔露拉攻击力15%的法术伤害和相当于塔露拉攻击力10%的元素伤害，持续到技能结束后5秒",
+        "descRaw": "攻击范围扩大，攻击间隔增大（+0.8），攻击力+30%，同时攻击攻击范围内的所有敌人，攻击力提升至380%；每次攻击都会释放一道从塔露拉身后向身前发射并席卷整个战场的【焰浪】：对触碰到的敌人立刻造成相当于攻击力120%的法术伤害，并附带700点灼燃损伤；对首次触碰到的敌人会立刻造成灼燃损伤爆发；受到焰浪影响的敌人灼燃损伤冷却恢复速度+100%，并在所经地块施加【恶火】：每秒对地块上的敌人造成相当于塔露拉攻击力15%的法术伤害和相当于塔露拉攻击力10%的元素伤害，持续到技能结束后5秒",
+        "skillType": "MANUAL",
+        "durationType": "NONE",
+        "duration": 30,
+        "spType": "INCREASE_WITH_TIME",
+        "spCost": 45,
+        "initSp": 40,
+        "maxChargeTime": 1,
+        "increment": 1,
+        "bb": {
+          "atk": 0.3,
+          "base_attack_time": 0.8,
+          "atk_to": 3.8,
+          "wave_scale": 1.2,
+          "wave_burn": 700,
+          "wave_speed": 8,
+          "burst_cd_speed": 1,
+          "fire_scale": 0.15,
+          "fire_element_scale": 0.1,
+          "fire_after": 5
+        },
+        "bbStr": {},
+        "rangeId": "talula-3",
+        "rangeGrid": [
+          [
+            -2,
+            0
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            -1,
+            0
+          ],
+          [
+            -1,
+            1
+          ],
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            3
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "prefabId": "skchr_talula_3",
+        "trigger": {
+          "rule": "DEFAULT",
+          "rawRule": "DEFAULT",
+          "customRangeGrid": null
+        },
+        "index": 2,
+        "overrideTokenKey": null,
+        "isDefault": true
+      }
+    ],
+    "talents": [
+      {
+        "index": 0,
+        "name": "来自乌萨斯",
+        "desc": "塔露拉攻击力+21%，攻击时额外造成相当于攻击力40%的法术伤害与25%的元素伤害，攻击时有20%概率当次攻击力提升至170%；可以攻击场上处于灼燃损伤爆发期间的敌方单位；自身攻击范围内以及场上灼燃损伤爆发的敌人隐匿、迷彩效果失效",
+        "descRaw": "塔露拉攻击力<@ba.vup>+18%（+3%）</>，攻击时额外造成相当于攻击力<@ba.vup>35%（+5%）</>的<@ba.vup>法术伤害</>与<@ba.vup>20%（+5%）</>的<@ba.vup>元素伤害</>，攻击时有<@ba.vup>20%</>概率当次攻击力提升至<@ba.vup>160%（+10%）</>；可以攻击场上处于<$ba.dt.burning2>灼燃损伤爆发</>期间的敌方单位；自身攻击范围内以及场上<$ba.dt.burning2>灼燃损伤爆发</>的敌人<@ba.kw>隐匿</>、<@ba.kw>迷彩</>效果失效",
+        "bb": {
+          "atk": 0.21,
+          "atk_scale": 0.4,
+          "element_scale": 0.25,
+          "prob": 0.2,
+          "atk_to": 1.7
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      },
+      {
+        "index": 1,
+        "name": "焚尽冻原",
+        "desc": "塔露拉开启技能时起飞，获得30%的对空庇护，免疫敌方的灼燃损伤，且对处于焚尽状态的敌人造成的伤害提升25%；塔露拉在场时，敌人灼燃损伤爆发会获得持续5秒的焚尽：防御力-35%、法术抗性-20，每秒受到相当于塔露拉攻击力15%的法术伤害与10%的元素伤害，并持续停顿，且失去特殊能力",
+        "descRaw": "塔露拉开启技能时<@ba.kw>起飞</>，获得<@ba.vup>30%</>的<@ba.kw>对空庇护</>，免疫敌方的<@ba.kw>灼燃损伤</>，且对处于<@ba.kw>焚尽</>状态的敌人造成的伤害提升<@ba.vup>20%（+5%）</>；塔露拉在场时，敌人<@ba.dt.burning2>灼燃损伤爆发</>会获得持续5秒的<@ba.kw>焚尽</>：防御力<@ba.vup>-35%</>、法术抗性<@ba.vup>-20</>，每秒受到相当于塔露拉攻击力<@ba.vup>15%</>的<@ba.kw>法术伤害</>与<@ba.vup>10%</>的<@ba.kw>元素伤害</>，并持续<@ba.kw>停顿</>，且失去特殊能力",
+        "bb": {
+          "air_shield": 0.3,
+          "dmg_up": 0.25,
+          "burn_duration": 5,
+          "def_down": -0.35,
+          "res_down": -20,
+          "fire_scale": 0.15,
+          "fire_element_scale": 0.1
+        },
+        "bbStr": {},
+        "rangeGrid": null,
+        "tokenKey": null,
+        "hidden": false,
+        "fromModule": false
+      }
+    ],
+    "tokens": [],
+    "module": null,
+    "assets": {
+      "avatar": "char_1503_talula",
+      "portrait": "char_1503_talula",
+      "spine": "char_1503_talula",
+      "skillIcon": "skchr_talula_3",
+      "subProfIcon": "sub_primguard_icon"
+    }
+  },
+  "art": {
+    "avatar": "/assets/custom/op_talulah/avatar.png",
+    "portrait": "/assets/custom/op_talulah/portrait.png",
+    "portraitE2": "/assets/custom/op_talulah/portrait_e2.png",
+    "illust": "/assets/custom/op_talulah/portrait_e2.png",
+    "spine": {
+      "front": {
+        "skel": "/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.skel",
+        "atlas": "/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.atlas",
+        "textures": [
+          "/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.png"
+        ],
+        "pma": true,
+        "anims": {
+          "idle": "Idle",
+          "deploy": "Idle",
+          "attack": {
+            "begin": null,
+            "loop": "Attack_2",
+            "end": null
+          },
+          "attackDown": null,
+          "skill": {
+            "begin": null,
+            "loop": "Attack_2",
+            "end": null,
+            "index": 2,
+            "idle": "Idle"
+          },
+          "die": "Die",
+          "move": null,
+          "stun": null,
+          "skills": {
+            "0": {
+              "begin": null,
+              "loop": "Idle",
+              "end": null,
+              "index": 0,
+              "idle": "Idle"
+            },
+            "1": {
+              "begin": null,
+              "loop": "Attack_1",
+              "end": null,
+              "index": 1,
+              "idle": "Idle"
+            },
+            "2": {
+              "begin": null,
+              "loop": "Skill_2",
+              "end": null,
+              "index": 2,
+              "idle": "Idle"
+            }
+          },
+          "swing": {
+            "clip": "Attack_2",
+            "talula": {
+              "suppressNativeSlash": true
+            }
+          }
+        },
+        "animations": {
+          "Attack_1": 2,
+          "Attack_2": 2.3333332538604736,
+          "Default": 0,
+          "Die": 5,
+          "Idle": 3,
+          "Move": 2.5,
+          "Skill_1": 2,
+          "Skill_2": 3.667
+        },
+        "events": [
+          "OnAttack",
+          "OnPlayEffect"
+        ],
+        "hits": {
+          "Attack_1": [
+            1
+          ],
+          "Attack_2": [
+            1.3333333730697632
+          ],
+          "Skill_1": [
+            1
+          ],
+          "Skill_2": [
+            2.567
+          ]
+        },
+        "bounds": {
+          "x": -424.943,
+          "y": -2.129,
+          "width": 529.115,
+          "height": 372.997
+        },
+        "turnToTarget": true,
+        "wing": true
+      },
+      "back": {
+        "skel": "/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.skel",
+        "atlas": "/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.atlas",
+        "textures": [
+          "/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.png"
+        ],
+        "pma": true,
+        "anims": {
+          "idle": "Idle",
+          "deploy": "Idle",
+          "attack": {
+            "begin": null,
+            "loop": "Attack_2",
+            "end": null
+          },
+          "attackDown": null,
+          "skill": {
+            "begin": null,
+            "loop": "Attack_2",
+            "end": null,
+            "index": 2,
+            "idle": "Idle"
+          },
+          "die": "Die",
+          "move": null,
+          "stun": null,
+          "skills": {
+            "0": {
+              "begin": null,
+              "loop": "Idle",
+              "end": null,
+              "index": 0,
+              "idle": "Idle"
+            },
+            "1": {
+              "begin": null,
+              "loop": "Attack_1",
+              "end": null,
+              "index": 1,
+              "idle": "Idle"
+            },
+            "2": {
+              "begin": null,
+              "loop": "Skill_2",
+              "end": null,
+              "index": 2,
+              "idle": "Idle"
+            }
+          },
+          "swing": {
+            "clip": "Attack_2",
+            "talula": {
+              "suppressNativeSlash": true
+            }
+          }
+        },
+        "animations": {
+          "Attack_1": 2,
+          "Attack_2": 2.3333332538604736,
+          "Default": 0,
+          "Die": 5,
+          "Idle": 3,
+          "Move": 2.5,
+          "Skill_1": 2,
+          "Skill_2": 3.667
+        },
+        "events": [
+          "OnAttack",
+          "OnPlayEffect"
+        ],
+        "hits": {
+          "Attack_1": [
+            1
+          ],
+          "Attack_2": [
+            1.3333333730697632
+          ],
+          "Skill_1": [
+            1
+          ],
+          "Skill_2": [
+            2.567
+          ]
+        },
+        "bounds": {
+          "x": -424.943,
+          "y": -2.129,
+          "width": 529.115,
+          "height": 372.997
+        },
+        "turnToTarget": true,
+        "wing": true
+      }
+    }
+  },
+  "skillAssets": {
+    "skchr_talula_1": "/assets/custom/op_talulah/skill_1.png",
+    "skchr_talula_2": "/assets/custom/op_talulah/skill_2.png",
+    "skchr_talula_3": "/assets/custom/op_talulah/skill_3.png"
+  },
+  "skillAliases": {
+    "skchr_talula_1": "skchr_talula_1",
+    "skchr_talula_2": "skchr_talula_2",
+    "skchr_talula_3": "skchr_talula_3"
+  },
+  "audio": {
+    "attack": "/assets/audio/sfx/player/p_atk/p_atk_sword_n.mp3",
+    "hit": "/assets/audio/sfx/player/p_imp/p_imp_sword_n.mp3",
+    "skills": {
+      "0": null
+    },
+    "attacks": {
+      "0": "/assets/audio/sfx/player/p_atk/p_atk_firemag_n.mp3",
+      "1": "/assets/audio/sfx/player/p_atk/p_atk_firesword_n.mp3",
+      "2": "/assets/audio/sfx/player/p_atk/p_atk_firesword_h.mp3"
+    },
+    "hits": {
+      "0": "/assets/audio/sfx/player/p_imp/p_imp_fireboom_n.mp3",
+      "1": "/assets/audio/sfx/player/p_imp/p_imp_firesword_n.mp3",
+      "2": "/assets/audio/sfx/player/p_imp/p_imp_firesword_h.mp3"
+    },
+    "skillLoops": {
+      "1": "/assets/audio/sfx/player/p_skill/p_skill_volcano_loop.mp3",
+      "2": "/assets/audio/sfx/player/p_skill/p_skill_volcano_loop.mp3"
+    },
+    "talula": {
+      "renderAnchors": true,
+      "fadeIn": 0.12,
+      "fadeOut": 0.18,
+      "loopGain": 0.32,
+      "anchors": {
+        "talulaTakeoff": {
+          "url": null,
+          "delay": 0
+        },
+        "talulaLand": {
+          "url": null,
+          "delay": 0.3
+        }
+      },
+      "loopGainBySlot": {
+        "1": 0.34,
+        "2": 0.26
+      },
+      "loopRateBySlot": {
+        "1": 1.0,
+        "2": 0.84
+      }
+    }
+  },
+  "moduleAssets": {}
+}

@@ -1,0 +1,101 @@
+/* 关卡选择、敌方情报与玩家编队。 */
+.operation-screen { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; background: radial-gradient(ellipse at 28% 20%, #28343b, #10171c 65%); color: #e4e9e8; font: 14px/1.5 system-ui, 'Microsoft YaHei', sans-serif; }
+.operation-screen * { box-sizing: border-box; }
+.operation-head { display: flex; align-items: center; gap: 18px; padding: 14px 24px; border-bottom: 1px solid #53615f; background: #141c21e8; flex: none; }
+.operation-head h1 { font-size: 20px; margin: 0; max-width: 40vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.operation-head a { color: #b9c6c4; text-decoration: none; }
+.op-grow { flex: 1; }
+.op-button { border: 1px solid #576360; border-radius: 5px; background: #242e33; color: #e7e9e2; padding: 9px 14px; font: inherit; cursor: pointer; }
+.op-button:hover, .op-button.is-on { border-color: #dfb56c; background: #524531; }
+.op-button--primary { background: #dcaf62; color: #1d211d; font-weight: 700; border-color: #edc27f; }
+.operation-screen input, .operation-screen select, .operation-dialog textarea, .operation-dialog input { font: inherit; background: #141d23; color: inherit; border: 1px solid #52615f; border-radius: 4px; padding: 8px; min-width: 0; }
+/* 行模板必须写 minmax(0, 1fr)：隐式行是 auto，会被内容撑到比容器还高，
+   里面的 overflow:auto 就永远没有可滚的高度（列表于是滚不动、被裁掉）。 */
+.operation-levels { display: grid; grid-template-columns: minmax(0, 1fr) 320px; grid-template-rows: minmax(0, 1fr); flex: 1; min-height: 0; }
+.operation-level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); grid-auto-rows: 240px; align-content: start; gap: 18px; overflow: auto; padding: 24px; }
+.operation-level { border: 1px solid #53615f; border-radius: 7px; padding: 0; overflow: hidden; color: inherit; background: #1d272d; text-align: left; cursor: pointer; font: inherit; }
+.operation-level:hover, .operation-level.is-on { border-color: #e7be74; box-shadow: 0 0 0 1px #e7be74; }
+.operation-level img { display: block; height: 175px; width: 100%; object-fit: contain; background: #10161b; }
+.operation-level span { display: grid; padding: 9px 14px; }
+.operation-level small { color: #a4b2ad; }
+.operation-level-detail { display: flex; flex-direction: column; gap: 14px; min-height: 0; padding: 28px 22px; background: #151e24; border-left: 1px solid #4d5b59; overflow: auto; }
+.operation-level-detail h2 { margin: 0; font-size: 24px; }
+.operation-level-detail p { white-space: pre-wrap; margin: 0; }
+.op-eyebrow { color: #caa25f; font: 11px monospace; letter-spacing: .12em; }
+.op-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.op-tags span { padding: 3px 7px; border: 1px solid #667270; color: #c1ccc7; font-size: 11px; }
+.op-dim { color: #9daba7; font-size: 12px; }
+.op-status { color: #f4aa89; font-size: 12px; white-space: pre-wrap; }
+.operation-empty { display: grid; place-content: center; text-align: center; padding: 40px; color: #b0bdb9; }
+.operation-team-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 22px; border-bottom: 1px solid #475651; }
+.operation-team-bar input[data-team-name] { width: 130px; }
+.operation-team-bar label { margin-left: auto; }
+.operation-team { display: grid; grid-template-columns: 90px minmax(0, 1fr) 330px; grid-template-rows: minmax(0, 1fr); flex: 1; min-height: 0; }
+.operation-professions { display: grid; grid-template-rows: repeat(9, minmax(0, 1fr)); padding: 12px 8px; gap: 5px; background: #151e24; }
+.operation-professions .op-button { padding: 4px; font-size: 14px; }
+.operation-roster { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding: 12px 18px; gap: 12px; }
+.operation-roster-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.operation-roster-tools input { flex: 1; }
+.operation-roster-tools small { font-size: 11px; color: #a4b3ad; }
+.operation-operators { overflow: auto; flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 12px; min-height: 0; padding: 3px; }
+.operation-operator { position: relative; min-width: 0; text-align: left; border: 1px solid #5b6561; border-radius: 6px; padding: 0 0 7px; background: #222d33; color: inherit; overflow: hidden; cursor: pointer; }
+.operation-operator img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: #11191e; }
+.operation-operator b, .operation-operator small { display: block; margin: 4px 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.operation-operator b { font-size: 13px; }
+.operation-operator small { font-size: 10px; color: #b0bdb7; }
+.operation-operator.is-selected { border-color: #e7be74; box-shadow: inset 0 0 0 2px #e7be74; }
+.operation-operator.is-active { outline: 2px solid #a3d1c3; outline-offset: 1px; }
+.operation-operator-type { position: absolute; left: 0; top: 0; font-size: 10px; background: #171d22df; color: #efc77f; padding: 3px 6px; }
+.operation-operator-check { position: absolute; right: 0; top: 0; background: #e7be74; color: #17211e; padding: 3px 7px; font-weight: 700; }
+.operation-team-side { min-height: 0; overflow: auto; border-left: 1px solid #4b5b55; padding: 12px; background: #141d23; }
+.operation-team-side h2 { margin: 0 0 8px; font-size: 14px; }
+.operation-selected { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.operation-selected-slot { display: flex; align-items: center; border: 1px solid #4d5c56; min-height: 38px; min-width: 0; border-radius: 4px; background: #202c32; }
+.operation-selected-slot.is-on { border-color: #e7be74; }
+.operation-selected-slot button { min-width: 0; border: 0; background: none; color: inherit; padding: 0; cursor: pointer; display: flex; align-items: center; }
+.operation-selected-slot button:first-child { flex: 1; }
+.operation-selected-slot button:last-child:not(:first-child) { padding: 6px; color: #d09e7c; }
+.operation-selected-slot img { width: 35px; height: 35px; object-fit: cover; }
+.operation-selected-slot span { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 10px; text-align: left; padding-left: 4px; }
+.operation-selected-slot small { display: block; font: 9px monospace; color: #c9b68e; }
+.operation-selected-slot.is-empty { padding: 6px; color: #6c8278; font: 11px monospace; }
+.operation-loadout { margin-top: 12px; padding-top: 10px; border-top: 1px solid #4a5951; font-size: 12px; }
+.operation-loadout h3 { margin: 0; font-size: 15px; }
+.operation-loadout > small { color: #9eaea5; }
+.operation-loadout > label { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+.operation-loadout select { min-width: 0; flex: 1; width: 0; font-size: 11px; }
+.operation-skills { display: flex; gap: 7px; margin: 10px 0; }
+.operation-skills button { display: flex; gap: 4px; align-items: center; padding: 4px 7px; }
+.operation-skills img { width: 26px; height: 26px; }
+.operation-skill-description { max-height: 150px; overflow: auto; white-space: pre-wrap; color: #c3cec8; line-height: 1.5; }
+.operation-dialog { width: min(800px, 90vw); max-height: 88vh; color: #e4e9e8; background: #172129; border: 1px solid #79827a; border-radius: 8px; padding: 0; font: 14px/1.5 system-ui, 'Microsoft YaHei', sans-serif; }
+.operation-dialog::backdrop { background: #000b; }
+.operation-dialog header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 20px; border-bottom: 1px solid #54635b; }
+.operation-dialog h2 { margin: 0; font-size: 18px; }
+.operation-dialog__body { padding: 20px; overflow: auto; max-height: 70vh; }
+.operation-dialog textarea { display: block; box-sizing: border-box; width: 100%; margin: 12px 0; resize: vertical; }
+.operation-map { display: block; width: 100%; max-height: 58vh; object-fit: contain; }
+.operation-enemies { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.operation-enemies article { padding: 12px; border: 1px solid #4c5c54; background: #202d34; }
+.operation-enemies img { width: 56px; height: 56px; object-fit: contain; }
+.operation-enemies h3 { margin: 4px 0; }
+.operation-enemies p { color: #b6c4bb; font-size: 12px; }
+body[data-workspace='level'] .workspace__maps, body[data-workspace='level'] .workspace__save, body[data-workspace='level'] .workspace__quick, body[data-workspace='level'] .hud__drawer, body[data-workspace='level'] #btn-pay, body[data-workspace='level'] .hand__more, body[data-workspace='level'] .ocard__del, body[data-workspace='level'] .oskills { display: none !important; }
+body[data-workspace='level'] .ocard { touch-action: none; cursor: grab; }
+body[data-workspace='level'] .ocard img { -webkit-user-drag: none; pointer-events: none; }
+body[data-workspace='level'] .hud__hand.is-deploy-dragging { cursor: grabbing; }
+body[data-workspace='level'] .hud__hand.is-deploy-dragging .ocard.is-on { opacity: .4; }
+.level-deploy-ghost { position: fixed; z-index: 1; width: var(--deploy-size, 64px); transform: translate(-50%, -75%); pointer-events: none; user-select: none; opacity: .65; filter: grayscale(.7); }
+.level-deploy-ghost img { display: block; box-sizing: border-box; width: 100%; aspect-ratio: 1; border: 2px solid #c97c68; border-radius: 6px; object-fit: cover; box-shadow: 0 5px 18px #0009; }
+.level-deploy-ghost span { display: block; padding: 3px 5px; border-radius: 3px; background: #10171ee8; color: #eef3ed; text-align: center; font: 11px/1.3 system-ui, 'Microsoft YaHei', sans-serif; white-space: nowrap; }
+.level-deploy-ghost.is-legal { opacity: .88; filter: none; }
+.level-deploy-ghost.is-legal img { border-color: #efb65c; }
+.level-deploy-ghost.is-pending { opacity: .72; }
+.operation-result .saves__intro { display: grid; gap: 12px; }
+@media (max-width: 1050px) { .operation-team { grid-template-columns: 70px minmax(0, 1fr) 280px; } .operation-team-bar { gap: 5px; padding: 8px 12px; } .operation-team-bar .op-button { padding: 6px 9px; } .operation-head { gap: 12px; padding: 10px 14px; } .operation-head h1 { font-size: 16px; } }
+@media (max-width: 760px) { .operation-levels { grid-template-columns: minmax(0, 1fr) 240px; } .operation-team { grid-template-columns: 60px minmax(0, 1fr) 240px; } .operation-operators { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); } .operation-roster { padding: 8px; } .operation-team-side { padding: 8px; } .operation-head { font-size: 12px; } }
+
+/* 模组的特性追加 / 天赋改写（选中模组时才出现；机械师特勤证章的那两句在这里） */
+.operation-module-desc { margin: 6px 0 2px; padding: 6px 8px; border-left: 2px solid #e7be74; background: rgba(231, 190, 116, 0.08); border-radius: 3px; }
+.operation-module-desc p { margin: 0 0 4px; font-size: 12px; line-height: 1.5; color: #cbbfa6; }
+.operation-module-desc p:last-child { margin-bottom: 0; }

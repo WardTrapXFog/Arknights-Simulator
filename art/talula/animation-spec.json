@@ -1,0 +1,2144 @@
+{
+  "formatVersion": 1,
+  "timeConvention": {
+    "source": "Spine 源时间秒；sourceFrames30 是按 30fps 表达的帧坐标，可为连续值。sourcePhase=sourceSeconds/clipDuration，Default 固定为 0。",
+    "game": "全部播放、混入、淡出、延迟均为随暂停与倍速推进的游戏秒。",
+    "toleranceSeconds": 0.00001,
+    "interval": "I 是本次真实攻击间隔。它只用于分配表现，绝不被表现代码改写。",
+    "attackOrigin": "每刀 t=0 是真实攻击/命中事件时刻；起手 t<0，收势 t>0。",
+    "designParameters": "lead、recovery、mix 和外层位移为选定的接入参数，不是官方素材实测值，也未做游戏画面验收。"
+  },
+  "source": {
+    "skeleton": "public/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.skel",
+    "atlas": "public/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.atlas",
+    "texture": "public/assets/spine/enemy/enemy_1503_talula/enemy_1503_talula.png",
+    "spineVersion": "3.8.99",
+    "sha256": {
+      "skel": "73aa7fbbb03d3abe75c40837b12617eade79b648542f91de1b3638cb5d40a45b",
+      "atlas": "59d895fb7fe5b134683650c4a0663287e2c19d38cbd0df5f8092301cc7822d62",
+      "png": "128f3289ad060655b72e479af0a5ea031ff27492cfb7cc9879c39d8c092df1b7"
+    },
+    "bones": 97,
+    "slots": 50,
+    "textureSize": [
+      512,
+      512
+    ]
+  },
+  "inspection": {
+    "fullClipImageSampling": "每段从 0 起每 0.1 源秒查看纹理网格帧，并补看精确末帧；Default 只看 0。",
+    "consecutiveImageWindows30fps": {
+      "Attack_1": [
+        0.8,
+        1.2
+      ],
+      "Attack_2": [
+        1.2,
+        1.6
+      ],
+      "Skill_1": [
+        0.8,
+        1.2
+      ],
+      "Skill_2": [
+        2.4,
+        2.8
+      ],
+      "Die": [
+        4.5,
+        4.9
+      ]
+    },
+    "keyData": "直接读取 8 段的骨骼旋转/位移、掌拳附件切换、原生刀痕显隐、事件与死亡透明度关键帧；角度幅度不等于绝对局部角。",
+    "imageMethod": "以现有 Spine 3.8 运行时求取含 IK/加权网格/变形的世界顶点，用原 atlas 和 PNG 在内存拼成纹理帧；不含游戏场景、程序特效或 GPU 混合验收。"
+  },
+  "materialLimits": {
+    "sword": {
+      "bone": "R_Weapon",
+      "parent": "R_Hand",
+      "timelineOffsetDegrees": 0,
+      "setupLocalRotationDegrees": -46.095516204833984,
+      "independentRotation": false,
+      "rule": "剑由祖先手臂/手/腰带动；必须在当前姿势求值后读取世界剑轴，不能读取恒为 0 的动画偏移当挥剑角。"
+    },
+    "attack2Torso": {
+      "chestRotationAmplitudeDegrees": 0,
+      "headRotationAmplitudeDegrees": 0,
+      "chestTimelineOffsetDegrees": -9.6858,
+      "headTimelineOffsetDegrees": -16.5138,
+      "rule": "自身旋转固定不等于全身世界矩阵不动；普攻/S2 接受其躯干发力不足，不能宣称重做了身体动作。S3 改用 Skill_2。"
+    },
+    "leftHandComparison": {
+      "Attack_1": 54.4324,
+      "Attack_2": 28.8529,
+      "unit": "L_Hand 旋转关键值最大值减最小值，度",
+      "rule": "Attack_1 的幅度优势属于左手施放，不作为大剑重斩依据。"
+    },
+    "skill1": {
+      "leftHandRotationAmplitudeDegrees": 0,
+      "chestRotationAmplitudeDegrees": 7.8411,
+      "headRotationAmplitudeDegrees": 2.1647,
+      "leftUpperArmRotationAmplitudeDegrees": 93.0918,
+      "rule": "不制作不存在的手腕翻转。原素材已有上臂抬掌和掌拳切换；手部特效跟随最终世界挂点。"
+    },
+    "idle": {
+      "chestRotationAmplitudeDegrees": 0,
+      "headRotationAmplitudeDegrees": 0,
+      "leftHandRotationAmplitudeDegrees": 0,
+      "rightArmRotationAmplitudeDegrees": 0.5449,
+      "rightHandRotationAmplitudeDegrees": 1.3775,
+      "nonConstantRotationTimelineCount": 53,
+      "rule": "全骨骼旋转恒为 0 的字面说法与本地 skel 不符。采用低位持剑的近静态语义，不夸大为明显呼吸/展翼。焚尽时冻结 Idle(0) 来明确停掉原生小幅位移和变形。"
+    },
+    "missing": [
+      "独立部署/抬眼/剑尖点地",
+      "飞行、展翼、降落骨骼动画",
+      "眩晕/睡眠/冰冻专用动作",
+      "完整倒地与尸体姿势",
+      "专用撤退与根位移"
+    ],
+    "compensation": "只用现有片段重定时、定格、混入，以及明确标出的角色外层高度/透明度；不新增或覆盖骨骼曲线。"
+  },
+  "clips": {
+    "Attack_1": {
+      "durationSeconds": 2,
+      "durationFrames30": 60,
+      "summary": "左手收拢后向前张掌施放，胸头有配合，右手长剑始终主要处于体侧下方；不是大幅挥剑。",
+      "segments": [
+        {
+          "label": "抬左手、收掌",
+          "sourceFrames30": [
+            0,
+            13
+          ],
+          "sourceSeconds": [
+            0,
+            0.4333
+          ],
+          "sourcePhase": [
+            0,
+            0.2167
+          ]
+        },
+        {
+          "label": "握拳蓄势",
+          "sourceFrames30": [
+            13,
+            29
+          ],
+          "sourceSeconds": [
+            0.4333,
+            0.9667
+          ],
+          "sourcePhase": [
+            0.2167,
+            0.4833
+          ]
+        },
+        {
+          "label": "张掌前送，30 帧 OnAttack",
+          "sourceFrames30": [
+            29,
+            33
+          ],
+          "sourceSeconds": [
+            0.9667,
+            1.1
+          ],
+          "sourcePhase": [
+            0.4833,
+            0.55
+          ]
+        },
+        {
+          "label": "胸头与左臂回收",
+          "sourceFrames30": [
+            33,
+            60
+          ],
+          "sourceSeconds": [
+            1.1,
+            2
+          ],
+          "sourcePhase": [
+            0.55,
+            1
+          ]
+        }
+      ],
+      "events": [
+        {
+          "sourceSeconds": 1,
+          "sourceFrame30": 30,
+          "sourcePhase": 0.5,
+          "name": "OnAttack",
+          "int": 0
+        }
+      ],
+      "use": "保留素材，不作为普攻或重斩；左手幅度更大不代表剑路更大。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 5.2063,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ],
+            [
+              0.1667,
+              -9.6858
+            ],
+            [
+              0.6333,
+              -11.1228
+            ],
+            [
+              0.8667,
+              -11.4656
+            ],
+            [
+              1.2333,
+              -6.2593
+            ],
+            [
+              1.6667,
+              -7.2635
+            ],
+            [
+              2,
+              -9.6858
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 10.5396,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ],
+            [
+              0.1667,
+              -16.5138
+            ],
+            [
+              0.6333,
+              -9.0513
+            ],
+            [
+              0.9333,
+              -9.6858
+            ],
+            [
+              1.2333,
+              -19.5909
+            ],
+            [
+              1.5333,
+              -17.2798
+            ],
+            [
+              2,
+              -16.5138
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 54.4324,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              0.3,
+              11.9248
+            ],
+            [
+              0.4333,
+              -28.0641
+            ],
+            [
+              0.9667,
+              -31.5915
+            ],
+            [
+              1.1,
+              2.7932
+            ],
+            [
+              1.2667,
+              1.5569
+            ],
+            [
+              1.5,
+              1.5569
+            ],
+            [
+              1.8,
+              22.8408
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Attack_2": {
+      "durationSeconds": 2.3333332538604736,
+      "durationFrames30": 70,
+      "summary": "剑由体侧经下方抬向肩后，短促前劈，剑刃横向展开后归位；胸头自身旋转固定，腰、手臂和网格仍在动。",
+      "segments": [
+        {
+          "label": "低位移剑与抬剑",
+          "sourceFrames30": [
+            0,
+            22
+          ],
+          "sourceSeconds": [
+            0,
+            0.7333
+          ],
+          "sourcePhase": [
+            0,
+            0.3143
+          ]
+        },
+        {
+          "label": "剑举到肩后",
+          "sourceFrames30": [
+            22,
+            37
+          ],
+          "sourceSeconds": [
+            0.7333,
+            1.2333
+          ],
+          "sourcePhase": [
+            0.3143,
+            0.5286
+          ]
+        },
+        {
+          "label": "短蓄势",
+          "sourceFrames30": [
+            37,
+            39
+          ],
+          "sourceSeconds": [
+            1.2333,
+            1.3
+          ],
+          "sourcePhase": [
+            0.5286,
+            0.5571
+          ]
+        },
+        {
+          "label": "前劈与刀痕，40 帧 OnAttack",
+          "sourceFrames30": [
+            39,
+            44
+          ],
+          "sourceSeconds": [
+            1.3,
+            1.4667
+          ],
+          "sourcePhase": [
+            0.5571,
+            0.6286
+          ]
+        },
+        {
+          "label": "横剑收势、归位",
+          "sourceFrames30": [
+            44,
+            70
+          ],
+          "sourceSeconds": [
+            1.4667,
+            2.3333
+          ],
+          "sourcePhase": [
+            0.6286,
+            1
+          ]
+        }
+      ],
+      "events": [
+        {
+          "sourceSeconds": 1.3333333730697632,
+          "sourceFrame30": 40,
+          "sourcePhase": 0.5714,
+          "name": "OnAttack",
+          "int": 0
+        }
+      ],
+      "use": "普攻、S2 的单次斩击。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ],
+            [
+              2.3333,
+              -9.6858
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ],
+            [
+              2.3333,
+              -16.5138
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 28.8529,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              0.7667,
+              6.1229
+            ],
+            [
+              1.3,
+              2.0691
+            ],
+            [
+              1.5667,
+              28.8529
+            ],
+            [
+              1.9333,
+              11.1181
+            ],
+            [
+              2.3333,
+              0
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              1.3667,
+              0
+            ],
+            [
+              1.7667,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Default": {
+      "durationSeconds": 0,
+      "durationFrames30": 0,
+      "summary": "零时长的默认持剑站姿，只有一个姿势，不是入场动画。",
+      "segments": [
+        {
+          "label": "默认站姿",
+          "sourceFrames30": [
+            0,
+            0
+          ],
+          "sourceSeconds": [
+            0,
+            0
+          ],
+          "sourcePhase": [
+            0,
+            0
+          ]
+        }
+      ],
+      "events": [],
+      "use": "重建时的静态兜底；不得除以零或当成可播放循环。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Die": {
+      "durationSeconds": 5,
+      "durationFrames30": 150,
+      "summary": "站立受创、收剑与竖剑、身体起伏，末段各插槽分批变暗透明；没有完整倒地或尸体姿势。",
+      "segments": [
+        {
+          "label": "短暂受创起伏",
+          "sourceFrames30": [
+            0,
+            22
+          ],
+          "sourceSeconds": [
+            0,
+            0.7333
+          ],
+          "sourcePhase": [
+            0,
+            0.1467
+          ]
+        },
+        {
+          "label": "剑转到体前并收回",
+          "sourceFrames30": [
+            22,
+            55
+          ],
+          "sourceSeconds": [
+            0.7333,
+            1.8333
+          ],
+          "sourcePhase": [
+            0.1467,
+            0.3667
+          ]
+        },
+        {
+          "label": "举剑至竖直",
+          "sourceFrames30": [
+            55,
+            60
+          ],
+          "sourceSeconds": [
+            1.8333,
+            2
+          ],
+          "sourcePhase": [
+            0.3667,
+            0.4
+          ]
+        },
+        {
+          "label": "站立持剑、身体起伏",
+          "sourceFrames30": [
+            60,
+            135
+          ],
+          "sourceSeconds": [
+            2,
+            4.5
+          ],
+          "sourcePhase": [
+            0.4,
+            0.9
+          ]
+        },
+        {
+          "label": "分部位淡出",
+          "sourceFrames30": [
+            135,
+            147
+          ],
+          "sourceSeconds": [
+            4.5,
+            4.9
+          ],
+          "sourcePhase": [
+            0.9,
+            0.98
+          ]
+        },
+        {
+          "label": "透明尾段",
+          "sourceFrames30": [
+            147,
+            150
+          ],
+          "sourceSeconds": [
+            4.9,
+            5
+          ],
+          "sourcePhase": [
+            0.98,
+            1
+          ]
+        }
+      ],
+      "events": [],
+      "use": "阵亡单次播放，允许整体加速；不反放为入场或撤退。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 10.4976,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ],
+            [
+              0.1333,
+              -9.4661
+            ],
+            [
+              0.4667,
+              -4.3629
+            ],
+            [
+              1.1667,
+              -6.8432
+            ],
+            [
+              2.1,
+              -9.6858
+            ],
+            [
+              2.4667,
+              -14.8604
+            ],
+            [
+              3.3667,
+              -7.5047
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 20.6494,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ],
+            [
+              0.1,
+              -18.9728
+            ],
+            [
+              0.2333,
+              -4.9564
+            ],
+            [
+              1.0667,
+              -25.6058
+            ],
+            [
+              1.8667,
+              -16.5138
+            ],
+            [
+              2.2667,
+              -21.2885
+            ],
+            [
+              2.7,
+              -21.6445
+            ],
+            [
+              3.6667,
+              -11.1735
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 55.7325,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              0.1333,
+              -23.8787
+            ],
+            [
+              0.4333,
+              25.6655
+            ],
+            [
+              0.8667,
+              29.6594
+            ],
+            [
+              1.4,
+              18.7945
+            ],
+            [
+              1.7,
+              1.0429
+            ],
+            [
+              1.9333,
+              23.8322
+            ],
+            [
+              2.3667,
+              17.2881
+            ],
+            [
+              2.7,
+              -26.0731
+            ],
+            [
+              3.2333,
+              -22.7411
+            ],
+            [
+              3.7,
+              -22.8435
+            ],
+            [
+              3.9667,
+              -19.7013
+            ],
+            [
+              4.3,
+              -12.6211
+            ],
+            [
+              4.7,
+              3.6872
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Idle": {
+      "durationSeconds": 3,
+      "durationFrames30": 90,
+      "summary": "低位持剑待机，尾巴、衣发与网格有摆动，胸头有小幅位移；不是所有骨骼旋转都恒定。",
+      "segments": [
+        {
+          "label": "小幅待机摆动前半",
+          "sourceFrames30": [
+            0,
+            45
+          ],
+          "sourceSeconds": [
+            0,
+            1.5
+          ],
+          "sourcePhase": [
+            0,
+            0.5
+          ]
+        },
+        {
+          "label": "回到首帧附近",
+          "sourceFrames30": [
+            45,
+            90
+          ],
+          "sourceSeconds": [
+            1.5,
+            3
+          ],
+          "sourcePhase": [
+            0.5,
+            1
+          ]
+        }
+      ],
+      "events": [],
+      "use": "普通、S1 蓄势及 S2/S3 无攻击时的待机。不得借此声称有展翼或起飞骨骼。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ],
+            [
+              3,
+              -9.6858
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ],
+            [
+              3,
+              -16.5138
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Move": {
+      "durationSeconds": 2.5,
+      "durationFrames30": 75,
+      "summary": "持剑原地交替迈步，脚、衣摆、尾巴循环；没有走入部署格或走出战场的根位移。",
+      "segments": [
+        {
+          "label": "迈步，16 帧 OnPlayEffect(int=0)",
+          "sourceFrames30": [
+            0,
+            16
+          ],
+          "sourceSeconds": [
+            0,
+            0.5333
+          ],
+          "sourcePhase": [
+            0,
+            0.2133
+          ]
+        },
+        {
+          "label": "换步，55 帧 OnPlayEffect(int=1)",
+          "sourceFrames30": [
+            16,
+            55
+          ],
+          "sourceSeconds": [
+            0.5333,
+            1.8333
+          ],
+          "sourcePhase": [
+            0.2133,
+            0.7333
+          ]
+        },
+        {
+          "label": "回接步态首帧",
+          "sourceFrames30": [
+            55,
+            75
+          ],
+          "sourceSeconds": [
+            1.8333,
+            2.5
+          ],
+          "sourcePhase": [
+            0.7333,
+            1
+          ]
+        }
+      ],
+      "events": [
+        {
+          "sourceSeconds": 0.5333333611488342,
+          "sourceFrame30": 16,
+          "sourcePhase": 0.2133,
+          "name": "OnPlayEffect",
+          "int": 0
+        },
+        {
+          "sourceSeconds": 1.8333333730697632,
+          "sourceFrame30": 55,
+          "sourcePhase": 0.7333,
+          "name": "OnPlayEffect",
+          "int": 1
+        }
+      ],
+      "use": "本规格不选用；固定部署单位不得原地走路充当撤退。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -1.6427
+            ],
+            [
+              1.5,
+              -1.6427
+            ],
+            [
+              2.5,
+              -1.6427
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 1.2985,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.7871
+            ],
+            [
+              0.8,
+              -15.7568
+            ],
+            [
+              2,
+              -17.0552
+            ],
+            [
+              2.5,
+              -16.7871
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 3.1451,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              1.6752
+            ],
+            [
+              0.4667,
+              0.9043
+            ],
+            [
+              1.7667,
+              4.0494
+            ],
+            [
+              2.5,
+              1.6752
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              2.5,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Skill_1": {
+      "durationSeconds": 2,
+      "durationFrames30": 60,
+      "summary": "左上臂把手掌抬到面前，保持张掌后在命中处换成拳，再放下；L_Hand 自身旋转不变，掌世界位置显著变化，右剑没有主劈斩。",
+      "segments": [
+        {
+          "label": "抬左上臂、张掌",
+          "sourceFrames30": [
+            0,
+            14
+          ],
+          "sourceSeconds": [
+            0,
+            0.4667
+          ],
+          "sourcePhase": [
+            0,
+            0.2333
+          ]
+        },
+        {
+          "label": "张掌保持",
+          "sourceFrames30": [
+            14,
+            28
+          ],
+          "sourceSeconds": [
+            0.4667,
+            0.9333
+          ],
+          "sourcePhase": [
+            0.2333,
+            0.4667
+          ]
+        },
+        {
+          "label": "收掌，30 帧 OnAttack 与掌换拳",
+          "sourceFrames30": [
+            28,
+            30
+          ],
+          "sourceSeconds": [
+            0.9333,
+            1
+          ],
+          "sourcePhase": [
+            0.4667,
+            0.5
+          ]
+        },
+        {
+          "label": "握拳余势",
+          "sourceFrames30": [
+            30,
+            55
+          ],
+          "sourceSeconds": [
+            1,
+            1.8333
+          ],
+          "sourcePhase": [
+            0.5,
+            0.9167
+          ]
+        },
+        {
+          "label": "换回掌并放下",
+          "sourceFrames30": [
+            55,
+            60
+          ],
+          "sourceSeconds": [
+            1.8333,
+            2
+          ],
+          "sourcePhase": [
+            0.9167,
+            1
+          ]
+        }
+      ],
+      "events": [
+        {
+          "sourceSeconds": 1,
+          "sourceFrame30": 30,
+          "sourcePhase": 0.5,
+          "name": "OnAttack",
+          "int": 0
+        }
+      ],
+      "use": "S1 单次施放；聚火和火线读掌的世界挂点，不能靠手腕角度触发。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 7.8411,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ],
+            [
+              0.2667,
+              -10.1096
+            ],
+            [
+              0.6667,
+              -2.2686
+            ],
+            [
+              1,
+              -2.2686
+            ],
+            [
+              1.2,
+              -4.7709
+            ],
+            [
+              1.4333,
+              -4.4321
+            ],
+            [
+              2,
+              -9.6858
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 2.1647,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ],
+            [
+              0.3333,
+              -16.5138
+            ],
+            [
+              0.6667,
+              -14.3491
+            ],
+            [
+              1.5,
+              -14.3491
+            ],
+            [
+              2,
+              -16.5138
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "Skill_2": {
+      "durationSeconds": 3.6666667461395264,
+      "durationFrames30": 110,
+      "summary": "先收拢左臂、调整剑位，再把剑举到肩后长蓄势；77 帧附近前压身体并劈剑，随后明显回弹、抬剑和归位。",
+      "segments": [
+        {
+          "label": "收臂与低位调剑",
+          "sourceFrames30": [
+            0,
+            32
+          ],
+          "sourceSeconds": [
+            0,
+            1.0667
+          ],
+          "sourcePhase": [
+            0,
+            0.2909
+          ]
+        },
+        {
+          "label": "抬剑至肩后",
+          "sourceFrames30": [
+            32,
+            45
+          ],
+          "sourceSeconds": [
+            1.0667,
+            1.5
+          ],
+          "sourcePhase": [
+            0.2909,
+            0.4091
+          ]
+        },
+        {
+          "label": "肩后蓄势与小幅调整",
+          "sourceFrames30": [
+            45,
+            72
+          ],
+          "sourceSeconds": [
+            1.5,
+            2.4
+          ],
+          "sourcePhase": [
+            0.4091,
+            0.6545
+          ]
+        },
+        {
+          "label": "转身压低、预备发力",
+          "sourceFrames30": [
+            72,
+            75
+          ],
+          "sourceSeconds": [
+            2.4,
+            2.5
+          ],
+          "sourcePhase": [
+            0.6545,
+            0.6818
+          ]
+        },
+        {
+          "label": "快速前劈，77 帧 OnAttack",
+          "sourceFrames30": [
+            75,
+            80
+          ],
+          "sourceSeconds": [
+            2.5,
+            2.6667
+          ],
+          "sourcePhase": [
+            0.6818,
+            0.7273
+          ]
+        },
+        {
+          "label": "抬剑回弹、余势",
+          "sourceFrames30": [
+            80,
+            95
+          ],
+          "sourceSeconds": [
+            2.6667,
+            3.1667
+          ],
+          "sourcePhase": [
+            0.7273,
+            0.8636
+          ]
+        },
+        {
+          "label": "剑与身体归位",
+          "sourceFrames30": [
+            95,
+            110
+          ],
+          "sourceSeconds": [
+            3.1667,
+            3.6667
+          ],
+          "sourcePhase": [
+            0.8636,
+            1
+          ]
+        }
+      ],
+      "events": [
+        {
+          "sourceSeconds": 2.566666603088379,
+          "sourceFrame30": 77,
+          "sourcePhase": 0.7,
+          "name": "OnAttack",
+          "int": 0
+        }
+      ],
+      "use": "S3 单次重斩，压缩长蓄势；回弹不产生第二刀。",
+      "rotationKeyEvidence": {
+        "Chest": {
+          "keyAmplitudeDegrees": 17.0236,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -9.6858
+            ],
+            [
+              1.5667,
+              -9.6858
+            ],
+            [
+              2.1,
+              -6.3472
+            ],
+            [
+              2.3667,
+              -4.629
+            ],
+            [
+              2.6,
+              -21.6526
+            ],
+            [
+              2.9667,
+              -10.8777
+            ],
+            [
+              3.6667,
+              -9.6858
+            ]
+          ]
+        },
+        "Head": {
+          "keyAmplitudeDegrees": 13.8665,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              -16.5138
+            ],
+            [
+              0.6667,
+              -13.2341
+            ],
+            [
+              1.5667,
+              -14.326
+            ],
+            [
+              2.6,
+              -10.5155
+            ],
+            [
+              2.9333,
+              -2.6473
+            ],
+            [
+              3.6667,
+              -16.5138
+            ]
+          ]
+        },
+        "L_Hand": {
+          "keyAmplitudeDegrees": 28.2047,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              0.1,
+              1.145
+            ],
+            [
+              0.2667,
+              28.2047
+            ],
+            [
+              0.4,
+              6.2438
+            ],
+            [
+              3.6667,
+              0
+            ]
+          ]
+        },
+        "R_Weapon": {
+          "keyAmplitudeDegrees": 0,
+          "keysSecondsAndTimelineOffsetDegrees": [
+            [
+              0,
+              0
+            ],
+            [
+              3.6667,
+              0
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "states": {
+    "deploy": {
+      "clip": "Idle",
+      "segment": {
+        "label": "初始持剑姿势",
+        "sourceFrames30": [
+          0,
+          0
+        ],
+        "sourceSeconds": [
+          0,
+          0
+        ],
+        "sourcePhase": [
+          0,
+          0
+        ]
+      },
+      "loop": false,
+      "gameDuration": 0.12,
+      "outerAlpha": [
+        0,
+        1
+      ],
+      "mixInSeconds": 0,
+      "interruptibleBy": [
+        "normalAttack",
+        "s1Cast",
+        "s2Attack",
+        "s3Attack",
+        "controlled",
+        "dead",
+        "retreat"
+      ],
+      "exit": "可行动后直接进入 idle；0.12 秒只管显现，不设置攻击锁。",
+      "unsupported": "没有走入、抬眼或剑尖点地动作，不能配这些动作的承诺或声响。"
+    },
+    "idle": {
+      "clip": "Idle",
+      "segment": {
+        "label": "完整待机循环",
+        "sourceFrames30": [
+          0,
+          90
+        ],
+        "sourceSeconds": [
+          0,
+          3
+        ],
+        "sourcePhase": [
+          0,
+          1
+        ]
+      },
+      "loop": true,
+      "sourceRate": 1,
+      "mixInSeconds": 0.08,
+      "interruptibleBy": [
+        "normalAttack",
+        "s1Cast",
+        "s2Attack",
+        "s3Attack",
+        "controlled",
+        "dead",
+        "retreat"
+      ],
+      "burningPresentOverride": {
+        "clip": "Idle",
+        "sourceSeconds": 0,
+        "loop": false,
+        "hold": true,
+        "mixInSeconds": 0.08
+      },
+      "unsupported": "不添加呼吸骨骼、剑身独立震颤或假展翼。"
+    },
+    "normalAttack": {
+      "profile": "normal",
+      "clip": "Attack_2",
+      "segment": {
+        "label": "抬剑、单劈、归位",
+        "sourceFrames30": [
+          0,
+          70
+        ],
+        "sourceSeconds": [
+          0,
+          2.3333
+        ],
+        "sourcePhase": [
+          0,
+          1
+        ]
+      },
+      "loop": false,
+      "interruptPolicy": "attack"
+    },
+    "s1": {
+      "pending": {
+        "clip": "Idle",
+        "segment": {
+          "label": "蓄势等待沿用待机",
+          "sourceFrames30": [
+            0,
+            90
+          ],
+          "sourceSeconds": [
+            0,
+            3
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": true,
+        "exit": "真实 pending 被本次 attackId 消耗、取消或单位离场；禁止用 1.2 秒超时替代。",
+        "outerEffect": "掌点可从当前掌位聚集；等待阶段不强迫抬臂、不额外起飞。"
+      },
+      "cast": {
+        "profile": "s1",
+        "clip": "Skill_1",
+        "segment": {
+          "label": "抬掌、收掌、放下",
+          "sourceFrames30": [
+            0,
+            60
+          ],
+          "sourceSeconds": [
+            0,
+            2
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": false,
+        "interruptPolicy": "attack"
+      },
+      "exit": "瞬时技能 off 不切断已由真实攻击触发的 cast；未消耗 pending 以机制投影为准。"
+    },
+    "s2": {
+      "enter": {
+        "clip": "Idle",
+        "segment": {
+          "label": "沿用当前动作或待机",
+          "sourceFrames30": [
+            0,
+            90
+          ],
+          "sourceSeconds": [
+            0,
+            3
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": true,
+        "exclusiveBeginClip": null,
+        "rule": "不再把完整 Skill_2 压成 0.45 秒的开技片段；原生 Skill_2 是重斩而非展翼，会额外制造一刀。"
+      },
+      "idle": {
+        "clip": "Idle",
+        "segment": {
+          "label": "浮空待机",
+          "sourceFrames30": [
+            0,
+            90
+          ],
+          "sourceSeconds": [
+            0,
+            3
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": true
+      },
+      "attack": {
+        "profile": "s2",
+        "clip": "Attack_2",
+        "segment": {
+          "label": "单次快斩",
+          "sourceFrames30": [
+            0,
+            70
+          ],
+          "sourceSeconds": [
+            0,
+            2.3333
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": false,
+        "interruptPolicy": "attack"
+      },
+      "exit": "由实际技能结束更新技能投影与飞行投影；无专用落地骨骼，不等待 end 动画。"
+    },
+    "s3": {
+      "enter": {
+        "clip": "Idle",
+        "segment": {
+          "label": "沿用当前动作或待机",
+          "sourceFrames30": [
+            0,
+            90
+          ],
+          "sourceSeconds": [
+            0,
+            3
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": true,
+        "exclusiveBeginClip": null,
+        "rule": "不用额外 Skill_2 开技斩。每次真实攻击才播一次重斩。"
+      },
+      "idle": {
+        "clip": "Idle",
+        "segment": {
+          "label": "浮空待机",
+          "sourceFrames30": [
+            0,
+            90
+          ],
+          "sourceSeconds": [
+            0,
+            3
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": true
+      },
+      "attack": {
+        "profile": "s3",
+        "clip": "Skill_2",
+        "segment": {
+          "label": "压缩蓄势的单次重斩",
+          "sourceFrames30": [
+            0,
+            110
+          ],
+          "sourceSeconds": [
+            0,
+            3.6667
+          ],
+          "sourcePhase": [
+            0,
+            1
+          ]
+        },
+        "loop": false,
+        "interruptPolicy": "attack",
+        "rule": "80–95 帧是回弹，关闭攻击刀痕，不触发第二次命中、火墙或重斩声音。"
+      },
+      "exit": "无专用 end 骨骼；动作尾段按 attack 策略收束，飞行投影按真实 LIFTOFF 独立下降。"
+    },
+    "controlled": {
+      "clipSelection": "保留受控发生时已求值的当前片段与当前源相位；没有当前姿势时用 Idle(0)。",
+      "segment": "当前源相位至同一源相位，定格。",
+      "loop": false,
+      "mixInSeconds": 0,
+      "sourceRate": 0,
+      "interruptibleBy": [
+        "dead",
+        "retreat"
+      ],
+      "exitMixSeconds": 0.1,
+      "exit": "控制解除后混到当前技能对应 idle；不续播旧攻击、不补放控制期间错过的攻击。新的真实攻击按短提前量规则进入。",
+      "scope": "仅 canAct=false 的受控状态使用；沉默、减速等以引擎 canAct 为准，不能自行扩大为停攻。",
+      "outerEffect": "装饰性悬浮摆动与手部蓄光脉动停住；飞行高度的目标仍由真实 LIFTOFF 决定，不伪造摔落。"
+    },
+    "dead": {
+      "clip": "Die",
+      "segment": {
+        "label": "完整站立收剑与原生淡出",
+        "sourceFrames30": [
+          0,
+          150
+        ],
+        "sourceSeconds": [
+          0,
+          5
+        ],
+        "sourcePhase": [
+          0,
+          1
+        ]
+      },
+      "loop": false,
+      "sourceRate": 2.5,
+      "gameDuration": 2,
+      "mixInSeconds": 0.05,
+      "interruptibleBy": [],
+      "exit": "到源 5 秒后移除表现；原生 4.5–4.9 秒左右的分部位透明淡出保留。",
+      "unsupported": "这是一段站立消失，没有倒地。不开额外死亡攻击刀光，不反放，不回 idle。",
+      "outerHeight": "若此前浮空，沿已有外层高度在 0.30 秒内回到地面；不称为原生摔落骨骼。"
+    },
+    "retreat": {
+      "clipSelection": "离场时冻结最后完整求值姿势；无当前姿势则 Idle(0)。",
+      "segment": "当前源相位至同一源相位，定格。",
+      "loop": false,
+      "gameDuration": 0.18,
+      "outerAlpha": [
+        1,
+        0
+      ],
+      "mixInSeconds": 0,
+      "interruptibleBy": [],
+      "exit": "淡出结束移除表现；部署新实例时恢复颜色、透明度、混入与源速率。",
+      "unsupported": "没有专用撤退；不反放 Die、不原地播 Move、不让人物走出部署格。"
+    }
+  },
+  "attackProfiles": {
+    "normal": {
+      "clip": "Attack_2",
+      "hitSourceFrame30": 40,
+      "hitSourceSeconds": 1.3333333730697632,
+      "preferredLeadSeconds": 0.28,
+      "minimumReadableLeadSeconds": 0.1,
+      "defaultRecoverySeconds": 0.54,
+      "anticipationKeys": [
+        [
+          0,
+          0
+        ],
+        [
+          0.25,
+          16
+        ],
+        [
+          0.6,
+          37
+        ],
+        [
+          0.72,
+          39
+        ],
+        [
+          1,
+          40
+        ]
+      ],
+      "recoveryKeys": [
+        [
+          0,
+          40
+        ],
+        [
+          0.18,
+          42
+        ],
+        [
+          0.32,
+          44
+        ],
+        [
+          0.65,
+          55
+        ],
+        [
+          1,
+          70
+        ]
+      ],
+      "bladeWindowFrames30": [
+        39,
+        44
+      ],
+      "mixInSeconds": 0.06,
+      "mixOutSeconds": 0.08
+    },
+    "s1": {
+      "clip": "Skill_1",
+      "hitSourceFrame30": 30,
+      "hitSourceSeconds": 1,
+      "preferredLeadSeconds": 0.28,
+      "minimumReadableLeadSeconds": 0.1,
+      "defaultRecoverySeconds": 0.5,
+      "anticipationKeys": [
+        [
+          0,
+          0
+        ],
+        [
+          0.45,
+          8
+        ],
+        [
+          0.85,
+          28
+        ],
+        [
+          1,
+          30
+        ]
+      ],
+      "recoveryKeys": [
+        [
+          0,
+          30
+        ],
+        [
+          0.2,
+          37
+        ],
+        [
+          0.5,
+          52
+        ],
+        [
+          0.76,
+          55
+        ],
+        [
+          1,
+          60
+        ]
+      ],
+      "bladeWindowFrames30": null,
+      "mixInSeconds": 0.06,
+      "mixOutSeconds": 0.08
+    },
+    "s2": {
+      "clip": "Attack_2",
+      "hitSourceFrame30": 40,
+      "hitSourceSeconds": 1.3333333730697632,
+      "preferredLeadSeconds": 0.28,
+      "minimumReadableLeadSeconds": 0.1,
+      "defaultRecoverySeconds": 0.48,
+      "anticipationKeys": [
+        [
+          0,
+          0
+        ],
+        [
+          0.25,
+          16
+        ],
+        [
+          0.6,
+          37
+        ],
+        [
+          0.72,
+          39
+        ],
+        [
+          1,
+          40
+        ]
+      ],
+      "recoveryKeys": [
+        [
+          0,
+          40
+        ],
+        [
+          0.18,
+          42
+        ],
+        [
+          0.32,
+          44
+        ],
+        [
+          0.65,
+          55
+        ],
+        [
+          1,
+          70
+        ]
+      ],
+      "bladeWindowFrames30": [
+        39,
+        44
+      ],
+      "mixInSeconds": 0.06,
+      "mixOutSeconds": 0.08
+    },
+    "s3": {
+      "clip": "Skill_2",
+      "hitSourceFrame30": 77,
+      "hitSourceSeconds": 2.566666603088379,
+      "preferredLeadSeconds": 0.28,
+      "minimumReadableLeadSeconds": 0.16,
+      "defaultRecoverySeconds": 0.7,
+      "anticipationKeys": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          32
+        ],
+        [
+          0.45,
+          45
+        ],
+        [
+          0.6,
+          72
+        ],
+        [
+          0.78,
+          75
+        ],
+        [
+          1,
+          77
+        ]
+      ],
+      "recoveryKeys": [
+        [
+          0,
+          77
+        ],
+        [
+          0.13,
+          79
+        ],
+        [
+          0.23,
+          80
+        ],
+        [
+          0.49,
+          95
+        ],
+        [
+          1,
+          110
+        ]
+      ],
+      "bladeWindowFrames30": [
+        75,
+        80
+      ],
+      "mixInSeconds": 0.06,
+      "mixOutSeconds": 0.1,
+      "limitation": "源 0–2.4 秒的长前奏被压入约 0.168 游戏秒；这是素材重用的明确取舍，不承诺保留原速蓄势重量。实际前劈与收势单独分配时间。"
+    }
+  },
+  "attackTiming": {
+    "keyFormat": "anticipationKeys/recoveryKeys 为 [该段归一化游戏进度, 源帧30]；段内线性映射源时间，骨骼/变形仍按源 Bezier 求值。",
+    "leadFormula": "L=min(实际可用提前量, preferredLeadSeconds, 0.28*I)，且 L>=0。实际可用量来自当前真实 atkCd/提前起手请求，不做未来事件预读。",
+    "anticipationFormula": "对 -L<=t<=0，u=(t+L)/L；由 anticipationKeys 求源帧。t=0 精确取 hitSourceSeconds。L=0 时不计算此段。",
+    "recoveryFormula": "Lnext=min(0.28,0.28*I)；R=min(defaultRecoverySeconds,max(0,I-Lnext))；0<=t<=R 用 u=t/R 查 recoveryKeys。",
+    "slack": "源末帧后以 mixOutSeconds 混到 idle，其余间隔播放 idle；混出最多占现有余量，新攻击可截断。",
+    "positiveShortLead": "0<L<minimumReadableLeadSeconds：仍从源 0 单调推进至 hit，压缩起手；mixIn=min(配置 mixIn,L/4)，t=0 前混入必须结束。省去无法被观察的起手装饰和起手音，不跳过命中、不推迟真实伤害。",
+    "noLead": "L=0：真实事件立即给目标命中反馈；角色从当前姿势在 min(1/30,R) 秒内混到 hit 源姿势，该段把源时间固定在 hit；其后在剩余 R 内播完 recovery。该刀不生成大范围移动刀光/剑路拖尾，不补播起手声。接受最多 1/30 秒的角色姿势追上，不伪称已提前挥刀。",
+    "provisionalAttack": "提前起手仅是可取消的表现请求；真实 attackId 到来才绑定/消费 pending，并把同一轨道校准到 hit。重复预起手不能重置源时间。",
+    "noAttackEvent": "取消、失去目标或 canAct=false 且没有真实攻击：以 0.08 秒混回 idle，不发目标命中、火墙或攻击完成音。",
+    "dedupe": "真实攻击按 sourceId + attackId 只消费一次；技能开始按 activationId 只消费一次。Spine OnAttack/OnPlayEffect 仅为相位参照，不触发机制、重复音效或额外攻击。",
+    "authoritativeEvent": "伤害、目标、bursting/first、S1 pending 消耗、技能结束时刻以真实事件/状态为准，不由动画相位推导。",
+    "sourceMonotonicity": "同一刀源时间只前进或在 hit/末帧定格；不得倒播、每帧清回 setup、或在真实事件到来时从头重播。",
+    "knownCurrentMismatch": "现有配置把 Attack_2 命中姿势映射到约 1.42 源秒，而实际 OnAttack 是 1.333333373；本规格使用原生事件相位。现有公共 windUp 提前量 0.28 秒足以提供本规格的上限，未要求扩大调用范围。"
+  },
+  "transitionPolicy": {
+    "priority": [
+      "dead",
+      "retreat",
+      "controlled",
+      "committedAttack",
+      "pendingAttack",
+      "idle"
+    ],
+    "defaultLiveMixSeconds": 0.08,
+    "attack": {
+      "beforeCommit": "新技能只更新本次候选片段；若发生替换，以当前最终姿势混入新片段的同一剩余提前量相位，混入须在命中前完成。控制/离场立即取消。",
+      "afterCommit": "普通 idle、技能 off、pending 清除不能硬切已命中的挥击；继续到源 bladeWindow 末端。之后允许 0.08 秒混回当前技能 idle。真实控制/死亡/撤退立即覆盖，不因表演维持行动权。",
+      "newAttack": "下一次真实攻击优先于旧收势；以 min(0.04,L/4) 混入下一刀。只截短表现尾段，不丢弃新的真实命中。",
+      "skillChangesAtCommit": "事件指明的真实技能与 S1 消耗结果决定片段；如果来不及切换，按 noLead 追到正确 hit，不重放整套起手。"
+    },
+    "edges": [
+      {
+        "from": "any live",
+        "to": "dead",
+        "mixSeconds": 0.05,
+        "rule": "取消预起手和攻击主体特效；保留已经发生的目标命中反馈；锁定 Die。"
+      },
+      {
+        "from": "any live",
+        "to": "retreat",
+        "mixSeconds": 0,
+        "rule": "冻结当前姿势，0.18 秒外层淡出。"
+      },
+      {
+        "from": "any live",
+        "to": "controlled",
+        "mixSeconds": 0,
+        "rule": "冻结当前求值姿势；取消未提交挥击。"
+      },
+      {
+        "from": "controlled",
+        "to": "idle/current skill idle",
+        "mixSeconds": 0.1,
+        "rule": "解除控制，不恢复旧攻击；新事件按当前状态进入。"
+      },
+      {
+        "from": "deploy/idle",
+        "to": "attack",
+        "mixSeconds": 0.06,
+        "rule": "实际值受 L/4 限制；从源 0 完成整条起手。"
+      },
+      {
+        "from": "attack",
+        "to": "idle/current skill idle",
+        "mixSeconds": 0.08,
+        "rule": "S3 为 0.10；先到打击窗尾，余量不足就截短混出。"
+      },
+      {
+        "from": "normal/S1/S2/S3",
+        "to": "skill on/off",
+        "mixSeconds": 0,
+        "rule": "更新技能投影；不独占骨骼轨道，不另播开技斩。"
+      },
+      {
+        "from": "any live",
+        "to": "LIFTOFF on/off",
+        "mixSeconds": 0,
+        "rule": "只改变外层高度目标；骨骼当前动作继续。"
+      },
+      {
+        "from": "dead/retreat",
+        "to": "new deployment",
+        "mixSeconds": 0,
+        "rule": "新生命期清除旧轨道、透明度、受控定格和编号去重，Idle(0) 开始。"
+      }
+    ],
+    "sameTick": "同一时间优先服从最终 alive/离场/canAct 投影；已经由引擎确认的伤害保留其目标反馈。不得因动画锁把新的攻击或受控推迟。"
+  },
+  "airborne": {
+    "source": "真实 talula:liftoff buff/飞行投影；S1 不强制起飞。",
+    "skeletonClip": "与当前动作相同；无独立 rise/land/wing 骨骼。",
+    "outerHeightWorldTiles": 0.35,
+    "riseSeconds": 0.35,
+    "landSeconds": 0.3,
+    "easing": "从当前高度至目标高度使用 smoothstep；中途反向时从当前值续接，不能先归零。",
+    "idleBob": {
+      "amplitudeWorldTiles": 0.03,
+      "periodSeconds": 1.6,
+      "controlledAmplitude": 0
+    },
+    "rule": "角色、武器挂点与随身特效使用同一个外层变换；地面火与火墙的地面坐标由机制给出，不跟着身体上下漂。起落不增加机制等待。"
+  },
+  "effectAnchors": {
+    "sword": {
+      "bone": "R_Weapon",
+      "localBase": [
+        0,
+        0
+      ],
+      "localTip": [
+        336.3710021972656,
+        0
+      ],
+      "calculation": "以当前动画/混入/IK/变形求值后的 bone.matrix 变换两点，再应用角色朝向镜像、缩放、外层浮空和投影。theta=atan2(tip.y-base.y,tip.x-base.x)。局部旋转偏移恒为 0 不妨碍世界剑路变化。",
+      "coordinateCaution": "实测角度来自运行时默认 yDown=true 的未镜像骨架；屏幕镜像或投影后不能硬编码顺/逆时针。",
+      "angleUnwrap": "只连接同一刀的相邻实际样本，按有符号最短差展开 ±180 度；低帧率跨过打击窗时不画整圈补偿。",
+      "curveEvidence": [
+        {
+          "sourceSeconds": 1.3,
+          "angleDegrees": -119.783
+        },
+        {
+          "sourceSeconds": 1.3333333730697632,
+          "angleDegrees": -13.6941
+        },
+        {
+          "sourceSeconds": 1.3666667,
+          "angleDegrees": 55.628
+        },
+        {
+          "sourceSeconds": 1.4,
+          "angleDegrees": 149.2591
+        },
+        {
+          "sourceSeconds": 1.4666667,
+          "angleDegrees": 173.9607
+        }
+      ]
+    },
+    "palm": {
+      "bone": "L_Hand",
+      "localPoint": [
+        20.878971099853516,
+        0
+      ],
+      "rule": "手骨中点作为掌内侧固定挂点，以最终骨骼世界矩阵求位置；命中处换成拳也继续使用同一骨局部点，避免附件显隐导致挂点消失。此点为按手骨长度二分的接入选点，非原文件自带特效挂点。"
+    },
+    "fireLagSeconds": 0.06,
+    "fireRule": "剑类贴身火痕在有效剑路样本之后 0.06 游戏秒显示，以延迟的实际剑路历史形成拖尾；不使用独立 0.42 秒时钟。S1 不是剑击，按抬掌聚火→真实命中收掌→火线/目标余焰表达，不强造先挥剑。真实伤害与目标即时命中标记仍在 t=0。",
+    "s1Source": "同一时刻掌的世界位置；禁止回退为脚下固定高度。",
+    "nativeSwordEffect": {
+      "slot": "F_R_Weapon_E",
+      "sourceWindowFrames30": [
+        40,
+        44
+      ],
+      "rule": "原生灰色大片刀痕不作为新增火效；接入纹理刀痕时持续屏蔽此插槽附件显示，避免双层厚环。遮罩在姿势求值后生效，不能只在初始化置空一次。"
+    },
+    "s3Recoil": "源 80–110 帧不生成攻击拖尾；不把收势时再次抬剑当成第二次攻击。",
+    "farTargets": "远处真实受击只给目标反馈；不将本地剑路跨屏连线到每个远处目标。",
+    "wave": "真实 waveId/front 的火墙保留机制坐标与生成时刻；不得为追求火晚于剑而延后已有波前或伤害。延迟只用于随剑的装饰火痕。"
+  },
+  "integration": {
+    "exclusiveBegin": null,
+    "requiredBehavior": [
+      "每次真实攻击单次选片与命中相位对齐",
+      "Skill_2 重斩的非线性源时间映射",
+      "受控保持最后姿势，解除后不补攻击",
+      "死亡完整 Die 与撤退冻结淡出分开",
+      "掌和剑读取最终世界矩阵",
+      "一套游戏时钟与每刀编号去重"
+    ],
+    "boundary": "本文件只给动画规格；不修改机制、运行时、内容登记、特效或音频文件。",
+    "acceptance": "DSH 负责接入后验收混入、压缩起手与回弹观感；本次完成的是源素材实测和接入规格，未运行游戏。"
+  }
+}

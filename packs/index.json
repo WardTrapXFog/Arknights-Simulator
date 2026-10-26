@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "app": "0.3.1",
+  "packs": [
+    {
+      "id": "en",
+      "type": "lang",
+      "name": "English",
+      "englishName": "English",
+      "version": "0.2.0",
+      "app": ">=0.2.0",
+      "compatible": true,
+      "authors": [
+        "@YuriRestia (GitHub PR #70, the seed of these strings)",
+        "the Stronghold Protocol contributors"
+      ],
+      "credits": "Game texts (data/i18n/en.json): the official EN client data (© Hypergryph / Yostar) via ArknightsAssets/ArknightsGamedata.",
+      "lang": "en",
+      "fallback": [],
+      "complete": true,
+      "strings": 2175,
+      "files": {
+        "ui": "/i18n/en.json",
+        "data": "/data/i18n/en.json"
+      }
+    },
+    {
+      "id": "ja",
+      "type": "lang",
+      "name": "日本語",
+      "englishName": "Japanese",
+      "version": "0.2.0",
+      "app": ">=0.2.0",
+      "compatible": true,
+      "authors": [
+        "the Stronghold Protocol contributors"
+      ],
+      "credits": "Game texts (data/i18n/ja.json): the official JP client data (© Hypergryph / Yostar) via ArknightsAssets/ArknightsGamedata. Interface strings machine-translated on 2026-10-07 using the official Japanese game terms of the JP client; corrections are welcome on GitHub.",
+      "lang": "ja",
+      "fallback": [
+        "en"
+      ],
+      "complete": true,
+      "machineTranslated": true,
+      "numberUnits": [
+        "万",
+        "億"
+      ],
+      "strings": 2175,
+      "files": {
+        "ui": "/i18n/ja.json",
+        "data": "/data/i18n/ja.json"
+      }
+    },
+    {
+      "id": "ko",
+      "type": "lang",
+      "name": "한국어",
+      "englishName": "Korean",
+      "version": "0.2.0",
+      "app": ">=0.2.0",
+      "compatible": true,
+      "authors": [
+        "the Stronghold Protocol contributors"
+      ],
+      "credits": "Game texts (data/i18n/ko.json): the official KR client data (© Hypergryph / Yostar) via ArknightsAssets/ArknightsGamedata. Interface strings machine-translated on 2026-10-07 using the official Korean game terms of the KR client; corrections are welcome on GitHub.",
+      "lang": "ko",
+      "fallback": [
+        "en"
+      ],
+      "complete": true,
+      "machineTranslated": true,
+      "strings": 2175,
+      "files": {
+        "ui": "/i18n/ko.json",
+        "data": "/data/i18n/ko.json"
+      }
+    },
+    {
+      "id": "zh-TW",
+      "type": "lang",
+      "name": "繁體中文",
+      "englishName": "Traditional Chinese",
+      "version": "0.2.0",
+      "app": ">=0.2.0",
+      "compatible": true,
+      "authors": [
+        "the Stronghold Protocol contributors"
+      ],
+      "credits": "Game texts (data/i18n/zh-TW.json): the official TW client data (© Hypergryph) via ArknightsAssets/ArknightsGamedata. Interface strings machine-converted from the Simplified Chinese on 2026-10-07 (OpenCC, Taiwan phrases) using the official TW game terms, then read through by hand; corrections welcome on GitHub (docs/I18N.md §5).",
+      "lang": "zh-TW",
+      "fallback": [],
+      "complete": true,
+      "machineTranslated": true,
+      "numberUnits": [
+        "萬",
+        "億"
+      ],
+      "strings": 2175,
+      "files": {
+        "ui": "/i18n/zh-TW.json",
+        "data": "/data/i18n/zh-TW.json"
+      }
+    }
+  ]
+}

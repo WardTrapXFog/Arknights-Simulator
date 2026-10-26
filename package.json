@@ -1,0 +1,60 @@
+{
+  "name": "arknights-simulator",
+  "version": "0.3.1",
+  "private": true,
+  "description": "明日方舟非官方单机关卡模拟器：自由沙盒、游玩自制关卡、关卡制作器",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/WardTrapXFog/ArknightsSimulator#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WardTrapXFog/ArknightsSimulator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WardTrapXFog/ArknightsSimulator/issues"
+  },
+  "keywords": [
+    "arknights",
+    "auto-chess",
+    "tower-defense",
+    "single-player",
+    "browser-game",
+    "fan-game"
+  ],
+  "type": "module",
+  "main": "server/sandbox/index.js",
+  "scripts": {
+    "start": "node server/sandbox/index.js",
+    "dev": "node --watch server/sandbox/index.js",
+    "start:upstream": "node server/index.js",
+    "content": "node tools/build-content.mjs",
+    "vendor": "node tools/vendor.mjs",
+    "assets": "node tools/vendor.mjs && node tools/fetch-assets.mjs",
+    "postinstall": "node tools/vendor.mjs",
+    "setup": "node tools/setup.mjs",
+    "doctor": "node tools/doctor.mjs",
+    "launch": "node scripts/launch.mjs",
+    "levels": "node tools/check-levels.mjs",
+    "levels:stamp": "node tools/check-levels.mjs --stamp",
+    "levels:list": "node tools/check-levels.mjs --list"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "htm": "^3.1.1",
+    "pixi-spine": "^4.0.6",
+    "pixi.js": "^7.4.2",
+    "preact": "^10.29.8",
+    "ses": "2.3.0",
+    "three": "^0.186.1",
+    "ws": "^8.22.0",
+    "acorn": "8.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "puppeteer-core": "^25.12.0",
+    "typescript": "^5.9.2"
+  }
+}
