@@ -1,8 +1,8 @@
 ﻿<#
-  卫戍协议：盟约 · Windows 启动脚本（PowerShell 版）。文档：docs\DEPLOY.md
+  明日方舟模拟器 · Windows 启动脚本（PowerShell 版）。文档：docs\DEPLOY.md
   运行：右键 →「使用 PowerShell 运行」，或
         powershell -ExecutionPolicy Bypass -File scripts\start-windows.ps1 [-Port 3001] [launch.mjs 的其他参数]
-  检查 Node.js（没有时可用 winget 安装）→ 首次运行 npm ci → tools\setup.mjs → 启动服务器并打开浏览器。
+  检查 Node.js（没有时可用 winget 安装）→ 首次运行 npm ci → 启动单机服务端并打开浏览器。
 #>
 # PositionalBinding off: a bare launch.mjs option (.\start-windows.ps1 --no-local) must land in $Rest, not in [int]$Port.
 [CmdletBinding(PositionalBinding = $false)]
@@ -14,7 +14,7 @@ $ErrorActionPreference = 'Continue'   # native tools report through $LASTEXITCOD
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
-$Host.UI.RawUI.WindowTitle = '卫戍协议：盟约 - Stronghold Protocol'
+$Host.UI.RawUI.WindowTitle = 'Arknights Simulator'
 
 function Pause-Exit([int]$code) {
   Write-Host ''
@@ -63,10 +63,10 @@ if (-not (Test-Path (Join-Path $Root 'node_modules\ws\package.json'))) {
   }
 }
 
-$launchArgs = @('scripts\launch.mjs')
+$launchArgs = @()
 if ($Port -gt 0) { $launchArgs += @('--port', "$Port") }
 if ($Rest) { $launchArgs += $Rest }
-& node @launchArgs
+& (Join-Path $PSScriptRoot 'launch-windows.ps1') @launchArgs
 if ($LASTEXITCODE -ne 0) {
   Write-Host "`n启动失败，请查看上面的错误信息。诊断：node tools\doctor.mjs" -ForegroundColor Red
   Pause-Exit $LASTEXITCODE

@@ -1,6 +1,6 @@
 // SI 独立满配牌库；只读取官方表与现有接入记录，不改上游棋子档位。
 import fs from 'node:fs';
-import { createOfficialUnitBuilders } from '../server/plugins/officialUnitBuilder.js';
+import { createOfficialUnitBuilders } from './official-unit-builder.mjs';
 import { composeUnitRecord } from '../shared/standIn.js';
 import { isDiyModule } from '../shared/diy.js';
 import { KITS } from '../server/sim/content/kits/index.js';

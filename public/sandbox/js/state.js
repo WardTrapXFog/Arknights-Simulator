@@ -1,4 +1,4 @@
-// public/studio/js/sandbox/state.js — 沙盒的常量与初始状态（main.js 用这里的数据开局）。
+// public/sandbox/js/state.js — 沙盒的常量与初始状态（main.js 用这里的数据开局）。
 import { defaultStage } from './battlefield.js';
 import { DIY_IDS } from './roster.js';
 

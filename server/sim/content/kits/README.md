@@ -8,7 +8,7 @@
 | 维娜·维多利亚 | `ops/op-vina.js` | `CUSTOM_OPERATOR_KITS`，按角色标识。 |
 | 结城理 | `ops/op-custommakoto.js` | `CUSTOM_OPERATOR_KITS`，按角色标识。 |
 
-`custom-catalog.js`由`tools/build-content.mjs`生成，`index.js`合并上游与自设登记表。不要手改生成登记表。沙盒可用名单来自`public/studio/js/sandbox/roster.js`，与kit登记是不同职责。
+`custom-catalog.js`由`tools/build-content.mjs`生成，`index.js`合并上游与自设登记表。不要手改生成登记表。沙盒可用名单来自`public/sandbox/js/roster.js`，与kit登记是不同职责。
 
 kit工厂接收`(bb, chess, def)`并返回技能、天赋、特性和安装逻辑。按棋子登记的默认导出使用棋子标识作为键，自选干员的默认导出使用角色标识作为键；新增实现沿用相应现有文件的接口。先读取所调用的helper，`shared/tier*.js`中的同名函数不保证参数相同。
 

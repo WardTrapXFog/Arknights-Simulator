@@ -7,7 +7,6 @@
 | 入口 | 命令 | 作用 |
 |---|---|---|
 | SI 沙盒（日常） | `npm start` → `server/sandbox/index.js`，默认 `3100` | 纯静态文件服务：页面、素材、`/data/`、`/shared/`、`/sim/`、`/data.js`。不建房间、不开 WebSocket、不托管对局。 |
-| 上游完整服务 | `npm run start:upstream` → `server/index.js` | Stronghold-Protocol 的联机平台（大厅、房间、插件工作台）。SI 不依赖它运行。 |
 
 双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。启动器**不自动执行** `tools/setup.mjs`（`--no-setup` 是默认值，也没有相反的开关）。
 
@@ -20,30 +19,22 @@ public/
   play/              自制关卡浏览、玩家编队与开战入口
   sandbox/js/        自由沙盘（SI 自有）
   level/js/          关卡制作器（SI 自有）
-  studio/            SI 的 HTML 入口与上游插件工作台脚本并存
+  studio/            三模块 HTML 入口与共用样式
   js/                战斗引擎的浏览器侧：渲染、音频、素材、sim 加载器
   css/ fonts/ icons/ assets/ vendor/
 server/
   sandbox/index.js   SI 唯一的服务端文件
   sim/               战斗引擎（浏览器经 /sim/ 只读加载）
-  http/              两套服务共用的 HTTP 层
-  index.js lobby.js net.js match/ plugins/ studio/   上游联机平台
+  http/              SI 静态服务的配置、响应、压缩与安全策略
 data/                `tools/build-content.mjs` 的生成物 + 上游游戏数据
 shared/              引擎与页面共用的纯模块
 content/             SI 的数据源：`operators/` 与 `enemies/`
 tools/               生成器与素材脚本
-packs/ schemas/ plugins/ test/   上游的包、模式、插件模板与测试；SI 不读取
 ```
 
-`package.json` 的名称、说明、仓库地址与默认入口指向 SI；`start:upstream` 单独保留上游入口。上游目录存在以下引用，不能按 SI 页面是否加载直接判为孤儿：
+`server/sandbox/index.js` 是唯一服务入口。`package.json` 不提供联机启动项，仓库不包含匹配、大厅、联机服务端、插件工作台、插件模板或上游测试助手。`public/index.html` 将旧首页地址导向 SI 主菜单。
 
-| 路径 | 现有引用 |
-|---|---|
-| `server/match/` | `server/index.js` 导入 `createMatchHosts` 并创建对局宿主。 |
-| `server/lobby.js`、`server/net.js` | `server/http/websocket.js` 导入 `Lobby`、`Network`、`SessionRegistry`，供上游入口的 `createSessionStack` 使用。 |
-| `plugins/_template/` | `server/studio/gameData.js`、`server/studio/templates/` 读取模板与示例素材；不是空目录。 |
-| `test/helpers/battleHarness.js` | 插件脚本测试模板保留其导入路径；它是上游开发助手，SI 不执行。 |
-| `server/plugins/officialUnitBuilder.js` | SI 的 `tools/build-operator-library.mjs` 复用它生成原作满配牌库。 |
+`tools/official-unit-builder.mjs` 为原作满配牌库提供纯数据构建。`tools/local-extract/operator-art.mjs` 从 SI 牌库读取待提取的原作干员；`fx.py` 从同一牌库补充技能与特效，官方表优先读 `data/gamedata/`。这些工具不扫描插件目录。战斗引擎、渲染及其共用协议、数据和特效格式保留现有接口。
 
 ## 3. 自由沙盘 `public/sandbox/js/`
 
@@ -131,7 +122,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 `public/play/js/hand-deployment.js` 仅在关卡对局中绑定 DOM 手牌的 Pointer Events，通过 `tileScreen` 在当前战场范围内命中地块，展示合法格和头像预览，不使用上游拖拽器的固定部署区域。合法落点交给 controller 挂载原有 `FacingWheel`，二次拖动朝向确认后才调用 `deployOperator`；拖放和正式部署共用 `deploymentError`，待确认期间不创建引擎单位、不扣费。视图重建、切换、设置、结算及失焦清理交互。沙盒继续使用点击部署，关卡中单击手牌只选中详情，不将战场切成只认格子的放置模式。
 
-`public/sandbox/js/operator-library.js` 将 `data/operator-library.json` 覆盖到页面的棋子目录，并用独立 DataSource 覆盖战斗棋子与满级召唤物，原始 `data/chess.json` 保留上游档位。生成器 `tools/build-operator-library.mjs` 复用 officialUnitBuilder，读取官方表，将已接入棋子与有 kit 的补位/甄选干员归并为 202 名原作，生成最高等级、满潜、满信赖、最高技能和三级常规模组；默认选择原棋子模组，过滤仅其他玩法生效的模组。`generated-library.js` 提供唯一 ID 列表和普通/进阶别名；`roster.js` 合并三位自设，现有自设定义不参与原作补齐。自由沙盒旧存档的棋子别名在载入时归一，格式不变。
+`public/sandbox/js/operator-library.js` 将 `data/operator-library.json` 覆盖到页面的棋子目录，并用独立 DataSource 覆盖战斗棋子与满级召唤物，原始 `data/chess.json` 保留上游档位。生成器 `tools/build-operator-library.mjs` 复用 `tools/official-unit-builder.mjs`，读取官方表，将已接入棋子与有 kit 的补位/甄选干员归并为 202 名原作，生成最高等级、满潜、满信赖、最高技能和三级常规模组；默认选择原棋子模组，过滤仅其他玩法生效的模组。`generated-library.js` 提供唯一 ID 列表和普通/进阶别名；`roster.js` 合并三位自设，现有自设定义不参与原作补齐。自由沙盒旧存档的棋子别名在载入时归一，格式不变。
 
 ## 5. 出生数据只有一种真相
 
@@ -173,5 +164,5 @@ S1 的 `talulaS1` 命中在 `talula.js` 创建带 `fiery` 标记的剑路刀光�
 
 ## 8. 命名规则
 
-文件名说明它做什么，不说明它属于谁：`field-view` 是战场视图，`battle-session` 是一场战斗的会话，`spawn-catalog` 是能刷的敌人。上游代码保留原名，因为改名会切断它的内部引用；它们的位置（`public/studio/`、`server/{match,plugins,studio}/`、`packs/`、`schemas/`、`plugins/`）已经说明归属。
+文件名说明它做什么，不说明它属于谁：`field-view` 是战场视图，`battle-session` 是一场战斗的会话，`spawn-catalog` 是能刷的敌人。共用的战斗与渲染模块保留原名，SI 页面入口、界面代码、引擎与构建工具按目录区分职责。
 

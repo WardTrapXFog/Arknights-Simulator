@@ -50,8 +50,8 @@ export async function loadBrowserSim({ base = '/sim/', dataBase = '/data/', fetc
   } else if (loadedScripts) (await import(base+'content/extensions.js')).resetExtensions();
   if (Object.values(raw.garrisons ?? {}).some(g => g.operatorTrait) || loadedTraits) {
     if (/^file:/i.test(base)) {
-      const { installServerOperatorTraits } = await import(new URL('../../../server/plugins/operatorTraits.js', import.meta.url).href);
-      await installServerOperatorTraits(raw, base);
+      const { installOperatorTraits } = await import('./operatorTraits.js');
+      await installOperatorTraits(raw, base);
     } else {
       const expected = traitRuntimeHash(raw);
       if (expected && traitRuntimeVerified !== expected) {

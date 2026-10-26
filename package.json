@@ -4,13 +4,13 @@
   "private": true,
   "description": "明日方舟非官方单机关卡模拟器：自由沙盒、游玩自制关卡、关卡制作器",
   "license": "GPL-3.0-or-later",
-  "homepage": "https://github.com/WardTrapXFog/ArknightsSimulator#readme",
+  "homepage": "https://github.com/WardTrapXFog/Arknights-Simulator#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WardTrapXFog/ArknightsSimulator.git"
+    "url": "git+https://github.com/WardTrapXFog/Arknights-Simulator.git"
   },
   "bugs": {
-    "url": "https://github.com/WardTrapXFog/ArknightsSimulator/issues"
+    "url": "https://github.com/WardTrapXFog/Arknights-Simulator/issues"
   },
   "keywords": [
     "arknights",
@@ -25,7 +25,6 @@
   "scripts": {
     "start": "node server/sandbox/index.js",
     "dev": "node --watch server/sandbox/index.js",
-    "start:upstream": "node server/index.js",
     "content": "node tools/build-content.mjs",
     "vendor": "node tools/vendor.mjs",
     "assets": "node tools/vendor.mjs && node tools/fetch-assets.mjs",

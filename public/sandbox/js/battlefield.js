@@ -1,4 +1,4 @@
-// public/studio/js/sandbox/map.js — 沙盒地图（19 行 × 21 列，行 0 在最下方）。
+// public/sandbox/js/map.js — 沙盒地图（19 行 × 21 列，行 0 在最下方）。
 // 字形直接写进 stage.rows：模拟器（server/sim/grid.js DEFAULT_LEGEND）与渲染器（public/js/render/style.js GLYPH）
 // 读的是同一张表，所以改一个字符，地形、寻路、渲染三处一起变，地图不需要 legend。
 //

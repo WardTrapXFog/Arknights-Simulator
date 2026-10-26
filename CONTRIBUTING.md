@@ -1,0 +1,15 @@
+# 贡献说明
+
+本项目面向明日方舟单机训练、自制关卡游玩与关卡制作。修改前请阅读 [README](README.md) 与[架构](docs/ARCHITECTURE.md)，保留既有战斗规则、存档格式及界面职责。
+
+## 提交信息
+
+提交标题与正文使用简体中文。可以使用 `fix:`、`feat:`、`docs:`、`refactor:`、`chore:` 等英文类型前缀，冒号后的具体改动写简体中文；代码标识、文件名及专有名词可保留原文。
+
+例如：`fix: 修复望的三技能范围朝向`、`feat: 增加关卡战斗退出确认`、`docs: 更新音乐获取说明`。
+
+## 代码与素材
+
+自设数据修改 `content/operators/` 与 `content/enemies/`，由 `tools/build-content.mjs` 生成运行数据。复杂机制位于对应 kit，表现修改位于渲染或音频模块。原作机制以可追溯的 PRTS 备注和官方数据表为依据。
+
+代码沿用 GPL-3.0-or-later，并保留上游与第三方署名。原作游戏素材和音乐不适用代码许可证，具体范围见 [NOTICE](NOTICE.md) 与[第三方声明](THIRD-PARTY-NOTICES.md)。

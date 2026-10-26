@@ -1,12 +1,14 @@
 # 版权与使用声明（NOTICE）
 
-**卫戍协议：盟约 · Stronghold Protocol** 是《明日方舟》限时玩法「卫戍协议：盟约」的**非官方同人复刻**，与上海鹰角网络科技有限公司（Hypergryph）、Yostar 及其关联方**没有任何关联**，也未获得其授权或认可。
+**Arknights Simulator · 明日方舟关卡模拟器** 是基于 [Stronghold-Protocol](https://github.com/sganggs/Stronghold-Protocol) 战斗引擎开发的**非官方单机同人项目**，与上海鹰角网络科技有限公司（Hypergryph）、Yostar 及其关联方**没有任何关联**，也未获得其授权或认可。
 
 ## 1. 代码许可证：GPL-3.0-or-later
 
 Copyright (C) 2026 Stronghold-Protocol contributors
 
-本项目自己编写的源代码与文档文字（`server/`、`shared/`、`public/` 下的 JS / CSS / HTML、`tools/`、`scripts/`、`test/`、`docs/` 等）以 **GNU 通用公共许可证第 3 版或（由你选择）任何更新版本**（GPL-3.0-or-later）发布，全文见 [LICENSE](LICENSE)。你可以在该许可证的条件下使用、修改和再分发这些代码。
+Copyright (C) 2026 Arknights Simulator contributors
+
+本项目自己编写的源代码与文档文字（`server/`、`shared/`、`public/` 下的 JS / CSS / HTML、`tools/`、`scripts/`、`docs/` 等）以 **GNU 通用公共许可证第 3 版或（由你选择）任何更新版本**（GPL-3.0-or-later）发布，全文见 [LICENSE](LICENSE)。你可以在该许可证的条件下使用、修改和再分发这些代码。
 
 例外：
 
@@ -36,6 +38,8 @@ Copyright (C) 2026 Stronghold-Protocol contributors
 
 这些内容**不在 GPL-3.0 授权范围内**，本项目也无权就它们向任何人授予任何权利。
 
+`content/music/` 中随源码提供的 OGG 曲目保留文件名中的曲名与作者署名，版权归各自权利人所有，不适用代码的 GPL 许可证。
+
 官方战斗特效（0.3.0「官方特效」）：特效的粒子系统、网格、贴图和动画从《明日方舟》官方客户端本地提取（`tools/local-extract`，完整包附带一份），同样属于上面所说、不受 GPL 约束的内容；播放它们的着色器（`public/js/render/vfx/glsl.js`）是本项目按官方客户端着色器的计算自己重写的 GLSL 代码，仓库里不含官方着色器源码。
 
 ## 3. 仅限非商业用途
@@ -62,7 +66,7 @@ Copyright (C) 2026 Stronghold-Protocol contributors
 
 ---
 
-**English summary.** Unofficial, non-commercial fan remake; not affiliated with or endorsed by Hypergryph or Yostar.
+**English summary.** Unofficial, non-commercial single-player simulator based on Stronghold Protocol; not affiliated with or endorsed by Hypergryph or Yostar.
 The project's own code is GPL-3.0-or-later (with the Spine Runtimes linking permission above). All Arknights names,
 art, models, audio and data — including everything under `public/assets/` in the release bundle — are © Hypergryph /
 Yostar and their licensors, are **not** covered by the GPL, and may be used for study and personal non-commercial

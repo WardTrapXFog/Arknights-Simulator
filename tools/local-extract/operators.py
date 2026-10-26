@@ -1,22 +1,22 @@
-"""Local official art for plugin references outside our roster (DESIGN §34.28).
+"""Local official art for the SI operator roster.
 The official client's sprite packs and defaultskin prefab supply the pictures and Front/Back models.
-No downloads, plugin imports, skin packs or changes to gameplay data. Partial/missing installs keep fallbacks.
+No downloads, skin packs or changes to gameplay data. Partial/missing installs keep fallbacks.
 """
 import json
 import re
 import subprocess
 from pathlib import Path
 
-SUB = 'plugin-art'
+SUB = 'operator-art'
 CHAR = re.compile(r'^char_[0-9]+_[a-z0-9]+$')
-# [ASSUMED] Defence in depth for the bounded table-backed JS discovery (artReferences.js).
+# Bound the roster art batch while preserving the existing extraction limit.
 MAX_OPERATORS = 256
 PICTURES = {'avatar': ('spritepack/ui_char_avatar_*.ab', ''),
             'portrait': ('spritepack/char_portrait_*.ab', '_1')}
 
 
 def references(root):
-    reader = Path(__file__).with_name('plugin-art.mjs')
+    reader = Path(__file__).with_name('operator-art.mjs')
     # Fail visibly rather than silently turning a discovery failure into an empty successful extraction.
     return json.loads(subprocess.check_output(['node', str(reader), str(root)], timeout=30))
 
@@ -106,7 +106,7 @@ def export(ab_root, out_root, groups, log, ids):
                 count += n
                 files = groups[sub]
                 skel = next(k for k in files if k.endswith('.skel'))
-                reader = Path(__file__).with_name('plugin-art.mjs')
+                reader = Path(__file__).with_name('operator-art.mjs')
                 meta = json.loads(subprocess.check_output(['node', str(reader), '--spine', str(Path(out_root) / sub / skel)], timeout=30))
                 chars.setdefault(cid, {}).setdefault('spine', {})[face] = {
                     **meta, 'skel': files[skel]['path'], 'atlas': files[skel[:-5] + '.atlas']['path'],

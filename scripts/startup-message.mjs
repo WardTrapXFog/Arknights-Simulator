@@ -1,4 +1,4 @@
-const REPOSITORY = 'https://github.com/WardTrapXFog/ArknightsSimulator';
+const REPOSITORY = 'https://github.com/WardTrapXFog/Arknights-Simulator';
 const MODULES = '自由沙盒 × 游玩自制关卡 × 关卡制作器';
 
 export function startupMessage(url, { reused = false } = {}) {

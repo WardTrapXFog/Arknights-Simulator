@@ -10,7 +10,7 @@
 
 代码部分以 **GPL-3.0-or-later** 发布，继承自上游；详见 [LICENSE](LICENSE)、[NOTICE.md](NOTICE.md) 与 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
 
-本同人项目完全免费，仅供学习交流与个人非商业使用，禁止售卖游戏整合包或收费运营。获取地址为本 GitHub 仓库，不设付费授权、激活或解锁；谨防冒名收费。代码许可与游戏素材的使用范围分别以 `LICENSE` 和 `NOTICE.md` 为准。
+本同人项目完全免费，仅供学习交流与个人非商业使用，禁止售卖游戏整合包或收费运营。获取地址为 [GitHub 官方仓库](https://github.com/WardTrapXFog/Arknights-Simulator)，不设付费授权、激活或解锁；谨防冒名收费。代码许可与游戏素材的使用范围分别以 `LICENSE` 和 `NOTICE.md` 为准。
 
 ## 与上游的关系
 
@@ -92,7 +92,7 @@ node tools/build-content.mjs --operator talula   # 只更新塔露拉
 
 生成器写出 `data/{chess,assets,backups,enemies}.json`、`public/sandbox/js/generated-ops.js`、`server/sim/content/kits/custom-catalog.js`。
 
-原作满配牌库由 `tools/build-operator-library.mjs` 读取 `.cache/gamedata/excel/` 的 character/skill/range/uniequip/battle_equip 官方表，以及当前已接入的棋子与补位/甄选记录生成；复用 `server/plugins/officialUnitBuilder.js`，写出 `data/operator-library.json` 和 `public/sandbox/js/generated-library.js`，不覆盖 `data/chess.json` 的卫戍协议档位。更新官方数据后可重新运行该生成器。
+原作满配牌库由 `tools/build-operator-library.mjs` 优先读取 `data/gamedata/`，回退 `.cache/gamedata/excel/` 中的 character/skill/range/uniequip/battle_equip 官方表，以及当前已接入的棋子与补位/甄选记录生成；复用 `tools/official-unit-builder.mjs`，写出 `data/operator-library.json` 和 `public/sandbox/js/generated-library.js`，不覆盖 `data/chess.json` 的卫戍协议档位。更新官方数据后可重新运行该生成器。
 
 复杂战斗机制在 `server/sim/content/kits/ops/`，塔露拉专属特效由 `public/js/render/fx/custom.js` 登记。
 
@@ -102,10 +102,10 @@ SI 自有代码与上游引擎分开维护：
 
 - `public/sandbox/js/` 自由沙盘，`public/play/` 关卡游玩与编队，`public/level/js/` 关卡制作器，`server/sandbox/index.js` 唯一的 SI 服务端，`content/` + `tools/build-content.mjs` 数据源与生成器。
 - `public/js/render/` 与 `server/sim/` 是引擎与渲染（战斗、寻路、绘制）。
-- `public/studio/`（插件工作台页面）、`server/{match,plugins,studio}/`、`packs/`、`schemas/`、`plugins/`、`test/` 属于上游联机平台，SI 运行时不加载它们。
+- `public/studio/` 保留三模块的 HTML 入口与共用样式；上游联机平台、插件工作台和模板不随本项目分发。
 - `data/` 是生成物与上游游戏数据，不要手改；改 `content/` 再跑生成器。
 
-细节见[架构](docs/ARCHITECTURE.md)，文档索引见[docs/](docs/README.md)。
+细节见[架构](docs/ARCHITECTURE.md)，文档索引见[docs/](docs/README.md)，提交规范见[贡献说明](CONTRIBUTING.md)。
 
 ## 许可
 

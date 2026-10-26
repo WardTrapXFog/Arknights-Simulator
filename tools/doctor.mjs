@@ -160,7 +160,7 @@ function firewallHints(port) {
     else {
       lines.push([mark.warn, `未找到规则「Stronghold Protocol」。朋友连不上时，用「管理员」PowerShell 运行：`]);
       lines.push(['', c.cyan(`netsh advfirewall firewall add rule name="Stronghold Protocol" dir=in action=allow protocol=TCP localport=${port} profile=private,domain`)]);
-      lines.push(['', c.dim('（或首次启动时在 Windows 弹窗里勾选「专用网络」并允许 Node.js；scripts\\install-service-windows.ps1 也会自动添加）')]);
+      lines.push(['', c.dim('（或首次启动时在 Windows 弹窗里勾选「专用网络」并允许 Node.js）')]);
     }
     const prof = capture('powershell', ['-NoProfile', '-NonInteractive', '-Command',
       "Get-NetConnectionProfile | ForEach-Object { $_.InterfaceAlias + '|' + $_.NetworkCategory }"], { timeout: 15000 });

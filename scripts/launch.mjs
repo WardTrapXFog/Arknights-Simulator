@@ -5,7 +5,7 @@
 // If the SI server already owns this port, reuse it and show its local URL.
 // Ctrl+C stops a server started by this launcher.
 
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
@@ -24,15 +24,9 @@ if (Number(process.versions.node.split('.')[0]) < 22) {
 const { c, mark } = await import('../tools/setup.mjs');
 const { probePort } = await import('../tools/doctor.mjs');
 const { applyPendingUpdate, UPDATE_FILE } = await import('../server/update.js');
-const { parseTestModeEnv, testModeGate, unrecognizedTestMode } = await import('../server/testMode.js');
-
-/** The values --scripts takes: off, or a mode server/plugins/policy.js reads from SP_PLUGIN_SCRIPTS. */
-export const SCRIPT_MODES = Object.freeze(['off', 'sandbox', 'trusted', 'trusted-force']);
-/** The values --test-mode takes. `1` is the local/LAN switch; `force` is the public-listener override. */
-export const TEST_MODE_FLAGS = Object.freeze(['off', '1', 'force']);
 
 export function parseArgs(argv) {
-  const o = { port: Number(process.env.PORT) || 3100, host: process.env.HOST || '::', open: !/^(1|true|yes)$/i.test(process.env.SP_NO_BROWSER || ''), setup: false, setupArgs: [], help: false, scripts: undefined, testMode: undefined };
+  const o = { port: Number(process.env.PORT) || 3100, host: process.env.HOST || '::', open: !/^(1|true|yes)$/i.test(process.env.SP_NO_BROWSER || ''), help: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const [k, v] = a.split('=');
@@ -40,43 +34,21 @@ export function parseArgs(argv) {
     if (k === '--port') o.port = Number(val()) || o.port;
     else if (k === '--host') o.host = val() || o.host;
     else if (a === '--no-open') o.open = false;
-    else if (a === '--no-setup') o.setup = false;
-    else if (k === '--scripts') o.scripts = val() ?? '';
-    else if (k === '--test-mode') o.testMode = v !== undefined ? v : argv[i + 1] && !argv[i + 1].startsWith('-') ? argv[++i] : '1';
+    else if (a === '--no-setup') continue;
     else if (a === '-h' || a === '--help') o.help = true;
-    else if (a === '--game') o.setupArgs.push(a, argv[++i] ?? '');
-    else o.setupArgs.push(a);
+    else throw new Error(`不支持的启动参数：${a}。素材下载与本地提取请使用 npm run setup。`);
   }
   return o;
 }
 
-/** The server's environment: PORT / HOST, SP_PLUGIN_SCRIPTS from --scripts, SP_TEST_MODE from --test-mode (off removes an inherited one). */
+/** 单机服务只读取监听地址，启动器不启用插件或联机测试房间。 */
 export function serverEnv(o, base = process.env) {
   const env = { ...base, PORT: String(o.port), HOST: o.host };
-  if (o.scripts === 'off') delete env.SP_PLUGIN_SCRIPTS;
-  else if (o.scripts) env.SP_PLUGIN_SCRIPTS = o.scripts;
-  if (o.testMode === 'off') delete env.SP_TEST_MODE;
-  else if (o.testMode) env.SP_TEST_MODE = o.testMode;
   return env;
 }
 
 function openBrowser(url) {
   return openInBrowser(url) !== null;
-}
-
-/**
- * Chinese startup hint for a refused `1` or an unrecognised SP_TEST_MODE. `interfaces` is a test snapshot.
- * @param {{ host?: string }} o @param {NodeJS.ProcessEnv} env @param {{ warn?: (s: string) => void }} [log]
- * @param {object} [interfaces]
- */
-export function warnTestMode(o, env, log = console, interfaces) {
-  const raw = env && env.SP_TEST_MODE;
-  const unknown = unrecognizedTestMode(raw);
-  if (unknown) { log.warn?.(unknown); return; }
-  const mode = parseTestModeEnv(raw);
-  if (mode === 'off') return;
-  const gate = testModeGate(mode, o && o.host, interfaces);
-  if (gate.warn && mode === 'local') log.warn?.(gate.warn);
 }
 
 async function waitHealthy(port, child, timeoutMs = 30000) {
@@ -97,23 +69,13 @@ async function main() {
     console.log(src.slice(1, end).map((l) => l.replace(/^\/\/ ?/, '')).join('\n'));
     return 0;
   }
-  if (o.scripts !== undefined && !SCRIPT_MODES.includes(o.scripts)) {
-    console.error(`${mark.err} --scripts 只接受 ${SCRIPT_MODES.join(' / ')}（插件脚本模式，docs/PLUGINS.md §13） · --scripts takes ${SCRIPT_MODES.join(' / ')}`);
-    return 2;
-  }
-  if (o.testMode !== undefined && !TEST_MODE_FLAGS.includes(o.testMode)) {
-    console.error(`${mark.err} --test-mode 只接受 ${TEST_MODE_FLAGS.join(' / ')}（测试房间，docs/DEPLOY.md） · --test-mode takes ${TEST_MODE_FLAGS.join(' / ')}`);
-    return 2;
-  }
   const localUrl = `http://localhost:${o.port}`;
 
   const before = await probePort(o.port, o.host);
   if (before.state === 'ours') {
     console.log(startupMessage(localUrl, { reused: true }));
-    if (o.scripts !== undefined) console.log(c.warn(`  --scripts ${o.scripts} 不会改变正在运行的服务器：先停止它（关掉它的窗口），再重新启动。`));
-    if (o.testMode !== undefined) console.log(c.warn(`  --test-mode ${o.testMode} 不会改变正在运行的服务器：先停止它（关掉它的窗口），再重新启动。`));
     if (fs.existsSync(path.join(ROOT, UPDATE_FILE))) {
-      console.log(c.warn(`  解压过的更新包还没有应用：正在运行的仍是旧版本。先停止它（关掉它的窗口；开机自启用 install-service-windows.ps1 -Restart），再重新启动即可。`));
+      console.log(c.warn('  解压过的更新包还没有应用：正在运行的仍是旧版本。先关闭原启动窗口，再重新启动即可。'));
     }
     if (o.open) openBrowser(localUrl);
     return 0;
@@ -127,13 +89,7 @@ async function main() {
   // before setup: setup and the server then see the new version's files (its message explains a refusal)
   if (applyPendingUpdate(ROOT).state === 'failed') return 1;
 
-  if (o.setup) {
-    const r = spawnSync(process.execPath, [path.join(ROOT, 'tools', 'setup.mjs'), '--quiet', ...o.setupArgs], { cwd: ROOT, stdio: 'inherit' });
-    if (r.status !== 0) { console.error(`${mark.err} 准备步骤失败（见上方）。`); return r.status || 1; }
-  }
-
   const env = serverEnv(o);
-  warnTestMode(o, env);
   const child = spawn(process.execPath, [path.join(ROOT, 'server', 'sandbox', 'index.js')], { cwd: ROOT, env, stdio: 'inherit' });
   const forward = (sig) => { if (child.exitCode === null) { try { child.kill(sig); } catch { /* gone */ } } };
   // SIGINT reaches the server straight from the terminal (same process group / console); forwarding it too would make

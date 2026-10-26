@@ -1,5 +1,5 @@
 import { setTerminalState } from './terminal-shell.js';
-// public/studio/js/sandbox/main.js — 关卡模拟器（/studio/console.html 的入口）。
+// public/sandbox/js/main.js — 关卡模拟器（/studio/console.html 的入口）。
 //
 // 页面在浏览器里直接跑引擎（/sim/ 与 /data/ 都是静态挂载），不连服务器、不要工作台密钥：
 //   const ds = new DataSource({ stages: { sandbox: stage } }, sim.ds)   // 自定义地图叠在官方数据之上

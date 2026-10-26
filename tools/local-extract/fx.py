@@ -3055,18 +3055,16 @@ def game_data(root):
             ids = token_skill_ids(rec)
             if ids:
                 token_skills[tid] = sorted(set(token_skills.get(tid, [])) | set(ids))
-    excel = Path(root) / '.cache' / 'gamedata' / 'excel'
     def load_excel(n):
-        try:
-            return json.loads((excel / n).read_text(encoding='utf-8'))
-        except (OSError, ValueError):
-            return {}
-    # Repository-owned JSON reader; installed plugin code is never imported or executed.
-    try:
-        ref_reader = Path(__file__).with_name('plugin-fx.mjs')
-        refs = json.loads(subprocess.check_output(['node', str(ref_reader), str(root)], timeout=30))
-    except (OSError, ValueError, subprocess.SubprocessError):
-        refs = []
+        for excel in (Path(root) / 'data' / 'gamedata', Path(root) / '.cache' / 'gamedata' / 'excel'):
+            try:
+                return json.loads((excel / n).read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                continue
+        return {}
+    # SI's full operator roster supplies additional official skills and effects.
+    refs = [record.get('charId') for record in load('operator-library.json').get('operators', {}).values()
+            if isinstance(record, dict) and record.get('charId')]
     char_table = load_excel('character_table.json')
     for cid in refs:
         if cid not in chars:

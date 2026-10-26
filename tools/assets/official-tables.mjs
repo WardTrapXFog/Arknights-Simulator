@@ -5,7 +5,6 @@ import path from 'node:path';
 import { cachedJson } from './cache.mjs';
 import { RAW } from './sources.mjs';
 import { MirrorPolicy } from './network.mjs';
-import { installedFxReferences } from '../../server/plugins/fxReferences.js';
 
 const object = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const rows = (v, field) => object(v) && Object.keys(v).length > 0
@@ -79,23 +78,4 @@ async function ensureTables(root, reason, opts, charIds) {
   } catch (e) { failures.push(e.message); }
   if (failures.length) log(`[official tables] Unavailable; keeping local fallback: ${failures.join('; ')}`);
   return { lines, failures };
-}
-
-const read = (root, file) => {
-  try { return JSON.parse(fs.readFileSync(path.join(root, file), 'utf8')); } catch { return {}; }
-};
-
-/** Called by setup before its W5/P10 gap checks (also reached by startup/update setup).
- * [ASSUMED] Without the official index, syntactically official references outside the shipped roster
- * trigger the table fetch; P10 still requires an own table entry before permitting art extraction.
- * @param {string} root
- * @param {TableOptions & {check?:boolean, assets?:boolean}} [opts]
- */
-export async function preparePluginOfficialTables(root, opts = {}) {
-  const chess = read(root, 'data/chess.json'), backups = read(root, 'data/backups.json');
-  const roster = new Set([...Object.values(chess ?? {}).map(r => r?.charId), ...Object.keys(backups?.units ?? {})]);
-  const refs = installedFxReferences(root, { artPhases: true }).filter(id => !roster.has(id));
-  if (!refs.length) return { lines: [], failures: [] };
-  return ensureOfficialTables(root, `installed plugins reference operators outside the roster (${refs.join(', ')}); official derivation, art and effects discovery`,
-    { ...opts, offline: !!opts.offline || !!opts.check || opts.assets === false }, refs);
 }

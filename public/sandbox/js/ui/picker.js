@@ -1,4 +1,4 @@
-// public/studio/js/sandbox/ui/picker.js — 干员选择器（从 hud.js 抽出）。
+// public/sandbox/js/ui/picker.js — 干员选择器（从 hud.js 抽出）。
 import { esc } from './html.js';
 import { PROFESSIONS } from '../operator-library.js';
 import { avatar } from '../asset-urls.js';
