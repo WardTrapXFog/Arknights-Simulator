@@ -12,7 +12,7 @@ export async function selectDownloadSource({ mode = 'direct', offline = false, p
   if (offline) return 'direct';
   const normalizedProxy = mode === 'mirror' ? normalizeProxyPrefix(proxyPrefix) : '';
   log(mode === 'mirror'
-    ? `[network] 手动开启 GitHub 镜像：${normalizedProxy || '代理已禁用'}；${verified ? '原始文件校验 Git blob。' : '文件仅校验格式和大小。'}`
+    ? `[network] GitHub 镜像优先：${normalizedProxy || '代理已禁用'}；${verified ? '原始文件校验 Git blob。' : '文件按下载流程校验。'}`
     : '[network] 原始源（未开启 GitHub 镜像）');
   return mode;
 }

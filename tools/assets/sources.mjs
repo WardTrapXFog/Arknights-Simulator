@@ -6,6 +6,7 @@
 // See docs/ASSETS.md for the full source list and credits.
 
 export const DEFAULT_GITHUB_PROXY = 'https://gh-proxy.com/';
+export const DEFAULT_ASSET_SOURCE = 'mirror';
 
 export function normalizeProxyPrefix(prefix = DEFAULT_GITHUB_PROXY) {
   if (prefix.trim() === '') return '';

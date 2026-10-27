@@ -17,7 +17,7 @@
 //
 // Idempotent: existing files with the right size are skipped, so re-running is
 // cheap. Downloads use ~16 parallel connections, 3 retries per direct source,
-// a jsDelivr fallback and an opt-in GitHub proxy (one short attempt per URL).
+// a preferred GitHub mirror (one short attempt per URL), then original/jsDelivr sources.
 // HTTP(S)_PROXY is picked up by restarting once with NODE_USE_ENV_PROXY=1
 // (Node >=22.21 or >=24). An older Node warns and fetches directly, as before.
 // Spine atlases get `size:` (and `pma: true` for enemies); every skeleton is
@@ -64,7 +64,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Downloader } from './assets/downloader.mjs';
 import { restartForEnvProxy } from './assets/env-proxy.mjs';
 import { MirrorPolicy, selectDownloadSource, validateSource } from './assets/network.mjs';
-import { normalizeProxyPrefix } from './assets/sources.mjs';
+import { DEFAULT_ASSET_SOURCE, normalizeProxyPrefix } from './assets/sources.mjs';
 import { loadIndexes } from './assets/cache.mjs';
 import { indexAudio, VOICE_DIRS } from './assets/audio.mjs';
 import { applyContentAssets } from './build-content.mjs';
@@ -105,7 +105,7 @@ const LOCAL_SPINE_KINDS = {
 
 const HELP = `Usage: node tools/fetch-assets.mjs [options]
   --concurrency=N   parallel downloads (default 16)
-  --asset-source=M  direct (default) or mirror (opt-in; no public-IP lookup)
+  --asset-source=M  mirror (default) or direct (no public-IP lookup)
   --force           re-download files even when present
   --source-snapshot=PATH verify raw bytes against pinned Git trees in a JSON snapshot
                     (incompatible with --offline / --add-only / --local-spines)
@@ -120,7 +120,7 @@ const HELP = `Usage: node tools/fetch-assets.mjs [options]
                     only the --voice-lang dub and audio.voiceJp: skip the English, Korean and
                     own-language trees (audio.voiceEn, audio.voiceKr, audio.voiceNative)
   --prune           delete files under public/assets that the manifest no longer references
-                    (public/assets/local/** of tools/local-extract is never deleted); implies --allow-shrink
+                    (public/assets/local/** and custom/** are never deleted); implies --allow-shrink
   --allow-shrink    write data/assets.json even when it loses entries the current one has
                     (without it such a run keeps the current manifest, lists the entries and exits 1)
   --strict          exit 1 when a leaf was dropped for having no file on disk (the report's
@@ -136,7 +136,7 @@ Environment: SP_ASSET_SOURCE sets the default source; SP_GITHUB_PROXY sets the
 HTTPS mirror prefix (default https://gh-proxy.com/; empty disables the proxy);
 SP_ASSETS_STRICT=1 is the same as --strict (CI / packaging builds).
 Mirror attempts have an 8 s response header timeout; response body has a separate idle timeout. Stops for this run after 3 consecutive
-failures. Only explicitly enabled GitHub downloads use the third-party proxy.`;
+failures. GitHub downloads prefer the third-party mirror by default; --asset-source=direct disables it.`;
 
 /**
  * True for the usual truthy spellings of a boolean environment variable (`1`, `true`, `yes`, `on`); empty, `0`,
@@ -154,7 +154,7 @@ function envFlag(value) {
  * @returns {{concurrency:number, force:boolean, offline:boolean, dryRun:boolean, refreshIndex:boolean, prune:boolean, allowShrink:boolean, strict:boolean, addOnly:boolean, localSpines:boolean, voiceLang:string, voiceAll:boolean, optionalVoice:boolean, help:boolean, source:string, sourceSnapshot:string}}
  */
 export function parseArgs(argv) {
-  const o = { concurrency: 16, force: false, offline: false, dryRun: false, refreshIndex: false, prune: false, allowShrink: false, strict: envFlag(process.env.SP_ASSETS_STRICT), addOnly: false, localSpines: false, voiceLang: 'cn', voiceAll: false, optionalVoice: true, help: false, source: process.env.SP_ASSET_SOURCE || 'direct', sourceSnapshot: '' };
+  const o = { concurrency: 16, force: false, offline: false, dryRun: false, refreshIndex: false, prune: false, allowShrink: false, strict: envFlag(process.env.SP_ASSETS_STRICT), addOnly: false, localSpines: false, voiceLang: 'cn', voiceAll: false, optionalVoice: true, help: false, source: process.env.SP_ASSET_SOURCE || DEFAULT_ASSET_SOURCE, sourceSnapshot: '' };
   for (const a of argv) {
     const [k, v] = a.split('=');
     if (k === '--concurrency') o.concurrency = Math.max(1, Math.min(64, parseInt(v, 10) || 16));

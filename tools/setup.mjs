@@ -34,7 +34,7 @@
 //   --offline        same read-only checks as --check; --no-network is an alias
 //   --no-assets      skip art/audio downloads
 //   --refresh-index  re-download needed official tables (otherwise existing tables are reused)
-//   --asset-source=M direct (default) or mirror (opt-in; no public-IP lookup)
+//   --asset-source=M mirror (default) or direct (no public-IP lookup)
 //                    SP_ASSET_SOURCE sets the default; SP_GITHUB_PROXY sets the HTTPS prefix (https://gh-proxy.com/)
 //                    An empty SP_GITHUB_PROXY disables the proxy, including in mirror mode.
 //   --no-local       skip the local-client detection and extraction (the scene step still runs unless --no-scenes)
@@ -56,6 +56,7 @@ import readline from 'node:readline';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { validateSource } from './assets/network.mjs';
+import { DEFAULT_ASSET_SOURCE } from './assets/sources.mjs';
 import { EXPECTED_FX, EXPECTED_LOCAL_GROUPS, EXPECTED_SCENE } from './local-extract/expected.mjs';
 import { restartForEnvProxy } from './assets/env-proxy.mjs';
 
@@ -727,7 +728,7 @@ function ensureVenv(py, log) {
 // ---------------------------------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const o = { check: false, offline: false, refresh: false, assets: true, local: 'ask', scenes: 'ask', game: null, yes: false, quiet: false, help: false, source: process.env.SP_ASSET_SOURCE || 'direct' };
+  const o = { check: false, offline: false, refresh: false, assets: true, local: 'ask', scenes: 'ask', game: null, yes: false, quiet: false, help: false, source: process.env.SP_ASSET_SOURCE || DEFAULT_ASSET_SOURCE };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--check') o.check = true;
