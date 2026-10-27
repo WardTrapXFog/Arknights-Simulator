@@ -2,7 +2,7 @@
 
 这里放的是构建与演练需要的**结构化数据**（不是美术素材）。分两类：
 
-## 一、构建牌库/干员用（`npm run content` 直接读）
+## 一、构建原作满配牌库
 
 来自 [Kengxxiao/ArknightsGameData](https://github.com/Kengxxiao/ArknightsGameData) 的 `zh_CN/gamedata/excel/`：
 
@@ -14,7 +14,7 @@
 | `uniequip_table.json` | 模组（含特勤证章）定义 |
 | `battle_equip_table.json` | 模组对特性/天赋的改写（含 `validInMapTag`） |
 
-脚本优先读这里，读不到再回退 `.cache/gamedata/excel/`。
+`tools/build-operator-library.mjs` 优先读取这里的五张表，回退 `.cache/gamedata/excel/`。`npm run content` 则读取 `content/` 中的现有定义并合入运行数据，不直接读取这些官方表。具体用法见[维护工具](../../tools/README.md)。
 
 ## 二、查证敌人与集成战略用（写 content 时对照）
 
@@ -26,7 +26,7 @@
 | `enemy_handbook_table.json` | 敌人图鉴：编号、描述、种族 |
 | `roguelike_topic_table.json` | 集成战略主题表：难度档位、关卡、藏品、分队 |
 
-这三份不是运行必需的——游戏跑的是 `data/enemies.json`（由 `content/enemies/` 构建）。留着是为了新增/核对敌人时不必重新解包：`content/enemies/*.json` 的数值来源就是 `enemy_database.json` 的 level 0 条目。
+运行时使用已发布的 `data/enemies.json`，`content/enemies/` 中登记的定义向其中补充或覆盖对应条目。这三张原始表供维护时查询敌人属性、图鉴和集成战略规则；各条目的实现仍需结合具体等级与机制备注。
 
 ## 版权
 

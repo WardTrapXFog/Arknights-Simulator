@@ -14,7 +14,8 @@ if errorlevel 1 goto :nonode
 node -e "process.exit(Math.max(0, Math.sign(22 - parseInt(process.versions.node))))"
 if errorlevel 1 goto :oldnode
 
-if not exist "node_modules\ws\package.json" (
+node -e "const fs=require('fs');const p=require('./package.json');process.exit(Object.keys(p.dependencies||{}).some(n=>!fs.existsSync('node_modules/'+n+'/package.json'))?1:0)"
+if errorlevel 1 (
   echo [首次运行] 正在安装依赖 npm ci ...
   call npm ci --no-audit --no-fund || call npm install --no-audit --no-fund
   if errorlevel 1 goto :fail

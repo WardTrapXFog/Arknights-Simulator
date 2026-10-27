@@ -2136,5 +2136,23 @@
       ]
     },
     "owned": true
+  },
+  "audio": {
+    "attack": "/assets/audio/sfx/player/p_atk/p_atk_lightsword_n.mp3",
+    "hit": "/assets/audio/sfx/player/p_imp/p_imp_brightensword_n.mp3",
+    "skill": "/assets/audio/sfx/player/p_skill/p_skill_sphkgvlnbth.mp3",
+    "skills": {
+      "0": "/assets/audio/sfx/player/p_skill/p_skill_sphkgvlnbth.mp3",
+      "1": "/assets/audio/sfx/player/p_skill/p_skill_sphkgvlndth.mp3",
+      "2": "/assets/audio/sfx/player/p_skill/p_skill_goldspearset.mp3"
+    },
+    "attacks": {
+      "1": "/assets/audio/sfx/player/p_atk/p_atk_lightsword_h.mp3",
+      "2": "/assets/audio/sfx/player/p_atk/p_atk_lightsword_h.mp3"
+    },
+    "hits": {
+      "1": "/assets/audio/sfx/player/p_imp/p_imp_brightensword_h.mp3",
+      "2": "/assets/audio/sfx/player/p_imp/p_imp_brightensword_h.mp3"
+    }
   }
 }

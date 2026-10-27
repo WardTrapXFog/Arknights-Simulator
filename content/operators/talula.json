@@ -706,8 +706,11 @@
   "audio": {
     "attack": "/assets/audio/sfx/player/p_atk/p_atk_sword_n.mp3",
     "hit": "/assets/audio/sfx/player/p_imp/p_imp_sword_n.mp3",
+    "skill": "/assets/audio/sfx/player/p_skill/p_skill_burningdarkness.mp3",
     "skills": {
-      "0": null
+      "0": null,
+      "1": "/assets/audio/sfx/player/p_skill/p_skill_volcano_loop.mp3",
+      "2": "/assets/audio/sfx/player/p_skill/p_skill_volcano_loop.mp3"
     },
     "attacks": {
       "0": "/assets/audio/sfx/player/p_atk/p_atk_firemag_n.mp3",

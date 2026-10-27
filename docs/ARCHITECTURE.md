@@ -1,14 +1,12 @@
 # SI 架构
 
-本文件只描述代码现在是什么。每个条目都能在对应文件里直接读到；代码改动后先改代码，再改这里。
-
 ## 1. 服务入口与三个功能模块
 
 | 入口 | 命令 | 作用 |
 |---|---|---|
 | SI 沙盒（日常） | `npm start` → `server/sandbox/index.js`，默认 `3100` | 纯静态文件服务：页面、素材、`/data/`、`/shared/`、`/sim/`、`/data.js`。不建房间、不开 WebSocket、不托管对局。 |
 
-双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。`scripts/start-windows.bat` 检查 Node.js，并在缺少 `node_modules/ws/package.json` 时自动运行 `npm ci`，失败则回退 `npm install`；前端库由安装后的 `postinstall` 准备。后续 JS 启动器不执行 `tools/setup.mjs`，整条双击链不自动下载官方素材或提取本地客户端。`--debug`（或环境变量 `SI_DEBUG=1`）开启浏览器交互日志：服务端向页面回 `/api/debug`，前端经 `/api/log` 把导航、点击与模块耗时打回启动窗口。
+双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。`scripts/start-windows.bat` 检查 Node.js，并在缺少任一运行依赖时自动运行 `npm ci`，失败则回退 `npm install`；前端库由安装后的 `postinstall` 准备。后续 JS 启动器不执行 `tools/setup.mjs`，整条双击链不自动下载官方素材或提取本地客户端。`--debug`（或环境变量 `SI_DEBUG=1`）开启浏览器交互日志：服务端向页面回 `/api/debug`，前端经 `/api/log` 把导航、点击与模块耗时打回启动窗口。
 
 服务监听时把 `/` 重定向到 `/studio/home.html`（工作区选择页），`/healthz` 返回 `{ok, mode:'sandbox'}`。
 
@@ -17,7 +15,7 @@
 ```
 public/
   play/              自制关卡浏览、玩家编队与开战入口
-  sandbox/js/        自由沙盘（SI 自有）
+  sandbox/js/        自由沙盒（SI 自有）
   level/js/          关卡制作器（SI 自有）
   studio/            三模块 HTML 入口与共用样式
   js/                战斗引擎的浏览器侧：渲染、音频、素材、sim 加载器
@@ -28,15 +26,13 @@ server/
   http/              SI 静态服务的配置、响应、压缩与安全策略
 data/                `tools/build-content.mjs` 的生成物 + 上游游戏数据
 shared/              引擎与页面共用的纯模块
-content/             SI 的数据源：`operators/` 与 `enemies/`
-tools/               生成器与素材脚本
+content/             内容定义、关卡文件与背景音乐
+tools/               内部数据维护与素材脚本
 ```
 
-`server/sandbox/index.js` 是唯一服务入口。`package.json` 不提供联机启动项，仓库不包含匹配、大厅、联机服务端、插件工作台、插件模板或上游测试助手。`public/index.html` 将旧首页地址导向 SI 主菜单。
+`server/sandbox/index.js` 是唯一服务入口，负责本机静态文件、关卡库与音乐列表接口；战斗模拟在浏览器中执行。`public/index.html` 将首页地址导向主菜单。
 
-`tools/official-unit-builder.mjs` 为原作满配牌库提供纯数据构建。`tools/local-extract/operator-art.mjs` 从 SI 牌库读取待提取的原作干员；`fx.py` 从同一牌库补充技能与特效，官方表优先读 `data/gamedata/`。这些工具不扫描插件目录。战斗引擎、渲染及其共用协议、数据和特效格式保留现有接口。
-
-## 3. 自由沙盘 `public/sandbox/js/`
+## 3. 自由沙盒 `public/sandbox/js/`
 
 | 文件 | 职责 |
 |---|---|
@@ -56,19 +52,18 @@ tools/               生成器与素材脚本
 | `battle-runner.js` | 固定步长推进战斗并产出快照/事件（沙盒与关卡游玩共用）。 |
 | `field-view.js` | 战场视图的创建、销毁、快照推送、事件推送、音频接入、选中镜头与表现层接线。 |
 | `battle-feedback.js` | 独立 Canvas 表现层：技能范围外沿、开技标记、丹增与液氮弹道、产费数字飞向费用栏及显示延迟。只读取战斗状态与事件，按 30 Hz 绘制。 |
-| `battlefield.js` | 19×21 地图字形、地形笔刷、战场范围、红蓝门、地图体检。 |
+| `battlefield.js` | 地图字形、地形笔刷、战场范围、红蓝门与地图体检。 |
 | `spawn-catalog.js` | 旧投放预设与倍率保留原下标，再追加 `enemy-library.js` 中尚未列出的正常敌人。按全部、木桩、普通、精英、领袖筛选；保留 8 个机制木桩与耐久变体。 |
-| `operator-catalog.js` `roster.js` `generated-ops.js` | 手牌与选人器：三名自设 + 独立生成的 202 名原作满配干员。普通/进阶别名归一，按职业筛选。`generated-ops.js` 仍由自设生成器写出。 |
+| `operator-catalog.js` `roster.js` `generated-ops.js` | 手牌与选人器：三名自设 + 独立生成的 202 名原作满配干员。普通/进阶别名归一，按职业筛选。`generated-ops.js` 由内容同步脚本写出。 |
 | `panel-models.js` | 左侧详情面板与场上技能操作的数据模型。 |
 | `asset-urls.js` `generated-illustrations.js` | HUD 图片入口与 205 名干员完整立绘的地址、尺寸、透明边界登记；详情按边界自适应缩放。登记表生成器为 `tools/import-operator-illustrations.py`，素材来源记录在 `art/operator-illustrations.json`；`npm run assets` 通过 `tools/assets/illustrations.mjs` 按该登记表下载正式图片。 |
-| `asset-urls.js` | 素材地址适配。 |
 | `hud.js` `ui/` | HUD 公共接口与各区块：`shell`（壳）`hand`（手牌）`detail`（详情）`toolbox`（工具箱）`picker`（选人器）`icons` `html`（小工具）。 |
 
 `public/studio/home.html` 是自由沙盒 / 游玩自制关卡 / 关卡制作器的三入口菜单；菜单和存档窗口的样式在 `public/sandbox/menu.css`，也由它提供共用的扫描线和静态噪点变量。`public/studio/sandbox.css` 保留 HUD 布局，`public/sandbox/hud-theme.css` 定义炭灰面板、琥珀状态、青绿交互、警报红、小圆角、倒角与菱形控件。状态栏直接使用原有 `public/assets/ui/hudPanel/bg_battle.png` 八边形长条底板。扫描线与噪点只用于面板和菜单，不覆盖战场画布；打开与点击动画走 CSS 分段关键帧，系统减少动态效果设置会关闭动画。`controller.js` 的 `onSaves` 打开窗口前暂停 runner，关闭后按此前播放状态恢复；`pagehide` 保存当前编辑内容。
 
-`terminal-shell.js` 与 `terminal.css` 统一主菜单和三个二级入口的导航、设置、上浮粒子与按键立体反馈。主菜单开屏只在当前标签页会话首次进入时播放；常驻宿主页通过同文档 View Transition 保持旧工作区图像并左右滑动；不使用宿主页的独立入口保留 `terminal-navigation.js` 的跨文档切换。页面不再输出两段启动加载文字。主菜单在首次开屏结束后依次浮现标题、三个入口与页脚；返回主菜单时只播放内容入场。三个二级入口共用同一深色背景，制作器的顶部工具区使用对应半透明底色。实际关卡编辑工具关闭这些交互音效与动效，页面角落保留全局设置和音乐开关。顶层工作区请求由服务端加载 `music-shell.html`，内层页面保留各自的导航和生命周期；`music-shell.js` 持有跨页共用的局外播放器，`menu-audio.js` 将局外状态和选曲转交给它。曲目与关卡编辑器共用 `/api/music`，默认《生命流》，选择写入 `arksim-sandbox-settings-v1.menuBgmTrack`。`level-bgm.js` 保留暂停音源和最多两首解码缓存，开关、静音及音量调整不重新加载；局内外切换和换曲重新起播。使用见[背景音乐](../content/music/README.md)。文字选择与链接、图片拖拽在页面层禁用，输入框仍可编辑。
+`terminal-shell.js` 与 `terminal.css` 统一主菜单和三个二级入口的导航、设置、上浮粒子与按键立体反馈。主菜单开屏只在当前标签页会话首次进入时播放；常驻宿主页通过同文档 View Transition 保持旧工作区图像并左右滑动；不使用宿主页的独立入口保留 `terminal-navigation.js` 的跨文档切换。主菜单在首次开屏结束后依次浮现标题、三个入口与页脚；返回主菜单时只播放内容入场。三个二级入口共用同一深色背景，制作器的顶部工具区使用对应半透明底色。实际关卡编辑工具关闭这些交互音效与动效，页面角落保留全局设置和音乐开关。顶层工作区请求由服务端加载 `music-shell.html`，内层页面保留各自的导航和生命周期；`music-shell.js` 持有跨页共用的局外播放器，`menu-audio.js` 将局外状态和选曲转交给它。曲目与关卡编辑器共用 `/api/music`，默认《生命流》，选择写入 `arksim-sandbox-settings-v1.menuBgmTrack`。`level-bgm.js` 保留暂停音源和最多两首解码缓存，开关、静音及音量调整不重新加载；局内外切换和换曲重新起播。使用见[背景音乐](../content/music/README.md)。文字选择与链接、图片拖拽在页面层禁用，输入框仍可编辑。
 
-宿主页的导航一步到位：View Transition 的 DOM 更新回调只换 iframe 的 `src` 并立即结算，260 毫秒滑动动画自己跑完，`moving` 锁由 `transition.finished`（另加 1600 毫秒兜底计时）释放。过渡回调**不允许**返回等待子页 `terminalReady()` 的 Promise——浏览器会因此把子文档的提交压到 Promise 结算之后，而子页要先加载才能 `terminalReady`，双方互等只能由 Chrome 的四秒超时解开；主菜单页从不调用 `terminalReady`，那样锁就再也打不开，之后所有入口点击都会被丢弃。子页仍用 `html[data-terminal-pending]` 把自己藏到就绪为止，所以不会露出半成品界面。被宿主框住时子文档不做自己的 View Transition（`terminal-navigation.js` 直接 `skipTransition()`），动画只由宿主播放，避免两套快照互相打断。交互音效与 BGM 的 AudioContext 只存在于宿主窗口，子页的 `menu-audio.js` 把调用转发过来，每次导航不会新建上下文。
+宿主页的 View Transition 更新回调只更换 iframe 的 `src` 并立即返回，260 毫秒滑动动画由宿主播放；`moving` 锁在动画结束后释放，并设 1600 毫秒兜底计时。回调不等待子页的 `terminalReady()`，避免导航提交与子页加载互相等待。子页通过 `html[data-terminal-pending]` 隐藏未就绪内容；被宿主框住时跳过自己的 View Transition。交互音效与 BGM 的 AudioContext 只存在于宿主窗口，子页通过 `menu-audio.js` 转发调用。
 
 `debug-log.js` 提供局外交互日志：`debugLog` 写一行 console 并批量 POST 到 `/api/log`，`debugTimer` 记录一段耗时，`describeNode` 描述被点击的元素。开关由 `/api/debug`（服务端 `SI_DEBUG=1`，启动器 `--debug`）或 localStorage 的 `arksim-debug=1/0` 决定；关闭时不发请求。服务端 `/api/log` 只在 `SI_DEBUG` 开启时把收到的行打到启动窗口，文字以 `[浏览器 时间]` 前缀与本机日志区分。
 
@@ -99,7 +94,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 | 文件 | 职责 |
 |---|---|
 | `app.js` | 关卡库、地形/路线/出生模式、敌人筛选、导入导出、共享撤销、自适应关卡库分页、侧栏页与二级对话框接线。只加载 enemies，不启动战斗；局外音乐与共用导航由 terminal-shell 接入。 |
-| `level-store.js` | `localStorage[arksim-levels-v2]` 的读写，坏档仅跳过该关，满库写入报错。 |
+| `level-store.js` | 通过 `/api/levels` 读取、保存与删除 `content/levels/` 中的关卡文件，内存缓存供界面同步查询；坏关卡单独跳过，写盘失败反馈错误。 |
 | `level-model.js` | 出生创建、路线解析、带停留的累计弧长、任意时刻场况与推演长度，按编辑操作失效的寻路缓存。 |
 | `terrain.js` | 原有地形笔刷、部署区拖拽、地图 JSON 导入导出，地图点击交给当前模式。 |
 | `routes.js` | 持久化路线 ID/名称、引用计数、节点编辑与停留、按间隔批量投放、引用删除确认；`previewRoute()` 用 Grid 的平滑 waypoints 构造预览折线。 |
@@ -139,41 +134,27 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 一次对局的敌人只能来自一处：关卡自带的 `document.spawns`，或沙盒按红门序号编的 `document.waves`。`state.js` 的 `useLevelSpawns` 与 `useSandboxWaves` 是仅有的两个切换口，各自清掉另一方。`battle-session.buildBattle` 的顺序是 `opts.spawns → document.spawns → 波次映射`。
 
-## 6. 自设数据与生成物
+## 6. 内容定义与运行数据
 
-数据源在 `content/`：`operators/index.json` 登记塔露拉、维娜、结城理；`enemies/index.json` 登记炙烤/焦香螺旋桨。`tools/build-content.mjs` 写出：
+`content/operators/` 与 `content/enemies/` 保存项目已接入的内容定义及索引。内部脚本 `tools/build-content.mjs` 将定义合入运行数据，并同步名单和机制登记：
 
 - `data/chess.json`、`data/assets.json`、`data/backups.json`、`data/enemies.json`
-- `public/sandbox/js/generated-ops.js`（沙盒目录）
+- `public/sandbox/js/generated-ops.js`（沙盒名单）
 - `server/sim/content/kits/custom-catalog.js`（kit 登记）
 
-只更新塔露拉：`node tools/build-content.mjs --operator talula`。
+复杂机制由 `server/sim/content/kits/` 中的代码实现，角色表现由渲染和音频模块实现；数据同步脚本不代替这些实现。脚本的参数与写入范围见[维护工具](../tools/README.md)。
 
 `npm run assets` 的公开下载目录由 `tools/assets/catalog.json` 提供，结合 `data/` 补充当前角色和敌人。下载入口默认优先 jsDelivr 可覆盖的仓库文件，失败时回退原始源；语音分支和 GitHub Release 使用原始源或用户自配代理。没有内置通用 GitHub 转发代理，`--asset-source=direct` 可改为原始源优先。上游音频、语音与模型索引缺失时在线下载并缓存。完整立绘按仓库中记录的版本和哈希从 AKDP 图片包读取；下载清单写入前调用 `build-content.mjs` 的 `applyContentAssets` 合并内容源中的自设素材与音频配置，不重建战斗数据。中断后复用校验合格的完整文件，未完成的单个文件重新下载；下载器的 `--prune` 保留 `public/assets/custom/` 与 `public/assets/local/`。Node 与浏览器的默认模拟数据均使用正式运行数据。
 
-## 7. 塔露拉专属特效
+启动器通过 `tools/assets/readiness.mjs` 展示 Node、依赖、前端库、运行数据与素材的准备情况，本地美术和特效按实际非空文件统计。网络音效计划使用随源码提供的 `skill-modes.json`，不依赖本地特效索引。完整立绘的 Range 请求失败时回退到项目内缓存的完整 ZIP。`tools/import-assets.mjs` 从显式指定的整合包复制官方素材和兼容索引；`tools/setup.mjs --local --game` 从显式指定的客户端 AssetBundle 目录提取美术及官方特效，不自动发现客户端。
 
-`public/js/render/fx/custom.js` 汇集各模块的 `kinds`、`handlers`、方法容器与生命周期。实现在这几个文件里：
+## 7. 专属表现模块
 
-| 文件 | 职责 |
-|---|---|
-| `talula.js` | 接线与公共绘制：火翼、起飞与落地、S1 命中链、恶火、焚尽、原生刀痕抑制 |
-| `talula-battle.js` | 剑气飞行、S3 圆弧剑气、焰浪火墙、地面火斑 |
-| `talula-slash.js` | 刀光拖尾、月牙曲面、点火线、剑路姿态采样 |
-| `talula-animation.js` | 四档时间表（片段、命中帧、扫掠区间）、位移动画、施法保持判据 |
-| `talula-textures.js` | 火效图集的栅格化与按帧取图 |
-| `talula-feedback.js` | 命中反馈：刀痕、延迟爆燃、破隐碎镜 |
-| `talula-audio.js` | 音频锚点：事件到音效槽、循环与施法音 |
+`public/js/render/fx/custom.js` 汇集各干员模块的事件处理、方法与生命周期。专属模块消费战斗状态和事件，负责角色、弹道、地面效果与声音，不推动机制结算。
 
-渲染核只留通用钩子：`spine.js` 的 `setSwingPlanner` / `setCastHold` / `setAttackClip`、`units.js` 的 `setMotionSampler`。塔露拉模块登记 `setSwingPlanner`（`talulaSwingPlan`）、`setMotionSampler`（`sampleTalulaMotion`）与 `setCastHold`。保持判据只认装备 S1 时已经确认的 `Attack_2`，以真实 `attackUntil` 为截止，避免同帧的技能关闭切掉收势与刀光；预起手不保持。`setAttackClip` 未登记。
+塔露拉的表现分为 `talula.js` 的公共接线，以及 `talula-animation.js`、`talula-slash.js`、`talula-battle.js`、`talula-textures.js`、`talula-feedback.js` 和 `talula-audio.js` 的动作、剑路、技能特效、纹理、反馈与音频职责。维娜与结城理分别由 `vina.js` 和 `makoto.js` 接入。
 
-她的动作节奏以 `art/talula/animation-spec.json` 为准。四档命中帧不同：普攻与 S1 走 `Attack_2` 第 40 帧、S2 走 `Attack_1` 第 30 帧、S3 走 `Skill_2` 第 77 帧；表在 `talula-animation.js` 的 `PROFILES`，端点单位是**秒**（帧号已除以 30），因为 `spine.js` 的 `swingTime()` 把它直接当 `trackTime`。剑真正在扫的帧区间由同一文件的 `talulaSweep()` 给出，刀光采样与 S1 烈焰刀身都读它，没有第二份字面量。
-
-火效来源分两层：`art/talula/effects/` 放原创 SVG 帧条（`atlas-layout.json` 描述帧数与单帧尺寸），运行副本在 `public/assets/custom/op_talulah/fx/`，由 `talula-textures.js` 在浏览器里栅格化切片。十组（`fire-feather`、`ground-tongues`、`hit-slash`、`fire-column`、`embers`、`smoke`、`flame-crescent`、`wall-body`、`wall-crest`、`delayed-burst`）都已接进绘制，每组都保留图集缺失时的 Graphics 回退；sprite 随记录复用，到期隐藏，清场时销毁。
-
-各效果的位置：S3 圆弧剑气在 `talula-battle.js` 的 `drawTalulaRing()`（从施放位置向前扩散，半径只由范围内最远一格决定，弧面逐点贴地形高度）；剑气在 `spawnTalulaQi`/`updateTalulaQi` 与 kit 的 `talulaQiSlash` 分支；焰浪与恶火在 kit 的 `stepWaves()`/`addFire` 与 `setTalulaWave`/`setTalulaFire`；火翼在 `_updateWings`；原生灰色刀痕由 `spine.js` 的 `suppressSlots()` 每帧压掉。
-
-S1 的 `talulaS1` 命中在 `talula.js` 创建带 `fiery` 标记的剑路刀光，由 `talula-slash.js` 扩大火焰拖痕并每帧沿剑身铺亮芯；开技不画掌心火光，命中不画火线。目标火柱宽高为原来的 1.2 倍，反馈持续 1.05 游戏秒，八帧火柱显式按 8fps 播放。S3 圆弧剑气的寿命为 `0.6/1.3` 游戏秒，扩散距离不变。火翼的图集锚点是 `(32/256, 228/256)`，按源图斜向羽轴 `(188, -201)` 算镜像与旋转，羽根挂在胸背、向两侧上方展开。
+通用渲染层提供姿势、挥击规划与外层位移接口；具体角色的选片、时间映射与表现条件由其专属模块决定。塔露拉的当前运行映射见 `talula-animation.js`，官方素材的片段和关键帧测量见[素材动作说明](../art/talula/素材动作实测.md)。原创火效图集的定义位于 `art/talula/effects/`，运行副本位于 `public/assets/custom/op_talulah/fx/`，由 `talula-textures.js` 切片并提供缺图回退。
 
 ## 8. 命名规则
 

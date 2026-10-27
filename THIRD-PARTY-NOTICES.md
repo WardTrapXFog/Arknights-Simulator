@@ -3,28 +3,28 @@
 Arknights Simulator's code, including the inherited Stronghold Protocol code, is licensed under **GPL-3.0-or-later** (see [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md)).
 The components below are **not** part of that grant: each stays under its own licence, reproduced at the end of this
 file. The only third-party source committed here is `tools/local-extract/aklz4.py` and the transpiled Pixi no-eval adapter `public/js/render/app/pixiNoEval.js`; the client libraries are
-installed by npm and copied into `public/vendor/` by `tools/vendor.mjs` (postinstall), and the release bundle carries
-them (with `node_modules/`, which keeps each package's own licence file).
+installed by npm and copied into `public/vendor/` by `tools/vendor.mjs` (postinstall).
+Each installed package keeps its own licence file in `node_modules/`.
 
 本项目自己的代码采用 GPL-3.0-or-later；下列第三方组件各自保留原许可证，不受 GPL 约束。
 
 ## Software
 
-| Component | Version | Licence | Where it is used | In the repository | In the release bundle |
-|---|---|---|---|---|---|
-| [PixiJS](https://github.com/pixijs/pixijs) | 7.4.2 | MIT | browser renderer — `public/vendor/pixi.min.js` | no (npm) | yes |
-| [pixi-spine](https://github.com/pixijs/spine) | 4.0.6 | MIT banner; contains the **Spine Runtimes**, under the **Spine Runtimes License Agreement** (package licence "SEE SPINE-LICENSE") | Spine model playback — `public/vendor/pixi-spine.js` | no (npm) | yes |
-| [Preact](https://github.com/preactjs/preact) | 10.29.8 | MIT | UI — `public/vendor/preact.module.js`, `hooks.module.js` | no (npm) | yes |
-| [htm](https://github.com/developit/htm) | 3.1.1 | Apache-2.0 | UI templates — `public/vendor/htm.module.js` | no (npm) | yes |
-| [three.js](https://github.com/mrdoob/three.js) | 0.186.1 | MIT | official 3D board — `public/vendor/three.core.js`, `three.module.js` | no (npm) | yes |
-| [SES](https://github.com/endojs/endo/tree/master/packages/ses) | 2.3.0 | Apache-2.0 (full text below, shared with htm) | script plugin compartments in isolated Workers/children — `public/vendor/ses.umd.js`; dependencies @endo/cache-map 1.1.0, @endo/env-options 1.1.11, @endo/immutable-arraybuffer 2.0.0, also Apache-2.0 | no (npm) | yes |
-| [Acorn](https://github.com/acornjs/acorn) | 8.18.0 | MIT | parsed sandbox module adapter — `public/vendor/acorn.mjs`, server | no (npm) | yes |
-| [@pixi/unsafe-eval](https://github.com/pixijs/pixijs/tree/v7.4.2/packages/unsafe-eval/src) | 7.4.2 | MIT (PixiJS notice below) | CSP-compatible shader uniform uploads; upstream syncUniforms transpiled, install adapted to lazy global PIXI | **yes**, `public/js/render/app/pixiNoEval.js` | yes |
-| [ws](https://github.com/websockets/ws) | 8.22.0 | MIT | WebSocket server (`server/`) | no (npm) | yes (`node_modules/`) |
-| [Node.js](https://nodejs.org/) | v22.23.3 (pinned in `scripts/make-windows-bundle.mjs`) | MIT | the portable `node\node.exe` (**Windows portable package only** — the integration bundle in [Releases](https://github.com/sganggs/Stronghold-Protocol/releases/latest) ships no `node.exe`) | no (downloaded from nodejs.org at package time, sha256 verified) | **Windows portable package only** (`node\node.exe`, with `node\LICENSE-node.txt`) |
-| [puppeteer-core](https://github.com/puppeteer/puppeteer) | 25.12.0 | Apache-2.0 | optional browser tests (dev dependency) | no (npm) | no |
-| [Ark-Unpacker](https://github.com/isHarryh/Ark-Unpacker) LZ4AK decoder | — | BSD-3-Clause | `tools/local-extract/aklz4.py` (optional local extraction) | **yes** — keeps its notice; full text also in `tools/local-extract/LICENSE-Ark-Unpacker.txt` | yes |
-| [UnityPy](https://github.com/K0lb3/UnityPy) (via MooncellWiki/UnityPy), [lz4](https://github.com/python-lz4/python-lz4), [Pillow](https://github.com/python-pillow/Pillow) | see `tools/local-extract/requirements.txt` | MIT / BSD-3-Clause / MIT-CMU | optional local extraction; installed by pip into `.venv-extract` only when the host opts in | no | no |
+| Component | Version | Licence | Where it is used | In the repository |
+|---|---|---|---|---|
+| [PixiJS](https://github.com/pixijs/pixijs) | 7.4.2 | MIT | browser renderer — `public/vendor/pixi.min.js` | no (npm) |
+| [pixi-spine](https://github.com/pixijs/spine) | 4.0.6 | MIT banner; contains the **Spine Runtimes**, under the **Spine Runtimes License Agreement** (package licence "SEE SPINE-LICENSE") | Spine model playback — `public/vendor/pixi-spine.js` | no (npm) |
+| [Preact](https://github.com/preactjs/preact) | 10.29.8 | MIT | UI — `public/vendor/preact.module.js`, `hooks.module.js` | no (npm) |
+| [htm](https://github.com/developit/htm) | 3.1.1 | Apache-2.0 | UI templates — `public/vendor/htm.module.js` | no (npm) |
+| [three.js](https://github.com/mrdoob/three.js) | 0.186.1 | MIT | official 3D board — `public/vendor/three.core.js`, `three.module.js` | no (npm) |
+| [SES](https://github.com/endojs/endo/tree/master/packages/ses) | 2.3.0 | Apache-2.0 (full text below, shared with htm) | retained upstream dependency — `public/vendor/ses.umd.js`; dependencies @endo/cache-map 1.1.0, @endo/env-options 1.1.11, @endo/immutable-arraybuffer 2.0.0, also Apache-2.0 | no (npm) |
+| [Acorn](https://github.com/acornjs/acorn) | 8.18.0 | MIT | retained upstream dependency — `public/vendor/acorn.mjs` | no (npm) |
+| [@pixi/unsafe-eval](https://github.com/pixijs/pixijs/tree/v7.4.2/packages/unsafe-eval/src) | 7.4.2 | MIT (PixiJS notice below) | CSP-compatible shader uniform uploads; upstream syncUniforms transpiled, install adapted to lazy global PIXI | **yes**, `public/js/render/app/pixiNoEval.js` |
+| [ws](https://github.com/websockets/ws) | 8.22.0 | MIT | retained upstream npm dependency | no (npm) |
+| [Node.js](https://nodejs.org/) | 22 or later | MIT | locally installed runtime for the simulator server and maintenance scripts | no (installed by the user) |
+| [puppeteer-core](https://github.com/puppeteer/puppeteer) | 25.12.0 | Apache-2.0 | optional browser tests (dev dependency) | no (npm) |
+| [Ark-Unpacker](https://github.com/isHarryh/Ark-Unpacker) LZ4AK decoder | — | BSD-3-Clause | `tools/local-extract/aklz4.py` (optional local extraction) | **yes** — keeps its notice; full text also in `tools/local-extract/LICENSE-Ark-Unpacker.txt` |
+| [UnityPy](https://github.com/K0lb3/UnityPy) (via MooncellWiki/UnityPy), [lz4](https://github.com/python-lz4/python-lz4), [Pillow](https://github.com/python-pillow/Pillow) | see `tools/local-extract/requirements.txt` | MIT / BSD-3-Clause / MIT-CMU | optional local extraction; installed by pip into `.venv-extract` only when the host opts in | no |
 
 The Spine Runtimes License requires, among other things, that redistributions include its licence and copyright notice
 (reproduced below) and that "each user of the Products must obtain their own Spine Editor license" unless the
@@ -36,7 +36,7 @@ at all, this project grants an additional permission under GPL-3.0 section 7 for
 
 | Font | Licence | How it gets here |
 |---|---|---|
-| Bender (Jovanny Lemonad / Oleg Zhuravlev, Gladkikh Ivan) | the authors' free-font terms (not GPL) | downloaded by `tools/fetch-assets.mjs` from [TimWangZi/The-font-of-Arknights](https://github.com/TimWangZi/The-font-of-Arknights) into `public/fonts/` (included in the release bundle) |
+| Bender (Jovanny Lemonad / Oleg Zhuravlev, Gladkikh Ivan) | the authors' free-font terms (not GPL) | downloaded by `tools/fetch-assets.mjs` from [TimWangZi/The-font-of-Arknights](https://github.com/TimWangZi/The-font-of-Arknights) into `public/fonts/`; font files are also supplied with the source checkout |
 | Novecento Wide (Jan Tonellato / Synthview) | the authors' free-font terms (not GPL) | as above |
 | Noto Sans SC, Oxanium, Rajdhani | SIL Open Font License 1.1 | loaded by the browser from Google Fonts at runtime; not distributed |
 
@@ -45,13 +45,12 @@ at all, this project grants an additional permission under GPL-3.0 section 7 for
 All names, characters, artwork, Spine models, UI graphics, music, sound effects and game data of *Arknights* /
 「卫戍协议：盟约」 are © Shanghai Hypergryph Network Technology Co., Ltd. (上海鹰角网络科技有限公司) and its licensors
 (Yostar and others). They are **not** licensed under the GPL and this project grants no rights to them; see
-[NOTICE.md](NOTICE.md) for the non-commercial terms. Community mirrors used by `tools/fetch-assets.mjs` /
-`tools/build-data.mjs`: [Kengxxiao/ArknightsGameData](https://github.com/Kengxxiao/ArknightsGameData),
+[NOTICE.md](NOTICE.md) for the non-commercial terms. Community sources referenced by the asset downloader and bundled data: [Kengxxiao/ArknightsGameData](https://github.com/Kengxxiao/ArknightsGameData),
 [yuanyan3060/ArknightsGameResource](https://github.com/yuanyan3060/ArknightsGameResource),
 [fexli/ArknightsResource](https://github.com/fexli/ArknightsResource),
 [isHarryh/Ark-Models](https://github.com/isHarryh/Ark-Models),
 [ArknightsAssets/ArknightsAssets2](https://github.com/ArknightsAssets/ArknightsAssets2) — thanks to their maintainers.
-The English game texts (`data/i18n/en.json`, `tools/build-i18n.mjs`) come from the official EN client tables mirrored by
+The inherited English game texts come from the official EN client tables mirrored by
 [ArknightsAssets/ArknightsGamedata](https://github.com/ArknightsAssets/ArknightsGamedata) (`en/gamedata`, the default
 source) and [Kengxxiao/ArknightsGameData_YoStar](https://github.com/Kengxxiao/ArknightsGameData_YoStar) (`en_US`,
 `--source yostar`); same terms as the rest of the game data.
@@ -65,7 +64,7 @@ are based on GitHub PR #70 (branch `en-translation`) by **@YuriRestia**, reused 
 under GPL-3.0-or-later (docs/I18N.md). PR #70 named ak-spa-database.pages.dev and arknights.wiki.gg as references: texts
 it took from ak-spa-database.pages.dev (no licence) are excluded; arknights.wiki.gg is CC BY-SA 4.0, which may be combined
 into a GPL-3.0 work (the one-way compatibility Creative Commons declared) — thanks to its contributors. Official game
-terms and names in those files remain © Hypergryph / Yostar.
+terms and names remain © Hypergryph / Yostar.
 
 ---
 
@@ -207,10 +206,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### Node.js — MIT
 
-The Windows portable package (`scripts/make-windows-bundle.mjs`) redistributes the official Node.js binary
-(`node\node.exe`). The integration bundle in Releases does **not** contain it — this row applies to the portable
-package only. Its complete licence file, taken verbatim from the same official archive, ships next to the binary as
-`node\LICENSE-node.txt`; the core MIT grant is reproduced here for convenience.
+Node.js is installed separately by the user. Its core MIT grant is reproduced below;
+the complete licence accompanying the installed runtime also covers bundled third-party components.
 
 ```text
 Copyright Node.js contributors. All rights reserved.

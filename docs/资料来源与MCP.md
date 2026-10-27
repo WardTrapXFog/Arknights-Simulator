@@ -15,9 +15,7 @@ PRTS-MCP 的结果可能来自 PRTS 或 AKDP，同源结果不算独立证据。
 
 Windows 可使用 [PRTS-MCP 3.1.2 的发行包](https://github.com/3aKHP/prts-mcp/releases/tag/v3.1.2)，保留包内 `bin/` 与 `data/` 结构。将客户端的执行命令指向 `bin/prts-mcp.exe`，环境变量设为 `PRTS_TRANSPORT=stdio`，避免使用默认的 HTTP 服务模式；可用 `PRTS_MCP_CACHE_DIR` 指定缓存目录。
 
-Codex 在用户配置的 `[mcp_servers.prts]` 中登记命令、参数和环境变量，启动超时可设为 90 秒。DSH 使用 `@deepseek-ai/dsh-mcp-client`，设置 `serverName: prts`、`transport: stdio`、执行命令及环境变量；新增条目采用 `cordis.patch.yml` 的 `insert`，不把新增插件当成对既有条目的覆盖。
-
-安装完成后让客户端重新加载 MCP 配置。两个客户端可分别启动自己的 stdio 子进程，查询数据和图片仍按服务的网络与缓存策略获取。
+在支持 MCP 的客户端中登记 stdio 连接、执行命令及上述环境变量，修改后重新加载客户端配置。查询数据和图片按服务的网络与缓存策略获取。
 
 ## 查询入口
 

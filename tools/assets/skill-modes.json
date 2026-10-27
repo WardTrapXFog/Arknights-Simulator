@@ -1,0 +1,4820 @@
+{
+  "format": "skill-modes",
+  "version": 1,
+  "source": {
+    "kind": "local-fx-index",
+    "indexVersion": 3,
+    "description": "Character mode names and skill-to-mode associations from the existing project FX index; no textures or prefabs"
+  },
+  "units": {
+    "char_498_inside": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_inside_1": {
+          "mode": 1
+        },
+        "skchr_inside_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_199_yak": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_yak_1": {
+          "mode": null
+        },
+        "skchr_yak_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_306_leizi": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_leizi_2": {
+          "mode": 1
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_4137_udflow": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Down"
+        }
+      ],
+      "skills": {
+        "skchr_udflow_1": {
+          "mode": null
+        },
+        "skchr_udflow_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_290_vigna": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1-2"
+        }
+      ],
+      "skills": {
+        "skchr_vigna_1": {
+          "mode": 1
+        },
+        "skchr_vigna_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_494_vendla": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_vendla_2": {
+          "mode": null
+        },
+        "skcom_attack_speed_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_145_prove": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_prove_1": {
+          "mode": null
+        },
+        "skchr_prove_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_102_texas": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_texas_2": {
+          "mode": null
+        },
+        "skcom_charge_cost": {
+          "mode": null
+        }
+      }
+    },
+    "char_4100_caper": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2[Down]"
+        }
+      ],
+      "skills": {
+        "skchr_caper_1": {
+          "mode": null
+        },
+        "skchr_caper_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_196_sunbr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_sunbr_1": {
+          "mode": null
+        },
+        "skchr_sunbr_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_183_skgoat": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_skgoat_2": {
+          "mode": 1
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_127_estell": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_estell_2": {
+          "mode": null
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_258_podego": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        }
+      ],
+      "skills": {
+        "skchr_podego_1": {
+          "mode": 1
+        },
+        "skchr_podego_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_253_greyy": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_greyy_2": {
+          "mode": 1
+        },
+        "skcom_attack_speed_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_616_pithst": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        }
+      ],
+      "skills": {
+        "skchr_pithst_1": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4151_tinman": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_tinman_1": {
+          "mode": null
+        },
+        "skchr_tinman_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_469_indigo": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Default_T1"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S1_T1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_T1"
+        }
+      ],
+      "skills": {
+        "skchr_indigo_1": {
+          "mode": 2
+        },
+        "skchr_indigo_2": {
+          "mode": 4
+        }
+      }
+    },
+    "char_337_utage": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_utage_1": {
+          "mode": 1
+        },
+        "skchr_utage_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_496_wildmn": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_wildmn_1": {
+          "mode": 1
+        },
+        "skchr_wildmn_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_107_liskam": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_liskam_1": {
+          "mode": null
+        },
+        "skchr_liskam_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_279_excu": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_excu_1": {
+          "mode": 1
+        },
+        "skchr_excu_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_108_silent": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_silent_2": {
+          "mode": null
+        },
+        "skcom_heal_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_173_slchan": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_slchan_1": {
+          "mode": null
+        },
+        "skchr_slchan_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_4122_grabds": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_grabds_1": {
+          "mode": null
+        },
+        "skchr_grabds_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4114_harold": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_harold_2": {
+          "mode": 1
+        },
+        "skcom_heal_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_4139_papyrs": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_papyrs_1": {
+          "mode": null
+        },
+        "skchr_papyrs_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_143_ghost": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_ghost_2": {
+          "mode": null
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_381_bubble": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_bubble_2": {
+          "mode": 1
+        },
+        "skcom_def_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_491_humus": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_humus_1": {
+          "mode": null
+        },
+        "skchr_humus_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4040_rockr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_rockr_1": {
+          "mode": null
+        },
+        "skchr_rockr_2": {
+          "mode": 1
+        },
+        "skcom_attack_speed_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_4016_kazema": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Stand"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_kazema_1": {
+          "mode": null
+        },
+        "skchr_kazema_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_237_gravel": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_gravel_1": {
+          "mode": null
+        },
+        "skchr_gravel_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_4191_tippi": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1_TakeOff"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S1_Landing"
+        },
+        {
+          "name": "S2_TakeOff"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Landing"
+        }
+      ],
+      "skills": {
+        "skchr_tippi_1": {
+          "mode": 2
+        },
+        "skchr_tippi_2": {
+          "mode": 5
+        }
+      }
+    },
+    "char_181_flower": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_flower_2": {
+          "mode": null
+        },
+        "skcom_heal_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_4051_akkord": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_akkord_1": {
+          "mode": null
+        },
+        "skchr_akkord_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_140_whitew": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_whitew_1": {
+          "mode": null
+        },
+        "skchr_whitew_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4207_branch": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_branch_1": {
+          "mode": null
+        },
+        "skchr_branch_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_431_ashlok": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2(U)"
+        },
+        {
+          "name": "S2(D)"
+        },
+        {
+          "name": "S2(LR)"
+        }
+      ],
+      "skills": {
+        "skchr_ashlok_2": {
+          "mode": null
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_103_angel": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2-3"
+        }
+      ],
+      "skills": {
+        "skchr_angel_1": {
+          "mode": null
+        },
+        "skchr_angel_2": {
+          "mode": 1
+        },
+        "skchr_angel_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_294_ayer": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_ayer_1": {
+          "mode": null
+        },
+        "skchr_ayer_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_308_swire": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_swire_1": {
+          "mode": 1
+        },
+        "skchr_swire_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1033_swire2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_End"
+        }
+      ],
+      "skills": {
+        "skchr_swire2_1": {
+          "mode": 1
+        },
+        "skchr_swire2_2": {
+          "mode": 2
+        },
+        "skchr_swire2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_263_skadi": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_skadi_2": {
+          "mode": 1
+        },
+        "skchr_skadi_3": {
+          "mode": 2
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_4148_philae": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_philae_1": {
+          "mode": 1
+        },
+        "skchr_philae_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4036_forcer": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_forcer_1": {
+          "mode": null
+        },
+        "skchr_forcer_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_388_mint": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_mint_1": {
+          "mode": 1
+        },
+        "skchr_mint_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4079_haini": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_haini_1": {
+          "mode": null
+        },
+        "skchr_haini_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_440_pinecn": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_pinecn_1": {
+          "mode": null
+        },
+        "skchr_pinecn_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4211_snhunt": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_snhunt_1": {
+          "mode": null
+        },
+        "skchr_snhunt_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_423_blemsh": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "T2_Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_blemsh_1": {
+          "mode": null
+        },
+        "skchr_blemsh_2": {
+          "mode": 2
+        },
+        "skchr_blemsh_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4054_malist": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_malist_2": {
+          "mode": null
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_174_slbell": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1-2"
+        }
+      ],
+      "skills": {
+        "skchr_slbell_1": {
+          "mode": 1
+        },
+        "skchr_slbell_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_254_vodfox": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        }
+      ],
+      "skills": {
+        "skchr_vodfox_1": {
+          "mode": 1
+        },
+        "skchr_vodfox_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_150_snakek": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_snakek_2": {
+          "mode": 1
+        },
+        "skcom_def_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_126_shotst": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_shotst_1": {
+          "mode": null
+        },
+        "skchr_shotst_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_4026_vulpis": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_Down"
+        }
+      ],
+      "skills": {
+        "skchr_vulpis_1": {
+          "mode": null
+        },
+        "skchr_vulpis_2": {
+          "mode": null
+        },
+        "skchr_vulpis_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_427_vigil": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_vigil_1": {
+          "mode": null
+        },
+        "skchr_vigil_2": {
+          "mode": null
+        },
+        "skchr_vigil_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4013_kjera": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_kjera_2": {
+          "mode": 1
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_332_archet": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_archet_1": {
+          "mode": null
+        },
+        "skchr_archet_2": {
+          "mode": null
+        },
+        "skchr_archet_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4194_rmixer": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Sk2"
+        },
+        {
+          "name": "Sk3"
+        },
+        {
+          "name": "Sk3_Zero"
+        }
+      ],
+      "skills": {
+        "skchr_rmixer_1": {
+          "mode": null
+        },
+        "skchr_rmixer_2": {
+          "mode": 1
+        },
+        "skchr_rmixer_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_213_mostma": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_mostma_2": {
+          "mode": 1
+        },
+        "skchr_mostma_3": {
+          "mode": 1
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_4087_ines": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_ines_1": {
+          "mode": null
+        },
+        "skchr_ines_2": {
+          "mode": 1
+        },
+        "skchr_ines_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_344_beewax": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_beewax_1": {
+          "mode": 1
+        },
+        "skchr_beewax_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1021_kroos2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Sub"
+        }
+      ],
+      "skills": {
+        "skchr_kroos2_1": {
+          "mode": 1
+        },
+        "skchr_kroos2_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_222_bpipe": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_bpipe_2": {
+          "mode": null
+        },
+        "skchr_bpipe_3": {
+          "mode": 1
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_4163_rosesa": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_rosesa_1": {
+          "mode": null
+        },
+        "skchr_rosesa_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_437_mizuki": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "T1"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_mizuki_1": {
+          "mode": 2
+        },
+        "skchr_mizuki_2": {
+          "mode": 2
+        },
+        "skchr_mizuki_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_446_aroma": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_aroma_1": {
+          "mode": null
+        },
+        "skchr_aroma_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4162_cathy": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_cathy_1": {
+          "mode": 1
+        },
+        "skchr_cathy_2": {
+          "mode": 2
+        }
+      }
+    },
+    "char_474_glady": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_glady_1": {
+          "mode": null
+        },
+        "skchr_glady_2": {
+          "mode": 1
+        },
+        "skchr_glady_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_206_gnosis": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2+"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_gnosis_1": {
+          "mode": null
+        },
+        "skchr_gnosis_2": {
+          "mode": 1
+        },
+        "skchr_gnosis_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_373_lionhd": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_lionhd_2": {
+          "mode": null
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_4196_reckpr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_reckpr_1": {
+          "mode": null
+        },
+        "skchr_reckpr_2": {
+          "mode": 1
+        }
+      }
+    },
+    "char_1028_texas2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_texas2_1": {
+          "mode": 1
+        },
+        "skchr_texas2_2": {
+          "mode": 2
+        },
+        "skchr_texas2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_136_hsguma": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_hsguma_1": {
+          "mode": null
+        },
+        "skchr_hsguma_2": {
+          "mode": null
+        },
+        "skchr_hsguma_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_311_mudrok": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_mudrok_1": {
+          "mode": null
+        },
+        "skchr_mudrok_2": {
+          "mode": null
+        },
+        "skchr_mudrok_3": {
+          "mode": 1
+        },
+        "skcom_def_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_420_flamtl": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_flamtl_1": {
+          "mode": null
+        },
+        "skchr_flamtl_2": {
+          "mode": null
+        },
+        "skchr_flamtl_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_430_fartth": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_fartth_1": {
+          "mode": 1
+        },
+        "skchr_fartth_2": {
+          "mode": 2
+        },
+        "skchr_fartth_3": {
+          "mode": 3
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_128_plosis": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_plosis_1": {
+          "mode": null
+        },
+        "skchr_plosis_2": {
+          "mode": 1
+        },
+        "skcom_heal_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_172_svrash": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_svrash_1": {
+          "mode": null
+        },
+        "skchr_svrash_2": {
+          "mode": 1
+        },
+        "skchr_svrash_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1026_gvial2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_gvial2_1": {
+          "mode": 1
+        },
+        "skchr_gvial2_2": {
+          "mode": 2
+        },
+        "skchr_gvial2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_426_billro": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S1_Enhance"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Enhance"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_Enhance"
+        }
+      ],
+      "skills": {
+        "skchr_billro_1": {
+          "mode": 1
+        },
+        "skchr_billro_2": {
+          "mode": 3
+        },
+        "skchr_billro_3": {
+          "mode": 5
+        }
+      }
+    },
+    "char_4134_cetsyr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_cetsyr_1": {
+          "mode": 1
+        },
+        "skchr_cetsyr_2": {
+          "mode": 2
+        },
+        "skchr_cetsyr_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_171_bldsk": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_bldsk_1": {
+          "mode": null
+        },
+        "skchr_bldsk_2": {
+          "mode": null
+        }
+      }
+    },
+    "char_1032_excu2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_End"
+        }
+      ],
+      "skills": {
+        "skchr_excu2_1": {
+          "mode": 1
+        },
+        "skchr_excu2_2": {
+          "mode": 2
+        },
+        "skchr_excu2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4056_titi": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_titi_1": {
+          "mode": 1
+        },
+        "skchr_titi_2": {
+          "mode": 2
+        },
+        "skchr_titi_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1040_blaze2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Reborn"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_blaze2_1": {
+          "mode": null
+        },
+        "skchr_blaze2_2": {
+          "mode": 2
+        },
+        "skchr_blaze2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4145_ulpia": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_Respawn_A"
+        },
+        {
+          "name": "S3_Restore"
+        }
+      ],
+      "skills": {
+        "skchr_ulpia_1": {
+          "mode": null
+        },
+        "skchr_ulpia_2": {
+          "mode": 1
+        },
+        "skchr_ulpia_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4010_etlchi": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_etlchi_1": {
+          "mode": null
+        },
+        "skchr_etlchi_2": {
+          "mode": 1
+        },
+        "skchr_etlchi_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_350_surtr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_surtr_1": {
+          "mode": null
+        },
+        "skchr_surtr_2": {
+          "mode": 1
+        },
+        "skchr_surtr_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4039_horn": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3(D)"
+        }
+      ],
+      "skills": {
+        "skchr_horn_1": {
+          "mode": null
+        },
+        "skchr_horn_2": {
+          "mode": 1
+        },
+        "skchr_horn_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_358_lisa": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_lisa_1": {
+          "mode": null
+        },
+        "skchr_lisa_2": {
+          "mode": 1
+        },
+        "skchr_lisa_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_202_demkni": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_demkni_1": {
+          "mode": null
+        },
+        "skchr_demkni_2": {
+          "mode": null
+        },
+        "skchr_demkni_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_2015_dusk": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_dusk_1": {
+          "mode": null
+        },
+        "skchr_dusk_2": {
+          "mode": 1
+        },
+        "skchr_dusk_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1023_ghost2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Stand"
+        },
+        {
+          "name": "Empty"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_ghost2_1": {
+          "mode": 2
+        },
+        "skchr_ghost2_2": {
+          "mode": 4
+        },
+        "skchr_ghost2_3": {
+          "mode": 5
+        }
+      }
+    },
+    "char_1045_svash2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_svash2_1": {
+          "mode": null
+        },
+        "skchr_svash2_2": {
+          "mode": null
+        },
+        "skchr_svash2_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_1039_thorn2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_thorn2_1": {
+          "mode": null
+        },
+        "skchr_thorn2_2": {
+          "mode": null
+        },
+        "skchr_thorn2_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_264_f12yin": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_f12yin_1": {
+          "mode": null
+        },
+        "skchr_f12yin_2": {
+          "mode": 1
+        },
+        "skchr_f12yin_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4064_mlynar": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_mlynar_1": {
+          "mode": 1
+        },
+        "skchr_mlynar_2": {
+          "mode": 2
+        },
+        "skchr_mlynar_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_291_aglina": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Disarmed"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_aglina_1": {
+          "mode": 2
+        },
+        "skchr_aglina_2": {
+          "mode": 3
+        },
+        "skchr_aglina_3": {
+          "mode": 4
+        }
+      }
+    },
+    "char_341_sntlla": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_sntlla_2": {
+          "mode": 1
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_4146_nymph": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_nymph_1": {
+          "mode": 1
+        },
+        "skchr_nymph_2": {
+          "mode": null
+        },
+        "skchr_nymph_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4193_lemuen": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_End"
+        }
+      ],
+      "skills": {
+        "skchr_lemuen_1": {
+          "mode": 1
+        },
+        "skchr_lemuen_2": {
+          "mode": 2
+        },
+        "skchr_lemuen_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1046_sbell2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_sbell2_1": {
+          "mode": null
+        },
+        "skchr_sbell2_2": {
+          "mode": 1
+        },
+        "skchr_sbell2_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_2026_yu": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_yu_1": {
+          "mode": 1
+        },
+        "skchr_yu_2": {
+          "mode": 2
+        },
+        "skchr_yu_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1012_skadi2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_skadi2_1": {
+          "mode": 1
+        },
+        "skchr_skadi2_2": {
+          "mode": 2
+        },
+        "skchr_skadi2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_472_pasngr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_pasngr_1": {
+          "mode": null
+        },
+        "skchr_pasngr_2": {
+          "mode": 1
+        },
+        "skchr_pasngr_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4058_pepe": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_pepe_1": {
+          "mode": null
+        },
+        "skchr_pepe_2": {
+          "mode": 1
+        },
+        "skchr_pepe_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1019_siege2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_siege2_1": {
+          "mode": null
+        },
+        "skchr_siege2_2": {
+          "mode": 1
+        },
+        "skchr_siege2_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1020_reed2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_reed2_2": {
+          "mode": null
+        },
+        "skchr_reed2_3": {
+          "mode": 1
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_245_cello": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_cello_1": {
+          "mode": null
+        },
+        "skchr_cello_2": {
+          "mode": 1
+        },
+        "skchr_cello_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_249_mlyss": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_mlyss_1": {
+          "mode": 1
+        },
+        "skchr_mlyss_2": {
+          "mode": 2
+        },
+        "skchr_mlyss_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_391_rosmon": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_rosmon_1": {
+          "mode": null
+        },
+        "skchr_rosmon_2": {
+          "mode": 1
+        },
+        "skchr_rosmon_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1041_angel2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Down"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_Down"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S1_Burst_Mode"
+        }
+      ],
+      "skills": {
+        "skchr_angel2_1": {
+          "mode": 5
+        },
+        "skchr_angel2_2": {
+          "mode": 1
+        },
+        "skchr_angel2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4042_lumen": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_lumen_1": {
+          "mode": null
+        },
+        "skchr_lumen_2": {
+          "mode": null
+        },
+        "skchr_lumen_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_4082_qiubai": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_qiubai_1": {
+          "mode": null
+        },
+        "skchr_qiubai_2": {
+          "mode": 1
+        },
+        "skchr_qiubai_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1047_halo2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_halo2_1": {
+          "mode": 1
+        },
+        "skchr_halo2_2": {
+          "mode": null
+        },
+        "skchr_halo2_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1014_nearl2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_nearl2_1": {
+          "mode": 1
+        },
+        "skchr_nearl2_2": {
+          "mode": 2
+        },
+        "skchr_nearl2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1038_whitw2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_whitw2_1": {
+          "mode": 1
+        },
+        "skchr_whitw2_2": {
+          "mode": 2
+        },
+        "skchr_whitw2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4116_blkkgt": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        }
+      ],
+      "skills": {
+        "skchr_blkkgt_1": {
+          "mode": 1
+        },
+        "skchr_blkkgt_2": {
+          "mode": null
+        },
+        "skchr_blkkgt_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_1016_agoat2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_End"
+        }
+      ],
+      "skills": {
+        "skchr_agoat2_1": {
+          "mode": 1
+        },
+        "skchr_agoat2_2": {
+          "mode": null
+        },
+        "skchr_agoat2_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_600_cpione": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skcom_charge_cost": {
+          "mode": null
+        }
+      }
+    },
+    "char_601_cguard": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_cguard_1": {
+          "mode": null
+        },
+        "skchr_cguard_2": {
+          "mode": null
+        },
+        "skchr_cguard_3": {
+          "mode": null
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_602_cdfend": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_cdfend_1": {
+          "mode": null
+        },
+        "skchr_cdfend_2": {
+          "mode": null
+        },
+        "skchr_cdfend_3": {
+          "mode": null
+        },
+        "skcom_def_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_603_csnipe": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_604_ccast": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skcom_attack_speed_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_605_cmedic": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_cmedic_1": {
+          "mode": null
+        },
+        "skchr_cmedic_2": {
+          "mode": null
+        },
+        "skchr_cmedic_3": {
+          "mode": null
+        },
+        "skcom_heal_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_606_csuppo": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skcom_attack_speed_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_607_cspec": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skcom_born_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_608_acpion": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_acpion_1": {
+          "mode": null
+        },
+        "skchr_acpion_2": {
+          "mode": null
+        },
+        "skchr_acpion_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_609_acguad": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_acguad_1": {
+          "mode": 1
+        },
+        "skchr_acguad_2": {
+          "mode": 2
+        },
+        "skchr_acguad_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_610_acfend": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_acfend_1": {
+          "mode": null
+        },
+        "skchr_acfend_2": {
+          "mode": null
+        },
+        "skchr_acfend_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_611_acnipe": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_acnipe_1": {
+          "mode": null
+        },
+        "skchr_acnipe_2": {
+          "mode": 1
+        },
+        "skchr_acnipe_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_612_accast": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "s1"
+        },
+        {
+          "name": "s3"
+        }
+      ],
+      "skills": {
+        "skchr_accast_1": {
+          "mode": 1
+        },
+        "skchr_accast_2": {
+          "mode": null
+        },
+        "skchr_accast_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_613_acmedc": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_acmedc_1": {
+          "mode": 1
+        },
+        "skchr_acmedc_2": {
+          "mode": 2
+        },
+        "skchr_acmedc_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_614_acsupo": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_acsupo_1": {
+          "mode": 1
+        },
+        "skchr_acsupo_2": {
+          "mode": 2
+        },
+        "skchr_acsupo_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_615_acspec": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        }
+      ],
+      "skills": {
+        "skchr_acspec_1": {
+          "mode": 1
+        },
+        "skchr_acspec_2": {
+          "mode": null
+        },
+        "skchr_acspec_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_617_sharp2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        }
+      ],
+      "skills": {
+        "skchr_sharp2_1": {
+          "mode": 1
+        }
+      }
+    },
+    "char_003_kalts": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_kalts_1": {
+          "mode": 1
+        },
+        "skchr_kalts_2": {
+          "mode": 2
+        },
+        "skchr_kalts_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_010_chen": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_chen_1": {
+          "mode": null
+        },
+        "skchr_chen_2": {
+          "mode": null
+        },
+        "skchr_chen_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_017_huang": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_huang_1": {
+          "mode": null
+        },
+        "skchr_huang_2": {
+          "mode": 1
+        },
+        "skchr_huang_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_112_siege": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_siege_2": {
+          "mode": null
+        },
+        "skchr_siege_3": {
+          "mode": 1
+        },
+        "skcom_charge_cost": {
+          "mode": null
+        }
+      }
+    },
+    "char_113_cqbw": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_cqbw_1": {
+          "mode": null
+        },
+        "skchr_cqbw_2": {
+          "mode": null
+        },
+        "skchr_cqbw_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_134_ifrit": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_ifrit_1": {
+          "mode": null
+        },
+        "skchr_ifrit_2": {
+          "mode": null
+        },
+        "skchr_ifrit_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_147_shining": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_shining_1": {
+          "mode": null
+        },
+        "skchr_shining_2": {
+          "mode": null
+        },
+        "skchr_shining_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_179_cgbird": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_cgbird_2": {
+          "mode": null
+        },
+        "skchr_cgbird_3": {
+          "mode": 1
+        },
+        "skcom_heal_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_180_amgoat": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_amgoat_1": {
+          "mode": null
+        },
+        "skchr_amgoat_2": {
+          "mode": null
+        },
+        "skchr_amgoat_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_188_helage": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_helage_1": {
+          "mode": null
+        },
+        "skchr_helage_2": {
+          "mode": 1
+        },
+        "skchr_helage_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_197_poca": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_poca_2": {
+          "mode": 1
+        },
+        "skchr_poca_3": {
+          "mode": null
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_225_haak": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_haak_1": {
+          "mode": null
+        },
+        "skchr_haak_2": {
+          "mode": null
+        },
+        "skchr_haak_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_248_mgllan": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1_Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_mgllan_1": {
+          "mode": 1
+        },
+        "skchr_mgllan_2": {
+          "mode": 1
+        },
+        "skchr_mgllan_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_250_phatom": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_phatom_1": {
+          "mode": null
+        },
+        "skchr_phatom_2": {
+          "mode": 1
+        },
+        "skchr_phatom_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_293_thorns": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_thorns_2": {
+          "mode": 1
+        },
+        "skchr_thorns_3": {
+          "mode": 2
+        },
+        "skcom_atk_up": {
+          "mode": null
+        }
+      }
+    },
+    "char_300_phenxi": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_phenxi_1": {
+          "mode": 1
+        },
+        "skchr_phenxi_2": {
+          "mode": null
+        },
+        "skchr_phenxi_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_322_lmlee": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_lmlee_1": {
+          "mode": null
+        },
+        "skchr_lmlee_2": {
+          "mode": null
+        },
+        "skchr_lmlee_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_340_shwaz": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_shwaz_1": {
+          "mode": null
+        },
+        "skchr_shwaz_2": {
+          "mode": 1
+        },
+        "skchr_shwaz_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_362_saga": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_saga_2": {
+          "mode": null
+        },
+        "skchr_saga_3": {
+          "mode": 1
+        },
+        "skcom_charge_cost": {
+          "mode": null
+        }
+      }
+    },
+    "char_377_gdglow": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_gdglow_1": {
+          "mode": 1
+        },
+        "skchr_gdglow_2": {
+          "mode": 2
+        },
+        "skchr_gdglow_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_400_weedy": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_weedy_1": {
+          "mode": null
+        },
+        "skchr_weedy_2": {
+          "mode": 1
+        },
+        "skchr_weedy_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_416_zumama": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_zumama_1": {
+          "mode": null
+        },
+        "skchr_zumama_2": {
+          "mode": 1
+        },
+        "skchr_zumama_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_450_necras": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_necras_1": {
+          "mode": null
+        },
+        "skchr_necras_2": {
+          "mode": null
+        },
+        "skchr_necras_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_479_sleach": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_sleach_1": {
+          "mode": 1
+        },
+        "skchr_sleach_2": {
+          "mode": 2
+        },
+        "skchr_sleach_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_485_pallas": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_pallas_1": {
+          "mode": null
+        },
+        "skchr_pallas_2": {
+          "mode": 1
+        },
+        "skchr_pallas_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1013_chen2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2+"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_chen2_1": {
+          "mode": 1
+        },
+        "skchr_chen2_2": {
+          "mode": 2
+        },
+        "skchr_chen2_3": {
+          "mode": 4
+        }
+      }
+    },
+    "char_1015_aglna2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3Move"
+        },
+        {
+          "name": "S1_TakeOff"
+        },
+        {
+          "name": "S1_Landing"
+        },
+        {
+          "name": "S2_Landing"
+        },
+        {
+          "name": "S3_TakeOff"
+        },
+        {
+          "name": "S3_Landing"
+        },
+        {
+          "name": "S2_Chant"
+        }
+      ],
+      "skills": {
+        "skchr_aglna2_1": {
+          "mode": 1
+        },
+        "skchr_aglna2_2": {
+          "mode": 2
+        },
+        "skchr_aglna2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1031_slent2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_slent2_1": {
+          "mode": 1
+        },
+        "skchr_slent2_2": {
+          "mode": 2
+        },
+        "skchr_slent2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1034_jesca2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3[D]"
+        }
+      ],
+      "skills": {
+        "skchr_jesca2_1": {
+          "mode": 1
+        },
+        "skchr_jesca2_2": {
+          "mode": 2
+        },
+        "skchr_jesca2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1035_wisdel": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Overload"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_wisdel_1": {
+          "mode": null
+        },
+        "skchr_wisdel_2": {
+          "mode": 1
+        },
+        "skchr_wisdel_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1042_phatm2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_phatm2_1": {
+          "mode": null
+        },
+        "skchr_phatm2_2": {
+          "mode": 1
+        },
+        "skchr_phatm2_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_1043_leizi2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1_Landing"
+        },
+        {
+          "name": "S1_TakeOff"
+        },
+        {
+          "name": "S2_Landing"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_TakeOff"
+        },
+        {
+          "name": "S3_Landing"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_TakeOff"
+        }
+      ],
+      "skills": {
+        "skchr_leizi2_1": {
+          "mode": null
+        },
+        "skchr_leizi2_2": {
+          "mode": 4
+        },
+        "skchr_leizi2_3": {
+          "mode": 7
+        }
+      }
+    },
+    "char_1044_hsgma2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "BeforeDead"
+        }
+      ],
+      "skills": {
+        "skchr_hsgma2_1": {
+          "mode": 1
+        },
+        "skchr_hsgma2_2": {
+          "mode": 2
+        },
+        "skchr_hsgma2_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1050_chen3": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2Respawn"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_chen3_1": {
+          "mode": 1
+        },
+        "skchr_chen3_2": {
+          "mode": null
+        },
+        "skchr_chen3_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_1051_headb2": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "s2"
+        }
+      ],
+      "skills": {
+        "skchr_headb2_1": {
+          "mode": 1
+        },
+        "skchr_headb2_2": {
+          "mode": 2
+        },
+        "skchr_headb2_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_1052_kalts2": {
+      "modes": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "s3"
+        },
+        {
+          "name": "s3_transporting"
+        },
+        {
+          "name": "s1"
+        },
+        {
+          "name": "s2"
+        }
+      ],
+      "skills": {
+        "skchr_kalts2_1": {
+          "mode": 3
+        },
+        "skchr_kalts2_2": {
+          "mode": 4
+        },
+        "skchr_kalts2_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_1502_crosly": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S2_End"
+        }
+      ],
+      "skills": {
+        "skchr_crosly_1": {
+          "mode": 1
+        },
+        "skchr_crosly_2": {
+          "mode": 2
+        },
+        "skchr_crosly_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_2012_typhon": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2+"
+        },
+        {
+          "name": "S2+[DOWN]"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_typhon_2": {
+          "mode": 1
+        },
+        "skchr_typhon_3": {
+          "mode": 4
+        },
+        "skcom_quickattack": {
+          "mode": null
+        }
+      }
+    },
+    "char_2013_cerber": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_cerber_1": {
+          "mode": null
+        },
+        "skchr_cerber_2": {
+          "mode": 1
+        },
+        "skchr_cerber_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_2014_nian": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_nian_1": {
+          "mode": 1
+        },
+        "skchr_nian_2": {
+          "mode": 2
+        },
+        "skchr_nian_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_2023_ling": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_ling_1": {
+          "mode": 1
+        },
+        "skchr_ling_2": {
+          "mode": null
+        },
+        "skchr_ling_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_2024_chyue": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Changed"
+        }
+      ],
+      "skills": {
+        "skchr_chyue_1": {
+          "mode": null
+        },
+        "skchr_chyue_2": {
+          "mode": null
+        },
+        "skchr_chyue_3": {
+          "mode": 1
+        }
+      }
+    },
+    "char_2025_shu": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_shu_1": {
+          "mode": null
+        },
+        "skchr_shu_2": {
+          "mode": 1
+        },
+        "skchr_shu_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_2027_wang": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_wang_1": {
+          "mode": null
+        },
+        "skchr_wang_2": {
+          "mode": 1
+        },
+        "skchr_wang_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4009_irene": {
+      "modes": [
+        {
+          "name": "Default"
+        }
+      ],
+      "skills": {
+        "skchr_irene_1": {
+          "mode": null
+        },
+        "skchr_irene_2": {
+          "mode": null
+        },
+        "skchr_irene_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4011_lessng": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_lessng_1": {
+          "mode": null
+        },
+        "skchr_lessng_2": {
+          "mode": 1
+        },
+        "skchr_lessng_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4027_heyak": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_heyak_1": {
+          "mode": null
+        },
+        "skchr_heyak_2": {
+          "mode": 1
+        },
+        "skchr_heyak_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4037_demetr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_Resapwn"
+        },
+        {
+          "name": "S3_Restore"
+        }
+      ],
+      "skills": {
+        "skchr_demetr_1": {
+          "mode": null
+        },
+        "skchr_demetr_2": {
+          "mode": 1
+        },
+        "skchr_demetr_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4046_ebnhlz": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_ebnhlz_1": {
+          "mode": 1
+        },
+        "skchr_ebnhlz_2": {
+          "mode": null
+        },
+        "skchr_ebnhlz_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4048_doroth": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "T2"
+        }
+      ],
+      "skills": {
+        "skchr_doroth_1": {
+          "mode": null
+        },
+        "skchr_doroth_2": {
+          "mode": null
+        },
+        "skchr_doroth_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4055_bgsnow": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_bgsnow_1": {
+          "mode": 1
+        },
+        "skchr_bgsnow_2": {
+          "mode": null
+        },
+        "skchr_bgsnow_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4065_judge": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1_Charge"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_judge_1": {
+          "mode": null
+        },
+        "skchr_judge_2": {
+          "mode": 3
+        },
+        "skchr_judge_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4072_ironmn": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_ironmn_1": {
+          "mode": 1
+        },
+        "skchr_ironmn_2": {
+          "mode": 1
+        },
+        "skchr_ironmn_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4080_lin": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_lin_1": {
+          "mode": 1
+        },
+        "skchr_lin_2": {
+          "mode": 2
+        },
+        "skchr_lin_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4088_hodrer": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_hodrer_1": {
+          "mode": null
+        },
+        "skchr_hodrer_2": {
+          "mode": 1
+        },
+        "skchr_hodrer_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4098_vvana": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3_1"
+        },
+        {
+          "name": "S3_2"
+        }
+      ],
+      "skills": {
+        "skchr_vvana_1": {
+          "mode": 1
+        },
+        "skchr_vvana_2": {
+          "mode": 2
+        },
+        "skchr_vvana_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4117_ray": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Down"
+        },
+        {
+          "name": "S3_Reload"
+        },
+        {
+          "name": "S3_Attack"
+        },
+        {
+          "name": "S3_Attack_Down"
+        },
+        {
+          "name": "S3_Reload_Down"
+        }
+      ],
+      "skills": {
+        "skchr_ray_1": {
+          "mode": null
+        },
+        "skchr_ray_2": {
+          "mode": 1
+        },
+        "skchr_ray_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4121_zuole": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        }
+      ],
+      "skills": {
+        "skchr_zuole_1": {
+          "mode": null
+        },
+        "skchr_zuole_2": {
+          "mode": 1
+        },
+        "skchr_zuole_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4132_ascln": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_ascln_1": {
+          "mode": null
+        },
+        "skchr_ascln_2": {
+          "mode": 1
+        },
+        "skchr_ascln_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4133_logos": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_End"
+        }
+      ],
+      "skills": {
+        "skchr_logos_1": {
+          "mode": 1
+        },
+        "skchr_logos_2": {
+          "mode": 2
+        },
+        "skchr_logos_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4138_narant": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2[Down]"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3[Down]"
+        }
+      ],
+      "skills": {
+        "skchr_narant_1": {
+          "mode": 1
+        },
+        "skchr_narant_2": {
+          "mode": 2
+        },
+        "skchr_narant_3": {
+          "mode": 4
+        }
+      }
+    },
+    "char_4179_monstr": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3_Restore"
+        },
+        {
+          "name": "S3_Reborn"
+        }
+      ],
+      "skills": {
+        "skchr_monstr_1": {
+          "mode": null
+        },
+        "skchr_monstr_2": {
+          "mode": 1
+        },
+        "skchr_monstr_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4195_radian": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_radian_1": {
+          "mode": 1
+        },
+        "skchr_radian_2": {
+          "mode": 2
+        },
+        "skchr_radian_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4202_haruka": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_haruka_1": {
+          "mode": 1
+        },
+        "skchr_haruka_2": {
+          "mode": 2
+        },
+        "skchr_haruka_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4204_mantra": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_mantra_1": {
+          "mode": null
+        },
+        "skchr_mantra_2": {
+          "mode": 1
+        },
+        "skchr_mantra_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4212_nasti": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_nasti_1": {
+          "mode": 1
+        },
+        "skchr_nasti_2": {
+          "mode": 2
+        },
+        "skchr_nasti_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4226_veen": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_veen_1": {
+          "mode": 1
+        },
+        "skchr_veen_2": {
+          "mode": 2
+        },
+        "skchr_veen_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4228_closur": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_closur_1": {
+          "mode": null
+        },
+        "skchr_closur_2": {
+          "mode": 1
+        },
+        "skchr_closur_3": {
+          "mode": 2
+        }
+      }
+    },
+    "char_4229_aphris": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "Sk1"
+        },
+        {
+          "name": "Sk3"
+        },
+        {
+          "name": "Sk3_Down"
+        },
+        {
+          "name": "Sk2"
+        },
+        {
+          "name": "Sk1_Down"
+        }
+      ],
+      "skills": {
+        "skchr_aphris_1": {
+          "mode": null
+        },
+        "skchr_aphris_2": {
+          "mode": null
+        },
+        "skchr_aphris_3": {
+          "mode": null
+        }
+      }
+    },
+    "char_4230_mcnist": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2_Down"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_mcnist_1": {
+          "mode": 1
+        },
+        "skchr_mcnist_2": {
+          "mode": 2
+        },
+        "skchr_mcnist_3": {
+          "mode": 4
+        }
+      }
+    },
+    "char_4231_clemnt": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S2[Down]"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S3[Down]"
+        }
+      ],
+      "skills": {
+        "skchr_clemnt_1": {
+          "mode": null
+        },
+        "skchr_clemnt_2": {
+          "mode": 1
+        },
+        "skchr_clemnt_3": {
+          "mode": 3
+        }
+      }
+    },
+    "char_4235_thumpy": {
+      "modes": [
+        {
+          "name": "Default"
+        },
+        {
+          "name": "S1"
+        },
+        {
+          "name": "S2"
+        },
+        {
+          "name": "S3"
+        }
+      ],
+      "skills": {
+        "skchr_thumpy_1": {
+          "mode": 1
+        },
+        "skchr_thumpy_2": {
+          "mode": 2
+        },
+        "skchr_thumpy_3": {
+          "mode": 3
+        }
+      }
+    }
+  }
+}

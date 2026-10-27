@@ -1,52 +1,24 @@
 #!/usr/bin/env node
-// tools/setup.mjs — prepare a fresh clone in one command (docs/DEPLOY.md).
+// tools/setup.mjs — prepare dependencies and optional assets for this project.
 //
 //   node tools/setup.mjs [options]
 //
-// Steps (each one is skipped when already done, so re-running is cheap — the start scripts run it on every start):
-//   1. Node.js ≥ 22 check (clear message + download link otherwise).
-//   2. Dependencies: `npm ci` (falls back to `npm install`) when node_modules is missing or incomplete.
-//   3. Client libraries in public/vendor (tools/vendor.mjs) when any is missing.
-//   4. Game data (data/*.json, committed) present and parseable.
-//   5. Art/audio (tools/fetch-assets.mjs, ~720 MB into public/assets, resumable, mirror fallback) when public/assets
-//      is missing or data/assets.json lists files that are not on disk. A failure is a warning: the game still runs
-//      with fallback visuals and the next run resumes.
-//   6. Optional: official board/UI art from a locally installed Arknights client (Windows native install, CrossOver
-//      bottle or PlayCover on macOS, or --game <dir>) with tools/local-extract/extract.py in a project-local Python
-//      venv (.venv-extract), then the board tile crops (tools/crop-board-atlas.mjs → tiles.json). Asked once on a
-//      terminal (the answer is remembered in .cache/setup-state.json; without a terminal it is skipped); never fatal.
-//   7. Optional: the eleven official battlefield scenes. The full release zip already contains
-//      them when the maintainer extracted them. A lite package or a source install may download the in-season bundles
-//      (tools/local-extract/fetch_scenes.py) and extract them (extract.py --only scene). Missing Python or
-//      UnityPy / lz4 / Pillow is a warning: the 3D board keeps the metal tiles. --scenes does it without asking;
-//      --no-scenes skips it. The answer is remembered like step 6. A manifest that is missing a group this version's
-//      extractor writes, or an official-effects catalog (data/local-fx.json) whose groups, entry count or version
-//      disagree, is reported. A non-scene gap names --local. A gap whose missing keys are all under scene/ names
-//      --scenes when a client is present and the full-package copy sentence when it is not (--local never fetches
-//      scene bundles). The effects row names the .venv-extract interpreter. A partial battlefield set does not start
-//      extract.py unless --scenes or --yes; that prompt defaults to no. A scene group whose `scene` record (kind
-//      Scene) is not this version's scene extract version, with every scene group present, asks that same question
-//      once (default no). A typed yes runs extract.py --only scene, the same path as a first-time yes; a 否 is
-//      remembered. It is not a second prompt. The art row is checked again after step 7.
-//
 // Options:
-//   --check          report only, change nothing (exit 1 when something essential is missing)
-//   --offline        same read-only checks as --check; --no-network is an alias
-//   --no-assets      skip art/audio downloads
-//   --refresh-index  re-download needed official tables (otherwise existing tables are reused)
-//   --asset-source=M mirror (default) or direct (no public-IP lookup)
-//                    SP_ASSET_SOURCE sets the default; SP_GITHUB_PROXY optionally sets an HTTPS forwarding proxy
-//                    An empty SP_GITHUB_PROXY disables the proxy, including in mirror mode.
-//   --no-local       skip the local-client detection and extraction (the scene step still runs unless --no-scenes)
-//   --local          extract local art and used official effects, for the SI roster
-//   --scenes         download and extract the official battlefield scenes without asking
-//   --no-scenes      do not download or extract battlefield scenes (the metal board stays)
-//   --game <dir>     AssetBundle root of the local client (…/StreamingAssets/AB/Windows or PlayCover …/Documents/Bundles)
-//   -y, --yes        answer "yes" to every question
-//   --quiet          fewer lines (used by scripts/launch.mjs)
+//   --check          report preparation status without installing or extracting
+//   --offline        read-only checks; --no-network is an alias
+//   --no-assets      skip online art/audio downloads
+//   --refresh-index  refresh the data indexes used for extraction
+//   --asset-source=M mirror (jsDelivr first, default) or direct
+//   --local          extract art and the SI roster's official effects (requires --game)
+//   --no-local       skip local art extraction (default)
+//   --scenes         fetch and extract optional upstream battlefield scenes (requires --game)
+//   --no-scenes      skip scene extraction (default)
+//   --game <dir>     explicitly supplied AssetBundle root; never auto-detect a client
+//   -y, --yes        answer yes to setup questions
+//   --quiet          fewer output lines
 //   -h, --help
 //
-// Exit code: 0 = ready to `npm start` (optional parts may have been skipped), 1 = something essential is missing.
+// Exit code: 0 = core files ready, 1 = required files missing, 2 = invalid arguments.
 // Helpers are exported for tools/doctor.mjs and scripts/launch.mjs; main() only runs when executed directly.
 
 import fs from 'node:fs';
@@ -59,6 +31,7 @@ import { validateSource } from './assets/network.mjs';
 import { DEFAULT_ASSET_SOURCE } from './assets/sources.mjs';
 import { EXPECTED_FX, EXPECTED_LOCAL_GROUPS, EXPECTED_SCENE } from './local-extract/expected.mjs';
 import { restartForEnvProxy } from './assets/env-proxy.mjs';
+import { OPERATOR_ILLUSTRATIONS } from '../public/sandbox/js/generated-illustrations.js';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const MIN_NODE = 22;
@@ -70,7 +43,7 @@ const NODE_URL = 'https://nodejs.org/zh-cn/download';
 export const DATA_FILES = ['config', 'chess', 'bonds', 'garrisons', 'items', 'bands', 'effects', 'choices',
   'enemies', 'factions', 'waves', 'stages', 'bosses', 'tokens', 'assets', 'backups', 'emotes'];
 /** Runtime packages that must be installed (package.json dependencies). */
-export const RUNTIME_PACKAGES = ['ws', 'pixi.js', 'pixi-spine', 'preact', 'htm'];
+export const RUNTIME_PACKAGES = Object.keys(JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).dependencies || {});
 /** Vendor files the client cannot run without (tools/vendor.mjs; three.js is optional there). */
 export const VENDOR_REQUIRED = ['pixi.min.js', 'pixi-spine.js', 'preact.module.js', 'hooks.module.js', 'htm.module.js'];
 export const VENDOR_OPTIONAL = ['three.core.js', 'three.module.js'];
@@ -209,12 +182,12 @@ export function checkAssets() {
   const present = exists(path.join(pub, 'assets'));
   const m = readJson(path.join(ROOT, 'data', 'assets.json'));
   if (!m) return { ok: false, present, manifest: false, total: 0, missing: 0, sample: [], bytes: 0 };
-  const urls = [...new Set(manifestUrls(m))];
+  const urls = [...new Set([...manifestUrls(m), ...Object.values(OPERATOR_ILLUSTRATIONS).map(row => row.url).filter(Boolean)])];
   const missing = [];
   for (const u of urls) {
     let st = null;
     try { st = fs.statSync(path.join(pub, ...u.split('/').filter(Boolean).map(decodeURIComponent))); } catch { /* missing */ }
-    if (!st || !st.size) missing.push(u);
+    if (!st || !st.isFile() || !st.size) missing.push(u);
   }
   return { ok: present && missing.length === 0 && urls.length > 0, present, manifest: true, total: urls.length, missing: missing.length, sample: missing.slice(0, 5), bytes: Number(m.stats?.bytes) || 0 };
 }
@@ -224,10 +197,10 @@ export function checkAssets() {
  * the 玩法说明 pages are not in the list: step 5 downloads them from the public mirror with the other assets (GitHub
  * issue #42). Shown by setup and doctor.
  */
-export const LOCAL_ART_FALLBACK = '3D 棋盘改用 2D，部分官方界面图标、灼热/炽焰源石虫模型和多数自选召唤物模型用替代样式';
+export const LOCAL_ART_FALLBACK = '官方棋盘贴图、部分官方界面图标、敌人与召唤物模型使用替代样式';
 /** Where a machine without the client gets the local art (docs/DEPLOY.md §6「本地客户端素材」); shown by doctor (setup's row,
  * printed on every start by scripts/launch.mjs, only points to that section). */
-export const LOCAL_ART_COPY_HINT = '没有客户端的服务器可以从同一版本的整合包（完整包）复制 public/assets/local 和 data/local-assets.json';
+export const LOCAL_ART_COPY_HINT = '已有完整素材包时运行 npm run assets:import -- --from "整合包根目录"；提取方式见 README';
 
 const LOCAL_FX = path.join(ROOT, 'data', 'local-fx.json');
 /** Scene groups a full extract writes: one `scene/<stageId>` per battlefield, plus the shared `scene/tex`. */
@@ -355,13 +328,45 @@ export function fxCatalogReport(doc) {
  * manifest's group keys are the set this version's extractor writes (enemy and token models included). Also reads
  * data/local-fx.json. Disk flags (board3d, tiles, dirPresent) are added here; assessLocal is the pure comparison.
  */
+/** Count only catalog records whose referenced files actually exist. */
+export function localFiles(doc) {
+  const groups = {};
+  let total = 0, available = 0;
+  for (const [group, records] of Object.entries(doc?.groups || {})) {
+    const kept = {};
+    for (const [key, record] of Object.entries(records || {})) {
+      if (!record?.path?.startsWith('/assets/local/')) continue;
+      total++;
+      const file = path.resolve(ROOT, 'public', `.${record.path}`);
+      const base = path.join(ROOT, 'public', 'assets', 'local') + path.sep;
+      if (!file.startsWith(base)) continue;
+      try { if (!fs.statSync(file).isFile() || fs.statSync(file).size === 0) continue; } catch { continue; }
+      kept[key] = record;
+      available++;
+    }
+    if (Object.keys(kept).length) groups[group] = kept;
+  }
+  return { total, available, missing: total - available, groups,
+    document: available ? { ...doc, count: available, groups } : null };
+}
+
 export function checkLocal() {
-  const assessed = assessLocal(readJson(LOCAL_MANIFEST), readJson(LOCAL_FX));
+  const art = localFiles(readJson(LOCAL_MANIFEST));
+  const fx = localFiles(readJson(LOCAL_FX));
+  const assessed = assessLocal(art.document, fx.document);
+  const actualIndex = readJson(path.join(ROOT, 'public/assets/local/fx/index.json'));
+  if (fx.available && (!actualIndex || actualIndex.version !== EXPECTED_FX.indexVersion || fx.missing)) {
+    assessed.fx.state = 'warn';
+    assessed.fx.stale = true;
+  }
+  assessed.fx.detail = fx.available
+    ? `实际可用 ${fx.available}/${fx.total} 项，${Object.keys(fx.groups).length} 个分组，索引版本 ${actualIndex?.version ?? '缺失'}${fx.missing ? '；素材不完整，请重新导入或提取' : assessed.fx.stale ? '；索引需重新提取' : ''}`
+    : '未导入，使用项目基础特效；可导入素材包或主动指定客户端提取';
   return {
-    ...assessed,
-    board3d: exists(LOCAL_BOARD_ATLAS),
+    ...assessed, actualFiles: art.available, listedFiles: art.total, missingFiles: art.missing,
+    board3d: exists(LOCAL_BOARD_ATLAS) && exists(LOCAL_BOARD_TILES),
     tiles: exists(LOCAL_BOARD_TILES),
-    dirPresent: exists(path.join(ROOT, 'public', 'assets', 'local')),
+    dirPresent: art.available > 0,
   };
 }
 
@@ -453,7 +458,7 @@ export function localArtState(local) {
  */
 export function localArtDetail(local, tail = '', verb = '已提取', opt = {}) {
   const gap = localGaps(local, opt);
-  const again = verb === '已提取' ? '（重新提取：--local）' : '';
+  const again = verb === '已提取' ? '（重新提取：--local --game 指定目录）' : '';
   return `${verb} ${local.count} 项${tail}${gap}${gap ? '' : again}`;
 }
 
@@ -663,9 +668,9 @@ export function inspectClientRoot(dir) {
   return { exists: true, autochess };
 }
 
-/** First installed client (explicit dir first). */
+/** Inspect only the explicitly supplied client directory; never search installed clients. */
 export function findClient(explicit) {
-  const list = explicit ? [{ path: path.resolve(explicit), kind: '--game' }] : clientCandidates();
+  const list = explicit ? [{ path: path.resolve(explicit), kind: '--game' }] : [];
   let partial = null;
   for (const cand of list) {
     const info = inspectClientRoot(cand.path);
@@ -728,7 +733,7 @@ function ensureVenv(py, log) {
 // ---------------------------------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const o = { check: false, offline: false, refresh: false, assets: true, local: 'ask', scenes: 'ask', game: null, yes: false, quiet: false, help: false, source: process.env.SP_ASSET_SOURCE || DEFAULT_ASSET_SOURCE };
+  const o = { check: false, offline: false, refresh: false, assets: true, local: 'no', scenes: 'no', game: null, yes: false, quiet: false, help: false, source: process.env.SP_ASSET_SOURCE || DEFAULT_ASSET_SOURCE };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--check') o.check = true;
@@ -748,7 +753,10 @@ function parseArgs(argv) {
     else if (a === '-h' || a === '--help') o.help = true;
     else throw new Error(`未知参数 / unknown option: ${a}（--help 查看用法）`);
   }
-  if (!o.help) validateSource(o.source);
+  if (!o.help) {
+    validateSource(o.source);
+    if ((o.local === 'force' || o.scenes === 'force') && !o.game) throw Error('本地提取必须用 --game 明确指定 AssetBundle 根目录；不会自动搜索客户端。');
+  }
   return o;
 }
 
@@ -770,7 +778,7 @@ async function main() {
   const add = (state, label, detail = '') => summary.push({ state, label, detail });
   let fatal = false;
 
-  say(c.bold('\n卫戍协议：盟约 · setup') + c.dim(`  (${ROOT})`));
+  say(c.bold('\n明日方舟模拟器 · 素材准备'));
 
   // 1. Node
   const node = checkNode();
@@ -841,17 +849,17 @@ async function main() {
     artRefresh = { index: summary.length - 1, tail, verb, client: hasClient };
   };
   if (opts.local === 'no') {
-    // [ASSUMED] --no-local still looks up a client so a scene-only gap names --scenes or the copy sentence. It does not extract.
+    // Only inspect a directory when the user explicitly supplied --game.
     const hinted = findClient(opts.game)?.autochess === true;
-    if (local.manifest) pushArt(local, '', '已提取', hinted);
-    else add('skip', '本地客户端美术（可选）', '已跳过（--no-local）');
+    if (local.manifest) pushArt(local, `，实际可用 ${local.actualFiles}/${local.listedFiles} 项`, '已导入', hinted);
+    else add('skip', '本地客户端美术（可选）', '未导入；可导入已有素材包，或用 --local --game 指定客户端目录提取');
   } else {
     const client = findClient(opts.game);
     const already = local.manifest && local.dirPresent;
     if (!client) {
       if (already && local.board3d && !local.tiles && !opts.check) cropBoardTiles(log);
       if (already) pushArt(local, local.board3d ? '，3D 棋盘可用' : '', '已提取', false);
-      else add('skip', '本地客户端美术（可选）', `${opts.game ? `找不到 ${opts.game}` : '未检测到本机明日方舟客户端'}：${LOCAL_ART_FALLBACK}（见 docs/DEPLOY.md 第 6 节）`);
+      else add('skip', '本地客户端美术（可选）', `${opts.game ? `找不到 ${opts.game}` : '未检测到本机明日方舟客户端'}：${LOCAL_ART_FALLBACK}（见 README 的可选素材补全）`);
     } else if (!client.autochess) {
       add(already ? localArtState(local) : 'warn', '本地客户端美术（可选）', `${client.kind} 客户端缺少卫戍协议资源（请在游戏内下载全部资源）：${client.path}${already ? localGaps(local, { client: false }) : ''}`);
     } else if (already && opts.local !== 'force') {
@@ -876,7 +884,7 @@ async function main() {
           else if (!answer) { saveState({ localDeclined: true }); log(c.dim('  已记住选择，之后不再询问；需要时运行 node tools/setup.mjs --local')); }
           go = answer === true;
         }
-        if (!go) add('skip', '本地客户端美术（可选）', unattended ? '无终端，未询问、未提取（需要时运行 node tools/setup.mjs --local）' : '已跳过（需要时运行 node tools/setup.mjs --local）');
+        if (!go) add('skip', '本地客户端美术（可选）', unattended ? '无终端，未询问、未提取（需要时运行 node tools/setup.mjs --local）' : '已跳过（需要时用 --local --game 指定目录）');
         else {
           const venv = ensureVenv(py, log);
           if (!venv.ok) add('warn', '本地客户端美术（可选）', venv.why);
@@ -976,8 +984,8 @@ async function main() {
     return 1;
   }
   if (!opts.quiet) {
-    log(`\n${c.ok('可以开始了：')} npm start   ${c.dim('（Windows 可直接双击 scripts\\start-windows.bat）')}`);
-    log(c.dim('浏览器打开 http://localhost:3000 ；同一局域网的朋友用终端里打印的 LAN 地址。'));
+    log(`\n${c.ok('可以开始了：')} 双击 启动模拟器.bat`);
+    log(c.dim('浏览器默认访问 http://localhost:3100；游玩期间保留启动窗口。'));
   }
   return 0;
 }

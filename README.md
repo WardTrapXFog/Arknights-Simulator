@@ -20,15 +20,33 @@
 npm run assets
 ```
 
-脚本从社区维护的 GitHub、jsDelivr 等公开资源下载素材，包括干员完整立绘。**可由 jsDelivr 提供的文件默认优先使用该 CDN**，失败时回退原始源；语音分支和 GitHub Release 下载仍使用原始源，可通过本机的 `HTTP_PROXY`／`HTTPS_PROXY` 代理访问。如需原始源优先，可改用 `npm run assets -- --asset-source=direct`。当前下载内容约 **1 GB**，另有索引、缓存和处理前文件，建议至少预留 **2 GB** 素材空间。本文体积均为参考值，版本与已有缓存会影响实际下载量。
+脚本从社区维护的 GitHub、jsDelivr 等公开资源下载素材，包括干员完整立绘。**可由 jsDelivr 提供的文件默认优先使用该 CDN**，失败时回退原始源；语音分支和 GitHub Release 下载仍使用原始源，可通过本机的 `HTTP_PROXY`／`HTTPS_PROXY` 代理访问。如需原始源优先，可改用 `npm run assets -- --asset-source=direct`。当前下载内容约 **1 GB**，另有索引、缓存和处理前文件，建议至少预留 **3 GB** 素材空间。立绘优先按需读取图片包；源站不支持分段请求时会下载并缓存整包，首次流量可能超过上述数值。本文体积均为参考值，版本与已有缓存会影响实际下载量。
 
 下载和整理时会持续输出日志，耗时取决于网络和本机速度。命令结束后查看最后的汇总；若出现 `ERROR`、`FAILED` 或 `download errors`，按提示处理后重试。**中断后可重新执行同一条命令**：已完成且符合校验条件的文件会复用，缺失文件会补下；单个尚未下载完成的文件会重新下载，不支持该文件内部的字节级断点续传。
 
 下载完成后重新启动模拟器。素材已有时无需重复下载；启动器不会自动执行这一步。
 
-### 会不会操作本机游戏文件？
+### 可选素材补全
 
-**常规启动与素材下载不要求安装《明日方舟》，不需要游戏账号，也不会提取本机客户端。**
+**`npm run assets` 不包含全部本地解包素材。** 官方棋盘贴图、部分召唤物与敌人模型、官方技能特效等需要额外导入或提取。缺少时核心玩法仍可使用，但会出现基础地块、替代模型或部分效果缺失。启动窗口会列出素材实际可用数量；一份索引文件不等于对应素材已安装。
+
+已有包含这些素材的整合包时，在当前项目的命令窗口执行（路径改为该整合包解压后的根目录，其中应能看到 `public/assets/`）：
+
+```bash
+npm run assets:import -- --from "整合包根目录"
+```
+
+这会把素材复制到当前项目，保留已有非空文件和项目自设素材；本地美术与特效索引仅在对应文件齐备且格式兼容时导入，不复制另一项目的代码和战斗数据。来源目录不会被修改。来源未包含的素材仍需另行补全。
+
+如需从自己持有的客户端提取，先安装 **Python 3.8 或以上版本**，再主动指定客户端的 **AssetBundle 根目录**（通常以 `StreamingAssets/AB/Windows` 结尾，不能直接填游戏启动程序所在目录）：
+
+```bash
+npm run setup -- --no-assets --local --game "AssetBundle根目录"
+```
+
+脚本在项目内准备 Python 虚拟环境和提取依赖，从指定目录读取素材，将结果写入本项目的 `public/assets/local/` 及对应索引。它不会搜索客户端位置、修改游戏文件或请求游戏账号。提取效果取决于该客户端的资源是否完整及版本格式是否受支持；某项资源包缺失时不能凭空恢复。工具需要的 Python 依赖首次安装需联网。
+
+**常规启动和 `npm run assets` 不要求安装《明日方舟》，不调用客户端提取。** 上述提取只在明确执行该命令并提供目录后进行。
 
 ### 随源码提供的素材
 
@@ -126,28 +144,17 @@ node -v
 
 当前已接入塔露拉、维娜·维多利亚、结城理三名自设干员，手牌名称标注「（自设）」。官设维娜与自设维娜可以同时上场。**原作结城理**由于上游项目尚未还原，暂未加入；当前牌库中的结城理是本项目的**自设版本**。
 
+这些干员作为既定内容随项目提供，数据、机制和表现由源码维护。
+
 牌库另有 202 名原作干员，尚未覆盖全图鉴，可用名单请以模拟器中的牌库为准。
 
 ## 与上游的关系
 
 战斗引擎、渲染层与大部分干员数据来自 [sganggs/Stronghold-Protocol](https://github.com/sganggs/Stronghold-Protocol)，即《明日方舟》限时玩法「卫戍协议：盟约」的非官方复刻。本项目在其基础上改造为手动部署的单机关卡作战，移除了大厅、房间与联机功能。
 
-## 内容维护
+## 开发文档
 
-自设干员的完整定义在 `content/operators/`，由 `index.json` 登记；自设敌人在 `content/enemies/`。改完运行：
-
-```
-npm run content                            # 全部
-node tools/build-content.mjs --operator talula   # 只更新塔露拉
-```
-
-生成器写出 `data/{chess,assets,backups,enemies}.json`、`public/sandbox/js/generated-ops.js`、`server/sim/content/kits/custom-catalog.js`。
-
-原作满配牌库由 `tools/build-operator-library.mjs` 优先读取 `data/gamedata/`，回退 `.cache/gamedata/excel/` 中的 character/skill/range/uniequip/battle_equip 官方表，以及当前已接入的棋子与补位/甄选记录生成；复用 `tools/official-unit-builder.mjs`，写出 `data/operator-library.json` 和 `public/sandbox/js/generated-library.js`，不覆盖 `data/chess.json` 的卫戍协议档位。更新官方数据后可重新运行该生成器。
-
-复杂战斗机制在 `server/sim/content/kits/ops/`，塔露拉专属特效由 `public/js/render/fx/custom.js` 登记。
-
-代码位置与数据流见[架构](docs/ARCHITECTURE.md)，官方数据表说明见 [data/gamedata/README.md](data/gamedata/README.md)，其他文档见[文档索引](docs/README.md)，提交规范见[贡献说明](CONTRIBUTING.md)。
+代码位置与数据流见[架构](docs/ARCHITECTURE.md)，内部脚本用法见[维护工具](tools/README.md)，其他说明见[文档索引](docs/README.md)，提交规范见[贡献说明](CONTRIBUTING.md)。
 
 ## 声明与许可
 

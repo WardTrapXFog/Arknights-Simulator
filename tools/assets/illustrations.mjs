@@ -1,6 +1,6 @@
 // Download only the registered full illustrations from pinned AKDP image ZIPs.
 // HTTP ranges avoid downloading the entire character/skin archive for a small roster.
-import { readFile, mkdir, writeFile, rename } from 'node:fs/promises';
+import { readFile, mkdir, writeFile, rename, open, stat, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { inflateRawSync } from 'node:zlib';
@@ -12,7 +12,94 @@ import { OPERATOR_ILLUSTRATIONS } from '../../public/sandbox/js/generated-illust
 const RELEASES = 'https://github.com/3aKHP/arknights-data-pipeline/releases/download/';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
-async function range(url, start, end, { mirrorPolicy, log, onBytes }, maxBytes) {
+// A source without Range support can still supply the complete archive. Cache it
+// on disk, then seek within it; do not hold a character archive in memory.
+async function archiveFile(url, network) {
+  const { root, mirrorPolicy, log, onBytes, offline } = network;
+  const file = join(root, '.cache/asset-archives', `${hash(url).slice(0, 16)}.zip`);
+  try { if ((await stat(file)).size >= 22) return file; } catch { /* not cached */ }
+  if (offline) throw Error('image archive is not cached; run npm run assets online');
+  await mkdir(dirname(file), { recursive: true });
+  let failure;
+  for (const source of mirrorPolicy.urls(url)) {
+    if (mirrorPolicy.skip(source)) continue;
+    const temp = `${file}.${randomUUID()}.part`;
+    let handle, reader;
+    try {
+      log('[illustrations] Range unavailable; downloading and caching the full image ZIP');
+      const response = await mirrorPolicy.request(source, guardDefaultFetch(globalThis.fetch), {}, 3600000);
+      if (!response.ok || response.status === 206 || !response.body) {
+        await response.body?.cancel();
+        throw Error(`image archive HTTP ${response.status}`);
+      }
+      const expected = Number(response.headers.get('content-length')) || 0;
+      if (expected > 2 * 1024 ** 3) { await response.body.cancel(); throw Error('image archive exceeds 2 GiB'); }
+      handle = await open(temp, 'wx');
+      reader = response.body.getReader();
+      let size = 0;
+      while (true) {
+        let timer;
+        const next = await Promise.race([
+          reader.read(),
+          new Promise((_, reject) => { timer = setTimeout(() => reject(Error('image archive download stalled')), 60000); }),
+        ]).finally(() => clearTimeout(timer));
+        if (next.done) break;
+        size += next.value.length;
+        if (size > 2 * 1024 ** 3) throw Error('image archive exceeds 2 GiB');
+        const chunk = Buffer.from(next.value);
+        for (let written = 0; written < chunk.length;) {
+          written += (await handle.write(chunk, written, chunk.length - written)).bytesWritten;
+        }
+        onBytes?.(chunk.length);
+      }
+      if (size < 22 || expected && size !== expected) throw Error('incomplete image archive');
+      const tail = Buffer.alloc(Math.min(size, 65557));
+      await handle.close();
+      handle = await open(temp, 'r');
+      await handle.read(tail, 0, tail.length, size - tail.length);
+      let valid = false;
+      for (let i = tail.length - 22; i >= 0; i--) {
+        if (tail.readUInt32LE(i) === 0x06054b50 && i + 22 + tail.readUInt16LE(i + 20) === tail.length) { valid = true; break; }
+      }
+      if (!valid) throw Error('image archive ZIP directory not found');
+      await handle.close(); handle = null;
+      await rename(temp, file);
+      mirrorPolicy.succeeded(source);
+      return file;
+    } catch (error) {
+      failure = error;
+      mirrorPolicy.failed(source);
+      try { await reader?.cancel(error); } catch { /* closed */ }
+      await handle?.close(); handle = null;
+      await rm(temp, { force: true });
+      log(`[illustrations] ${error.message}; trying the next source`);
+    } finally { reader?.releaseLock(); }
+  }
+  throw Error(`cannot download image archive: ${failure?.message || 'no available source'}`);
+}
+
+async function cachedRange(url, start, end, network, maxBytes) {
+  if (!network.archives.has(url)) network.archives.set(url, archiveFile(url, network));
+  const file = await network.archives.get(url);
+  const handle = await open(file, 'r');
+  try {
+    const { size } = await handle.stat();
+    const offset = start < 0 ? Math.max(0, size + start) : start;
+    const length = start < 0 ? size - offset : end - start + 1;
+    if (length < 0 || length > maxBytes || offset + length > size) throw Error('invalid cached ZIP range');
+    const bytes = Buffer.alloc(length);
+    for (let n = 0; n < length;) {
+      const got = (await handle.read(bytes, n, length - n, offset + n)).bytesRead;
+      if (!got) throw Error('incomplete cached ZIP range');
+      n += got;
+    }
+    return { bytes, offset };
+  } finally { await handle.close(); }
+}
+
+async function range(url, start, end, network, maxBytes) {
+  const { mirrorPolicy, log, onBytes } = network;
+  if (network.offline || network.archives.has(url)) return cachedRange(url, start, end, network, maxBytes);
   let failure;
   for (const source of mirrorPolicy.urls(url)) {
     if (mirrorPolicy.skip(source)) continue;
@@ -40,7 +127,8 @@ async function range(url, start, end, { mirrorPolicy, log, onBytes }, maxBytes) 
       log(`[illustrations] ${error.message}; trying the next source`);
     }
   }
-  throw Error(`cannot read ${url}: ${failure?.message || 'no available source'}`);
+  log(`[illustrations] partial download failed (${failure?.message || 'no available source'}); using the archive cache`);
+  return cachedRange(url, start, end, network, maxBytes);
 }
 
 async function directory(url, network) {
@@ -113,11 +201,10 @@ export async function fetchIllustrations(root, { offline = false, keepExisting =
       url: `${RELEASES}images-${provenance.version}/index.json`,
       validate: json => { if (json.currentVersion !== provenance.version || !json.artworks || !json.shards) throw Error('image index version mismatch'); },
     });
-    const transfer = { ...network, log, onBytes: n => { result.downloadedBytes += n; } };
+    const transfer = { ...network, root, offline, archives: new Map(), log, onBytes: n => { result.downloadedBytes += n; } };
     const directories = new Map();
     for (const job of pending) {
       try {
-        if (offline) throw Error('not available offline; run npm run assets online to download');
         const row = index.artworks[job.source.artwork];
         if (row?.large?.file !== job.source.file || row.large.sha256 !== job.source.sha256) throw Error('illustration provenance mismatch');
         const baseline = row.sinceVersion === index.baselineVersion;

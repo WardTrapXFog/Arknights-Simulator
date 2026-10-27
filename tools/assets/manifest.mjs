@@ -179,19 +179,18 @@ export function contentHash(value) {
 const BUILD_FIELDS = new Set(['version', 'hash', 'generator', 'stats']);
 
 /**
- * Entries of the manifest `prev` that `next` no longer has, as sorted dotted paths. An entry is a leaf value (a URL
- * string, a number, a flag, null or an array — an array is one entry); an object entry missing from `next` contributes
- * all its leaves. A path that changed shape (a leaf became an object or the reverse) is still there, not dropped.
- * The build fields (version, hash, generator, stats) are left out.
+ * Asset URL entries of `prev` missing from `next`, as sorted dotted paths.
+ * Rebuilt animation metadata, pool identifiers and mixer defaults may change without losing an asset.
  * @param {object} prev the current data/assets.json
  * @param {object} next the manifest about to replace it
  * @returns {string[]}
  */
 export function droppedEntries(prev, next) {
   const out = [];
-  const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+  const isObj = (v) => !!v && typeof v === 'object';
   const leaves = (v, path) => {
-    if (!isObj(v)) { out.push(path); return; }
+    if (typeof v === 'string' && /^\/(assets|fonts)\//.test(v)) { out.push(path); return; }
+    if (!isObj(v)) return;
     for (const [k, x] of Object.entries(v)) leaves(x, `${path}.${k}`);
   };
   const walk = (p, n, path) => {

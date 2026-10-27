@@ -64,8 +64,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Downloader } from './assets/downloader.mjs';
 import { restartForEnvProxy } from './assets/env-proxy.mjs';
 import { MirrorPolicy, selectDownloadSource, validateSource } from './assets/network.mjs';
-import { DEFAULT_ASSET_SOURCE, normalizeProxyPrefix } from './assets/sources.mjs';
+import { DEFAULT_ASSET_SOURCE, RAW, joinUrl, normalizeProxyPrefix } from './assets/sources.mjs';
 import { loadIndexes } from './assets/cache.mjs';
+import { validate } from './assets/formats.mjs';
 import { indexAudio, VOICE_DIRS } from './assets/audio.mjs';
 import { applyContentAssets } from './build-content.mjs';
 import { fetchIllustrations } from './assets/illustrations.mjs';
@@ -212,6 +213,18 @@ export function dataExtras(backups, chess) {
     for (const m of c?.modules || []) if (m.typeIcon) moduleTypes.add(m.typeIcon);
   }
   return { extraOperators, extraVoiceIds: [...extraVoiceIds].sort(), tokenIds: Object.keys(backups?.tokens || {}).sort(), moduleTypes: [...moduleTypes].sort() };
+}
+
+/** Source-defined sound overrides use the same public audio dump as the normal plan. */
+function contentAudioJobs(content) {
+  const paths = new Set();
+  const walk = value => {
+    if (typeof value === 'string' && value.startsWith('/assets/audio/sfx/')) paths.add(value);
+    else if (value && typeof value === 'object') for (const child of Object.values(value)) walk(child);
+  };
+  walk(content.audio);
+  return [...paths].map(url => ({ rel: url.slice('/assets/'.length), kind: 'mp3',
+    urls: [joinUrl(RAW.aa2voice, url.slice('/assets/audio/sfx/'.length))] }));
 }
 
 /**
@@ -425,21 +438,15 @@ async function main() {
   const network = { source, proxyPrefix, mirrorPolicy, verifier };
   const { audioData, modelsData, charword } = await loadIndexes(ROOT, { refresh: opts.refreshIndex && !opts.offline, offline: opts.offline, log, ...network });
   const audio = indexAudio(audioData);
-  // Skill attack slots follow each operator's mode list when the local fx index is on disk (#679). It is a client
-  // extract (public/assets is not in git); without it the plan keeps the filename-letter fallback.
-  const fxIndexPath = join(ROOT, 'public', 'assets', 'local', 'fx', 'index.json');
-  let charModes = null;
-  if (existsSync(fxIndexPath)) {
-    const fxIndex = JSON.parse(await readFile(fxIndexPath, 'utf8'));
-    charModes = charModesFromIndex(fxIndex);
-    log(`[fx] skill modes for ${charModes.size} operators`);
-  } else {
-    log('[fx] no local fx index — skill attack slots stay on the filename letter');
-  }
+  // Sound mode selection is published metadata, independent of optional extracted textures/prefabs.
+  const charModes = charModesFromIndex(await readJson('tools/assets/skill-modes.json'));
+  log(`[audio] published skill modes for ${charModes.size} operators`);
+  const contentAssets = applyContentAssets({});
   // Include the current runtime data's additional operators, enemies and summons.
   const [dataEnemies, dataTokens, dataBosses, dataBackups, dataChess] = await Promise.all(
     ['data/enemies.json', 'data/tokens.json', 'data/bosses.json', 'data/backups.json', 'data/chess.json'].map((f) => readJson(f).catch(() => null)));
   const extras = dataExtras(dataBackups, dataChess);
+  for (const id of Object.keys(contentAssets.chars)) delete extras.extraOperators[id];
   const extraHandbook = {};
   for (const b of Object.values(dataBosses || {})) if (b?.enemyKey && typeof b.handbookId === 'string') extraHandbook[b.enemyKey] = b.handbookId;
   const localEnemySpines = await syncLocalSpines(opts, 'enemy');
@@ -482,6 +489,16 @@ async function main() {
   });
   await dl.loadLedger();
   const downloadErrors = opts.offline ? [] : await downloadLeaves(leaves, dl, ASSETS, 'files');
+  const extraAudioJobs = contentAudioJobs(contentAssets);
+  const contentAudio = await dl.run(opts.offline ? [] : extraAudioJobs, 'content-audio');
+  if (opts.offline) for (const job of extraAudioJobs) {
+    try {
+      const valid = validate(job.kind, await readFile(join(ASSETS, job.rel)));
+      contentAudio.set(job.rel, { status: valid ? 'skip' : 'error' });
+    } catch { contentAudio.set(job.rel, { status: 'error' }); }
+  }
+  const contentAudioErrors = [...contentAudio].filter(([, row]) => !['ok', 'skip'].includes(row.status)).map(([rel]) => rel);
+  downloadErrors.push(...contentAudioErrors);
 
   let current = null;
   if (existsSync(MANIFEST)) {
@@ -520,6 +537,7 @@ async function main() {
   });
   const body = resolved.value;
   for (const rel of illustrations.files) resolved.files.add(rel);
+  for (const [rel, row] of contentAudio) if (['ok', 'skip'].includes(row.status)) resolved.files.add(rel);
   for (const [id, url] of Object.entries(illustrations.chars)) if (body.chars[id]) body.chars[id].illust = url;
   tidyManifest(body);
   tidyVoiceTrees(body);
@@ -560,6 +578,7 @@ async function main() {
     spineProblems: spine.problems,
     fontErrors,
     illustrationErrors: illustrations.errors,
+    contentAudioErrors,
     orphans: opts.prune ? [] : orphans,
     pruned: opts.prune ? orphans : [],
     manifestWritten: guard.write,
@@ -604,12 +623,13 @@ async function main() {
   log(`manifest: ${MANIFEST}${guard.write ? '' : ' (kept)'} · report: ${REPORT} · ${((Date.now() - t0) / 1000).toFixed(0)} s`);
   if (required.length) log(`ERROR: ${required.length} required assets missing: ${required.slice(0, 10).join(', ')}`);
   if (illustrations.errors.length) log('ERROR: full illustration download incomplete; re-run npm run assets to retry');
+  if (contentAudioErrors.length) log('ERROR: project sound overrides are incomplete; re-run npm run assets to retry');
   if (opts.strict && droppedLeaves.length) {
     log(strictLeafDropError(droppedLeaves));
     log('  a plain run downloads them again (--refresh-index if the upstream index lost them); without --strict / SP_ASSETS_STRICT this is only a warning');
   }
   if (verifier && (dl.totals.error || fontErrors.length || downloadErrors.length)) return 1;
-  return runExitCode({ requiredMisses: required.length + illustrations.errors.length, droppedLeaves: droppedLeaves.length, strict: opts.strict, manifestWritten: guard.write });
+  return runExitCode({ requiredMisses: required.length + illustrations.errors.length + contentAudioErrors.length, droppedLeaves: droppedLeaves.length, strict: opts.strict, manifestWritten: guard.write });
 }
 
 // run only as a script (tests import parseArgs / shrinkGuard)

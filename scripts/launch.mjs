@@ -12,6 +12,7 @@ import fs from 'node:fs';
 // 打开浏览器只有一份实现（走 shell 关联 = 默认浏览器，且不会把浏览器拉成提权）
 import { openBrowser as openInBrowser } from './open-browser.mjs';
 import { startupMessage } from './startup-message.mjs';
+import { printReadiness } from '../tools/assets/readiness.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IS_WIN = process.platform === 'win32';
@@ -91,6 +92,8 @@ async function main() {
 
   // before setup: setup and the server then see the new version's files (its message explains a refusal)
   if (applyPendingUpdate(ROOT).state === 'failed') return 1;
+
+  if (!printReadiness()) return 1;
 
   const env = serverEnv(o);
   const child = spawn(process.execPath, [path.join(ROOT, 'server', 'sandbox', 'index.js')], { cwd: ROOT, env, stdio: 'inherit' });

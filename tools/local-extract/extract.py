@@ -958,9 +958,9 @@ def main():
     if args.webp:
         return webp_only(Path(args.out), Path(args.manifest), print)
 
-    ab_root = Path(args.game) if args.game else next((p for p in CANDIDATES if p.exists()), None)
+    ab_root = Path(args.game) if args.game else None
     if not ab_root or not ab_root.exists():
-        print('No Arknights install found. Pass --game <AssetBundle root>.', file=sys.stderr)
+        print('Pass --game <AssetBundle root> explicitly; automatic client discovery is disabled.', file=sys.stderr)
         return 2
     jobs = select_jobs(args.only)
     enemy_ids = spine_ids(args.only, ENEMY_SPINE_SUB, ENEMY_SPINES)

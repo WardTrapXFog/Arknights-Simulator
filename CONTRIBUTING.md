@@ -10,6 +10,8 @@
 
 ## 代码与素材
 
-自设数据修改 `content/operators/` 与 `content/enemies/`，由 `tools/build-content.mjs` 生成运行数据。复杂机制位于对应 kit，表现修改位于渲染或音频模块。原作机制以可追溯的 PRTS 备注和官方数据表为依据。
+项目中已接入的自设干员由源码维护。`content/operators/` 与 `content/enemies/` 保存内容定义，内部脚本负责把已有定义同步到运行数据和登记表；复杂机制仍需编写 kit，表现仍需修改渲染或音频模块。项目不提供面向玩家的自设干员制作界面或通用制作流水线。脚本用途与写入范围见[维护工具](tools/README.md)。
+
+原作机制以可追溯的 PRTS 备注和官方数据表为依据。
 
 代码沿用 GPL-3.0-or-later，并保留上游与第三方署名。原作游戏素材和音乐不适用代码许可证，具体范围见 [NOTICE](NOTICE.md) 与[第三方声明](THIRD-PARTY-NOTICES.md)。
