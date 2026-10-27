@@ -60,7 +60,7 @@ tools/               生成器与素材脚本
 | `spawn-catalog.js` | 旧投放预设与倍率保留原下标，再追加 `enemy-library.js` 中尚未列出的正常敌人。按全部、木桩、普通、精英、领袖筛选；保留 8 个机制木桩与耐久变体。 |
 | `operator-catalog.js` `roster.js` `generated-ops.js` | 手牌与选人器：三名自设 + 独立生成的 202 名原作满配干员。普通/进阶别名归一，按职业筛选。`generated-ops.js` 仍由自设生成器写出。 |
 | `panel-models.js` | 左侧详情面板与场上技能操作的数据模型。 |
-| `asset-urls.js` `generated-illustrations.js` | HUD 图片入口与 205 名干员完整立绘的地址、尺寸、透明边界登记；详情按边界自适应缩放。生成器为 `tools/import-operator-illustrations.py`，素材来源记录在 `art/operator-illustrations.json`。 |
+| `asset-urls.js` `generated-illustrations.js` | HUD 图片入口与 205 名干员完整立绘的地址、尺寸、透明边界登记；详情按边界自适应缩放。登记表生成器为 `tools/import-operator-illustrations.py`，素材来源记录在 `art/operator-illustrations.json`；`npm run assets` 通过 `tools/assets/illustrations.mjs` 按该登记表下载正式图片。 |
 | `asset-urls.js` | 素材地址适配。 |
 | `hud.js` `ui/` | HUD 公共接口与各区块：`shell`（壳）`hand`（手牌）`detail`（详情）`toolbox`（工具箱）`picker`（选人器）`icons` `html`（小工具）。 |
 
@@ -148,6 +148,8 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 - `server/sim/content/kits/custom-catalog.js`（kit 登记）
 
 只更新塔露拉：`node tools/build-content.mjs --operator talula`。
+
+`npm run assets` 的公开下载目录由 `tools/assets/catalog.json` 提供，结合 `data/` 补充当前角色和敌人。上游音频、语音与模型索引缺失时在线下载并缓存。完整立绘按仓库中记录的版本和哈希从 AKDP 图片包读取；下载清单写入前调用 `build-content.mjs` 的 `applyContentAssets` 合并内容源中的自设素材与音频配置，不重建战斗数据。下载器的 `--prune` 保留 `public/assets/custom/` 与 `public/assets/local/`。Node 与浏览器的默认模拟数据均使用正式运行数据。
 
 ## 7. 塔露拉专属特效
 

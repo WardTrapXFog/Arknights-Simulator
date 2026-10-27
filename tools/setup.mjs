@@ -809,7 +809,7 @@ async function main() {
   const data = checkData();
   if (data.ok) add('ok', '游戏数据 data/*.json');
   else {
-    add('err', '游戏数据 data/*.json', [data.missing.length && `缺少 ${data.missing.join(', ')}`, data.broken.length && `无法解析 ${data.broken.join(', ')}`].filter(Boolean).join('；') + ' → git checkout -- data/ 或 node tools/build-data.mjs');
+    add('err', '游戏数据 data/*.json', [data.missing.length && `缺少 ${data.missing.join(', ')}`, data.broken.length && `无法解析 ${data.broken.join(', ')}`].filter(Boolean).join('；') + ' → 请从同版本源码恢复 data/ 中缺少或损坏的文件');
     if (data.missing.some((n) => n !== 'assets' && n !== 'emotes') || data.broken.length > 0) fatal = true;
   }
 

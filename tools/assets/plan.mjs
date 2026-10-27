@@ -7,7 +7,7 @@
 //        same file, or other sounds of the same bank);
 //   { model: '<key>' }  a Spine model (skel + atlas + page PNGs) from plan.models;
 //   literal(value)  a value emitted as it is (no files: enemies[id] / tokens[id].spineLocal).
-// Inputs are the research JSONs (docs/research/03, 05, 07), the official
+// Inputs are the committed tools/assets/catalog.json, the official
 // audio_data.json and Ark-Models' models_data.json.
 //
 // Scope (research 07 §1, DESIGN §0): all 138 pool charIds (incl. backup
@@ -86,7 +86,7 @@ export const GUIDE_PAGES = Object.freeze([
 ]);
 
 /**
- * Extra UI sprites (not in 07-assets.json groups): [group, key, path under ArknightsAssets2 cn assets/dyn].
+ * Extra UI sprites beyond the catalogue groups: [group, key, path under ArknightsAssets2 cn assets/dyn].
  * The last two blocks are art that used to come from the local client only (tools/local-extract, DESIGN §13) and that
  * the mirror carries too (GitHub issue #42: a server without the client showed default emote icons): the 36 battle
  * emotes (shared/constants.js EMOTE_CATALOG; the bundle ui/emoticon/theme/[uc]<themeId>.ab → its icon/<picId>.png) and
@@ -127,7 +127,7 @@ export const UI_EXTRAS = (() => {
   return Object.freeze(L.map((x) => Object.freeze(x)));
 })();
 
-/** Renames of research 07 `arts` groups to manifest UI groups. */
+/** Renames of catalogue `arts` groups to manifest UI groups. */
 const ARTS_GROUPS = Object.freeze({
   rarityStars: 'rarity', rarityStarsYellow: 'rarityYellow', eliteIcon: 'elite', eliteIconLarge: 'eliteLarge',
   campLogo: 'campLogo', loadingIllust: 'loading', battleCommon: 'battle', act2Entry: 'entry', itemRarityBg: 'itemRarity',
@@ -214,18 +214,9 @@ function skelStem(urlOrName) {
   return safeName(urlBase(urlOrName).replace(/\.skel$/i, ''));
 }
 
-/** Collect every enemy key referenced under a wave/branch structure. */
-function walkKeys(node, add) {
-  if (Array.isArray(node)) { for (const x of node) walkKeys(x, add); return; }
-  if (node && typeof node === 'object') {
-    if (typeof node.key === 'string') add(node.key);
-    for (const v of Object.values(node)) walkKeys(v, add);
-  }
-}
-
 /**
- * A research-07-shaped operator record of a character research 07 does not list (the 自选 owned-6★ picks): every URL
- * from the patterns of 07-assets.json `meta.patterns` — avatar / portrait (E0–E1 and E2), the default-skin battle Spine
+ * An operator asset record for a character beyond the catalogue: every URL
+ * follows the public source patterns — avatar / portrait (E0–E1 and E2), the default-skin battle Spine
  * Front / Back, the skill icons, the sub-profession icon. No expected byte counts (the downloader validates the files);
  * a file the mirrors lack is a miss the client falls back from (the E2 art to the E0–E1 one, a missing Back to Front).
  * @param {string} id charId
@@ -252,11 +243,6 @@ export function patternOperator(id, x = {}) {
 // ---------------------------------------------------------------------------
 // id sets
 
-/**
- * Per-charId skill indices used by the pool (0-based; primary first).
- * @param {any} ops03 docs/research/03-operators.json
- * @returns {Map<string, number[]>}
- */
 /**
  * Compact mode list for {@link assignSkillModeSfx}, from a local fx index (`public/assets/local/fx/index.json`,
  * not committed). `skills[id].mode` is the mode index the skill switches to. An `aliasOf` unit uses the target's modes.
@@ -292,74 +278,13 @@ export function charModesFromIndex(index) {
   return map;
 }
 
-export function skillIndicesByChar(ops03) {
-  const primary = new Map();
-  const all = new Map();
-  const add = (id, idx, isPrimary) => {
-    if (typeof id !== 'string' || !Number.isInteger(idx) || idx < 0) return;
-    if (!all.has(id)) all.set(id, new Set());
-    all.get(id).add(idx);
-    if (isPrimary && !primary.has(id)) primary.set(id, idx);
-  };
-  const chess = Array.isArray(ops03?.chess) ? ops03.chess : [];
-  for (const c of chess) if (c.charId) add(c.charId, c.defaultSkillIndex, !c.isGolden);
-  for (const c of chess) if (c.backup?.charId) add(c.backup.charId, c.backup.skillIndex, true);
-  const out = new Map();
-  for (const [id, set] of all) {
-    const p = primary.has(id) ? primary.get(id) : Math.min(...set);
-    out.set(id, [p, ...[...set].filter((i) => i !== p).sort((a, b) => a - b)]);
-  }
-  return out;
-}
-
-/**
- * Every enemy id that can appear in an act2autochess match.
- * @param {{ assets07:any, enemies05:any, maps05:any, ops03?:any }} r
- *   ops03 (optional): enemy units spawned by operator kits (e.g. 隐德来希's S3 summons
- *   `enemy_5601_entlec` 心烛 via a talent blackboard `take_extra_enemy_key`)
- * @returns {string[]} sorted ids
- */
-export function collectEnemyIds({ assets07, enemies05, maps05, ops03 }) {
-  const known = (id) => !!(enemies05?.enemies?.[id] || assets07?.enemies?.[id]);
-  const set = new Set(Object.keys(assets07?.enemies || {}));
-  const add = (k) => { if (typeof k === 'string' && /^enemy_\d+_[a-z0-9_]+$/i.test(k)) set.add(k); };
-  for (const c of Array.isArray(ops03?.chess) ? ops03.chess : []) {
-    const kit = JSON.stringify([c?.skill ?? null, c?.talents ?? null, c?.tokens ?? null]);
-    for (const m of kit.match(/enemy_\d+_[a-z0-9_]+/gi) || []) add(m);
-  }
-  for (const lv of Object.values(maps05?.roundLevels || {})) {
-    const usedBy = Array.isArray(lv?.usedBy) ? lv.usedBy : [];
-    if (usedBy.length && usedBy.every((u) => String(u).startsWith('mode_training'))) continue; // tutorial is out of scope
-    for (const ref of lv?.enemyDbRefs || []) add(Array.isArray(ref) ? ref[0] : ref);
-    walkKeys(lv?.waves, add);
-    walkKeys(lv?.branches, add);
-  }
-  for (const b of Object.values(enemies05?.bosses || {})) { add(b?.enemyId); for (const s of b?.spawns || []) add(s); }
-  // Closure over summons: randomEnemyAttribute spawns + `enemy_key` blackboard references.
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const id of [...set]) {
-      const e = enemies05?.enemies?.[id];
-      if (!e) continue;
-      const refs = new Set(e.ac?.rand?.spawns || []);
-      for (const m of JSON.stringify([e.skills ?? null, e.talent ?? null]).match(/enemy_\d+_[a-z0-9_]+/gi) || []) refs.add(m);
-      for (const r of refs) if (!set.has(r) && known(r)) { set.add(r); changed = true; }
-    }
-  }
-  return [...set].sort();
-}
-
 // ---------------------------------------------------------------------------
 // plan
 
 /**
  * Build the asset plan.
  * @param {object} p
- * @param {any} p.assets07 docs/research/07-assets.json
- * @param {any} p.ops03 docs/research/03-operators.json
- * @param {any} p.enemies05 docs/research/05-enemies.json
- * @param {any} p.maps05 docs/research/05-maps.json
+ * @param {any} p.catalog tools/assets/catalog.json: source URLs and asset associations
  * @param {ReturnType<import('./audio.mjs').indexAudio>} p.audio indexed audio_data.json
  * @param {any} p.modelsData Ark-Models models_data.json
  * @param {any} [p.charword] parsed excel/charword_table.json — the operators' official voice slots (voice, voiceJp)
@@ -382,7 +307,7 @@ export function collectEnemyIds({ assets07, enemies05, maps05, ops03 }) {
  *   models (tools/assets/local-token-spines.json): each planned token listed gets `spineLocal` = { group:
  *   'spine/token/<id>', ...meta } beside its web `spine`, if any (most have none: the client drew the avatar)
  * @param {Record<string, any>} [p.extraOperators] charId → { subProfessionId, nationId, skills: [{ index, skillId, iconId }] }
- *   of characters research 07 does not list (the 自选 owned-6★ picks, data/backups.json `units`): planned like the pool
+ *   of characters the catalogue does not list (the 自选 owned-6★ picks, data/backups.json `units`): planned like the pool
  *   operators from patternOperator
  * @param {string[]} [p.extraVoiceIds] official voice identities referenced by custom operator records
  * @param {string[]} [p.moduleTypes] module type icon ids (`typeIcon`, e.g. 'sol-x') → manifest `modules[typeIcon]`, the
@@ -392,14 +317,14 @@ export function collectEnemyIds({ assets07, enemies05, maps05, ops03 }) {
  *   from {@link charModesFromIndex} (the local fx index). Absent: skill attack slots stay on the filename letter.
  * @returns {{ template: any, models: Map<string, any>, notes: string[] }}
  */
-export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsData, charword = null, voiceLang = 'cn',
+export function buildPlan({ catalog, audio, modelsData, charword = null, voiceLang = 'cn',
   voiceJp = true, voiceSlots = VOICE_BATTLE_SLOTS, optionalVoice = false,
   extraEnemyIds = [], extraTokenIds = [], extraHandbook = {}, localEnemySpines = {}, localTokenSpines = {}, extraOperators = {}, extraVoiceIds = [],
   moduleTypes = [], statsTemplate = [], charModes = null }) {
   const notes = [];
   /** @type {Map<string, any>} */
   const models = new Map();
-  const skillIdx = skillIndicesByChar(ops03);
+  const skillIdx = new Map(Object.entries(catalog.skillIndices || {}));
 
   // --- Spine model helpers -------------------------------------------------
   const addModel = (key, def) => { if (!models.has(key)) models.set(key, { key, ...def }); return { model: key }; };
@@ -432,7 +357,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     sfxPools[id] = literal(params);
     return id;
   };
-  const known = assets07?.operators || {};
+  const known = catalog?.operators || {};
   const extraOps = {};
   for (const [id, x] of Object.entries(extraOperators || {})) if (/^char_\d+_[a-z0-9]+$/i.test(id) && !known[id]) extraOps[id] = patternOperator(id, x);
   const operators = { ...known, ...extraOps };
@@ -450,7 +375,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     if (o.portrait?.e2?.url) c.portraitE2 = leaf(alt(`char/portrait/${id}_2.png`, o.portrait.e2.url, o.portrait.e2.bytes));
     c.spine = {};
     const front = fexliModel(`op:${id}:front`, 'op', `spine/op/${id}/front/`, o.battleSpine?.front, idx);
-    if (front) c.spine.front = front; else notes.push(`${id}: no Front battle Spine in research data`);
+    if (front) c.spine.front = front; else notes.push(`${id}: no Front battle Spine in asset catalogue`);
     const back = fexliModel(`op:${id}:back`, 'op', `spine/op/${id}/back/`, o.battleSpine?.back, idx);
     if (back) c.spine.back = back;
     chars[id] = c;
@@ -488,7 +413,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     const attackPools = {}, hitPools = {};
     for (const i of idx) {
       const s = (o.skills || []).find((k) => k.index === i);
-      if (!s) { notes.push(`${id}: skill index ${i} missing in research data`); continue; }
+      if (!s) { notes.push(`${id}: skill index ${i} missing in asset catalogue`); continue; }
       const iconId = s.iconId || s.skillId;
       if (s.icon?.url && !skills[iconId]) skills[iconId] = leaf(alt(`skill/${safeName(iconId)}.png`, s.icon.url, s.icon.bytes));
       if (s.skillId) skillsById[s.skillId] = iconId;
@@ -525,20 +450,17 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
   }
 
   // --- tokens --------------------------------------------------------------
-  const chessById = new Map((ops03?.chess || []).map((c) => [c.chessId, c]));
   const tokens = {};
-  const tokenIds = new Set(Object.keys(assets07?.tokens || {}));
+  const tokenIds = new Set(Object.keys(catalog?.tokens || {}));
   for (const id of extraTokenIds) if (typeof id === 'string' && /^token_\d+_[a-z0-9_]+$/i.test(id)) tokenIds.add(id);
   for (const id of [...tokenIds].sort()) {
-    // Tokens unknown to research 07: default avatar/Spine locations (misses are tolerated).
-    const t = assets07?.tokens?.[id] ?? {
+    // Tokens unknown to the catalogue: default avatar/Spine locations (misses are tolerated).
+    const t = catalog?.tokens?.[id] ?? {
       avatar: { url: `${RAW.yuanyan}avatar/${id}.png` },
       battleSpineDefault: null,
       battleSpineSkinVariantsOnly: [id],
     };
-    const usedBy = ops03?.tokensUsedByPool?.[id]?.usedByChess || [];
-    const ownerChess = usedBy.map((cid) => chessById.get(cid)).find(Boolean);
-    const entry = { owner: ownerChess?.charId || ownerChess?.backup?.charId || null };
+    const entry = { owner: catalog.tokenOwners?.[id] || null };
     entry.avatar = t.avatar?.url ? leaf(alt(`token/avatar/${id}.png`, t.avatar.url, t.avatar.bytes)) : null;
     let model = null;
     if (t.battleSpineDefault) {
@@ -566,8 +488,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
   }
 
   // --- enemies -------------------------------------------------------------
-  const handbookOf = new Map();
-  for (const b of Object.values(enemies05?.bosses || {})) if (b?.enemyId && b.handbookId && b.handbookId !== b.enemyId) handbookOf.set(b.enemyId, b.handbookId);
+  const handbookOf = new Map(Object.entries(catalog.enemyHandbook || {}));
   for (const [eid, hb] of Object.entries(extraHandbook || {})) if (typeof hb === 'string' && hb !== eid && !handbookOf.has(eid)) handbookOf.set(eid, hb);
   const mdData = modelsData?.data || {};
   const enemyDir = modelsData?.storageDirectory?.Enemy || 'models_enemies';
@@ -578,7 +499,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     const skel = pick(al?.['.skel']); const atlas = pick(al?.['.atlas']); const png = pick(al?.['.png']);
     if (![skel, atlas, png].every((x) => typeof x === 'string' && x)) return null;
     const base = `${RAW.arkModels}${enemyDir}/${encodeURIComponent(key)}/`;
-    const rec07 = assets07?.enemies?.[eid]?.battleSpine;
+    const rec07 = catalog?.enemies?.[eid]?.battleSpine;
     const dir = `spine/enemy/${eid}/`;
     const stem = skelStem(skel);
     const mk = (file, r, rel) => alt(rel ?? dir + safeName(file), base + encodeURIComponent(file), bytesOf(r, base + encodeURIComponent(file)));
@@ -590,7 +511,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     });
   };
   const baseIdOf = (eid) => { const m = /^(enemy_\d+_[a-z0-9]+?)_\d+$/i.exec(eid); return m ? m[1] : null; };
-  const enemyIdSet = new Set(collectEnemyIds({ assets07, enemies05, maps05, ops03 }));
+  const enemyIdSet = new Set([...Object.keys(catalog.enemies || {}), ...(catalog.enemyIds || [])]);
   for (const id of extraEnemyIds) if (typeof id === 'string' && /^enemy_\d+_[a-z0-9_]+$/i.test(id)) enemyIdSet.add(id);
   // Boss handbook ids (their own icon/model ids) are addressable too.
   for (const hb of handbookOf.values()) if (/^enemy_\d+_[a-z0-9_]+$/i.test(hb)) enemyIdSet.add(hb);
@@ -598,7 +519,7 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
   const enemies = {};
   for (const id of enemyIds) {
     const e = {};
-    const icon07 = assets07?.enemies?.[id]?.icon;
+    const icon07 = catalog?.enemies?.[id]?.icon;
     const iconAlts = [alt(`enemy/icon/${id}.png`, `${RAW.yuanyan}enemy/${id}.png`, bytesOf(icon07, `${RAW.yuanyan}enemy/${id}.png`))];
     for (const other of [handbookOf.get(id), baseIdOf(id)]) if (other) iconAlts.push(alt(`enemy/icon/${id}.png`, `${RAW.yuanyan}enemy/${other}.png`));
     e.icon = leaf(iconAlts);
@@ -638,20 +559,20 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
 
   // --- bonds / items / bands -------------------------------------------------
   const bonds = {};
-  for (const [bondId, b] of Object.entries(assets07?.bonds || {})) {
+  for (const [bondId, b] of Object.entries(catalog?.bonds || {})) {
     bonds[bondId] = leaf(alt(`bond/${bondId}.png`, b.icon?.url, b.icon?.bytes), b.fallbackCampLogo ? alt(`bond/${bondId}.png`, b.fallbackCampLogo) : null);
   }
   const items = {};
-  for (const [trapId, it] of Object.entries(assets07?.items || {})) items[trapId] = leaf(alt(`item/${trapId}.png`, it.icon?.url, it.icon?.bytes));
+  for (const [trapId, it] of Object.entries(catalog?.items || {})) items[trapId] = leaf(alt(`item/${trapId}.png`, it.icon?.url, it.icon?.bytes));
   const bands = {};
-  for (const [bandId, b] of Object.entries(assets07?.bands || {})) bands[bandId] = leaf(alt(`band/${bandId}.png`, b.icon?.url, b.icon?.bytes));
+  for (const [bandId, b] of Object.entries(catalog?.bands || {})) bands[bandId] = leaf(alt(`band/${bandId}.png`, b.icon?.url, b.icon?.bytes));
 
   // --- professions ----------------------------------------------------------
   const prof = { icon: {}, large: {}, battlecard: {}, sub: {} };
   for (const p of PROFESSIONS) {
-    const i = assets07?.arts?.professionIcon?.[p];
+    const i = catalog?.arts?.professionIcon?.[p];
     if (i) prof.icon[p] = leaf(alt(`prof/icon_${p}.png`, i));
-    const l = assets07?.arts?.professionIconLargeWhite?.[p];
+    const l = catalog?.arts?.professionIconLargeWhite?.[p];
     if (l) prof.large[p] = leaf(alt(`prof/large_${p}.png`, l));
   }
   for (const p of [...PROFESSIONS, 'token']) {
@@ -669,14 +590,14 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     const name = `${group}/${k}`;
     if (!ui[name] && url) ui[name] = leaf(alt(`ui/${group}/${k}.png`, url));
   };
-  for (const [group, entries] of Object.entries(assets07?.autochessUi || {})) {
+  for (const [group, entries] of Object.entries(catalog?.autochessUi || {})) {
     for (const [key, url] of Object.entries(entries || {})) addUi(group, key, url);
   }
   const nations = new Set(Object.values(operators).map((o) => o.nationId).filter(Boolean));
   const logos = new Set(['logo_rhodes', ...[...nations].map((n) => `logo_${n}`)]);
-  for (const b of Object.values(assets07?.bonds || {})) if (b.fallbackCampLogo) logos.add(urlBase(b.fallbackCampLogo).replace(/\.png$/i, ''));
+  for (const b of Object.values(catalog?.bonds || {})) if (b.fallbackCampLogo) logos.add(urlBase(b.fallbackCampLogo).replace(/\.png$/i, ''));
   for (const [src, group] of Object.entries(ARTS_GROUPS)) {
-    for (const [key, url] of Object.entries(assets07?.arts?.[src] || {})) {
+    for (const [key, url] of Object.entries(catalog?.arts?.[src] || {})) {
       if (src === 'campLogo' && !logos.has(key)) continue;
       if (src === 'loadingIllust' && !LOADING_USED.has(key)) continue;
       addUi(group, key, url);
@@ -723,12 +644,8 @@ export function buildPlan({ assets07, ops03, enemies05, maps05, audio, modelsDat
     ...(unite ? { unite } : {}),
   };
   const bossBgm = {};
-  for (const lv of Object.values(maps05?.roundLevels || {})) {
-    if (typeof lv?.bgm !== 'string') continue;
-    for (const u of lv.usedBy || []) {
-      const m = /\(boss:(boss_\d+)\)/.exec(String(u));
-      if (m && !bossBgm[m[1]] && !String(u).startsWith('mode_training')) bossBgm[m[1]] = flatBgm(bgmLeaf(`battle.ON_GAME_READY.${lv.bgm}`));
-    }
+  for (const { id, bank } of catalog.bossMusic || []) {
+    if (!bossBgm[id]) bossBgm[id] = flatBgm(bgmLeaf(bank));
   }
   const sfxUi = {};
   for (const [name, spec] of Object.entries(UI_SFX)) { const l = soundLeaf(resolveSpec(spec, audio.bank)); if (l) sfxUi[name] = l; else notes.push(`UI SFX ${name}: no sound`); }

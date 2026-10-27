@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Downloads, post-processes and indexes every art/audio/font asset the game
-// needs, from community dumps of the official client (research 07):
+// needs, from community dumps listed in tools/assets/catalog.json:
 //   public/assets/**   images, Spine models, audio   (git-ignored)
 //   public/fonts/**    Bender / Novecento (.otf/.ttf + .woff2) and fonts.css
 //   data/assets.json   manifest used by the client (schema: docs/ASSETS.md)
@@ -40,9 +40,9 @@
 // dropped or kept differently either way, and a run whose files are all present
 // produces the same manifest byte for byte.
 //
-// Beyond research 07's ids the plan covers what data/*.json adds: spawnable
+// Beyond the catalogue's ids the plan covers what data/*.json adds: spawnable
 // enemies / tokens (data/enemies.json, data/tokens.json), the 自选 owned-6★ picks
-// of data/backups.json `units` (art from 07's URL patterns) and their summons
+// of data/backups.json `units` (art from the source URL patterns) and their summons
 // (`tokens`), and the module type icons of every module in data/chess.json /
 // data/backups.json (manifest `modules`).
 //
@@ -67,6 +67,8 @@ import { MirrorPolicy, selectDownloadSource, validateSource } from './assets/net
 import { normalizeProxyPrefix } from './assets/sources.mjs';
 import { loadIndexes } from './assets/cache.mjs';
 import { indexAudio, VOICE_DIRS } from './assets/audio.mjs';
+import { applyContentAssets } from './build-content.mjs';
+import { fetchIllustrations } from './assets/illustrations.mjs';
 import { buildPlan, charModesFromIndex, VOICE_OPTIONAL_TREES } from './assets/plan.mjs';
 import {
   processModels, findLocalEnemyModels, findLocalTokenModels, localSpineMeta, loadLocalSpines, LOCAL_ENEMY_SPINES_FILE,
@@ -185,7 +187,7 @@ export function resolveProxyPrefix(source, offline = false, value = process.env.
 
 /**
  * What data/backups.json and data/chess.json add to the asset plan: `extraOperators` — every unit of backups.json
- * (`{ name, subProfessionId, nationId, skills: [{ index, skillId, iconId }] }`; buildPlan plans those research 07 lacks,
+ * (`{ name, subProfessionId, nationId, skills: [{ index, skillId, iconId }] }`; buildPlan plans those the catalogue lacks,
  * the 自选 owned-6★ picks), `tokenIds` — the summons of the 自选 picks (backups.json `tokens`), `moduleTypes` — the type
  * icon of every module a chess or a unit form offers.
  * @param {any} backups data/backups.json (or null)
@@ -269,8 +271,8 @@ export function runExitCode({ requiredMisses = 0, droppedLeaves = 0, strict = fa
 }
 
 /**
- * Files under public/assets the manifest does not reference (`--prune` deletes them). public/assets/local/** belongs to
- * tools/local-extract (data/local-assets.json) and is never an orphan: --prune used to delete all of it. Compared without
+ * Files under public/assets the manifest does not reference (`--prune` deletes them). local/** and custom/** belong to
+ * local extraction and project content respectively; neither is managed by this downloader. Compared without
  * case: on Windows / macOS a listed path and a file whose name differs only in case are one file (module/WAH-Y.png on
  * disk serves the listed module/wah-y.png), which --prune must not delete.
  * @param {string[]} onDisk forward-slash paths relative to public/assets
@@ -278,7 +280,7 @@ export function runExitCode({ requiredMisses = 0, droppedLeaves = 0, strict = fa
  */
 export function orphanFiles(onDisk, referenced) {
   const listed = new Set([...referenced].map((r) => r.toLowerCase()));
-  return onDisk.filter((r) => !listed.has(r.toLowerCase()) && !r.startsWith('local/'));
+  return onDisk.filter((r) => !listed.has(r.toLowerCase()) && !/^(local|custom)\//i.test(r));
 }
 
 const mb = (n) => `${(n / 1048576).toFixed(1)} MB`;
@@ -413,12 +415,7 @@ async function main() {
   log(`[assets] root ${ROOT}`);
   if (!skelParserAvailable()) throw new Error('@pixi-spine/runtime-3.8 not found — run `npm install` first');
 
-  const [assets07, ops03, enemies05, maps05] = await Promise.all([
-    readJson('docs/research/07-assets.json'),
-    readJson('docs/research/03-operators.json'),
-    readJson('docs/research/05-enemies.json'),
-    readJson('docs/research/05-maps.json'),
-  ]);
+  const catalog = await readJson('tools/assets/catalog.json');
   const proxyPrefix = resolveProxyPrefix(opts.source, opts.offline);
   const verifier = opts.sourceSnapshot ? new SourceVerifier(JSON.parse(await readFile(opts.sourceSnapshot, 'utf8'))) : undefined;
   const source = await selectDownloadSource({ mode: opts.source, offline: opts.offline, proxyPrefix, log, verified: !!verifier });
@@ -437,8 +434,7 @@ async function main() {
   } else {
     log('[fx] no local fx index — skill attack slots stay on the filename letter');
   }
-  // The game data built by tools/build-data.mjs (when present) may reference more
-  // spawnable enemies/tokens than research lists (e.g. 机变 enemy swaps): cover them too.
+  // Include the current runtime data's additional operators, enemies and summons.
   const [dataEnemies, dataTokens, dataBosses, dataBackups, dataChess] = await Promise.all(
     ['data/enemies.json', 'data/tokens.json', 'data/bosses.json', 'data/backups.json', 'data/chess.json'].map((f) => readJson(f).catch(() => null)));
   const extras = dataExtras(dataBackups, dataChess);
@@ -448,7 +444,7 @@ async function main() {
   const localTokenSpines = await syncLocalSpines(opts, 'token');
   const statsTemplate = await statsTemplateJobs(ROOT, { offline: opts.offline || opts.dryRun, log });
   const plan = buildPlan({
-    assets07, ops03, enemies05, maps05, audio, modelsData, charword, voiceLang: opts.voiceLang,
+    catalog, audio, modelsData, charword, voiceLang: opts.voiceLang,
     // default: only the slots a battle can play (plan.mjs VOICE_BATTLE_SLOTS); --voice-all takes the whole official set
     voiceSlots: opts.voiceAll ? null : undefined,
     optionalVoice: opts.optionalVoice,
@@ -512,6 +508,8 @@ async function main() {
     root: ASSETS, dl, cachePath: join(CACHE, 'spine-info.json'), download: !opts.offline, log,
     ...(opts.addOnly ? { writable: (rel) => dl.written.has(rel) } : null),
   });
+  const illustrations = await fetchIllustrations(ROOT, { offline: opts.offline, keepExisting: opts.addOnly, log, ...network });
+  dl.totals.bytesDownloaded += illustrations.downloadedBytes;
 
   // Manifest
   const resolved = resolveTemplate(plan.template, {
@@ -519,8 +517,11 @@ async function main() {
     ...(verifier ? { available: (rel) => dl.accepted.has(rel) } : null),
   });
   const body = resolved.value;
+  for (const rel of illustrations.files) resolved.files.add(rel);
+  for (const [id, url] of Object.entries(illustrations.chars)) if (body.chars[id]) body.chars[id].illust = url;
   tidyManifest(body);
   tidyVoiceTrees(body);
+  applyContentAssets(body);
   const fontFaces = {};
   for (const [name, f] of Object.entries(fonts.files)) fontFaces[name] = f;
   body.fonts = opts.addOnly && current?.fonts ? current.fonts
@@ -540,7 +541,7 @@ async function main() {
   const orphans = orphanFiles(await listFiles(ASSETS), new Set([...resolved.files, ...dl.preserved]));
   if (opts.prune) for (const r of orphans) { try { await unlink(join(ASSETS, r)); } catch { /* ignore */ } }
 
-  const charIds = Object.keys(assets07.operators || {});
+  const charIds = Object.keys(catalog.operators || {});
   const required = requiredMisses(manifest, charIds);
   // Leaves the plan had resolved and the manifest loses here (no alternative of theirs on disk): reported on their own
   // line below and kept in the report, whether or not they shrink the committed manifest.
@@ -556,6 +557,7 @@ async function main() {
     fallbacks: resolved.fallbacks,
     spineProblems: spine.problems,
     fontErrors,
+    illustrationErrors: illustrations.errors,
     orphans: opts.prune ? [] : orphans,
     pruned: opts.prune ? orphans : [],
     manifestWritten: guard.write,
@@ -577,6 +579,7 @@ async function main() {
   log(`local-client models (spineLocal, drawn when extracted): enemies ${overlays(manifest.enemies)} · tokens ${overlays(manifest.tokens)}`);
   log(`operator battle voice: ${s.voiceChars} charIds (--voice-lang=${opts.voiceLang}) · JP dub (audio.voiceJp): ${s.voiceJpChars} charIds · EN ${s.voiceEnChars} · KR ${s.voiceKrChars} · own-language dub ${s.voiceNativeChars}`);
   log(`fonts: ${Object.values(fonts.files).map((f) => f.woff2 || f.original).join(', ') || 'none'}`);
+  log(`full illustrations : ${illustrations.files.length} available · ${illustrations.errors.length} errors`);
   if (resolved.fallbacks.length) { log(`fallbacks used (${resolved.fallbacks.length}):`); for (const f of resolved.fallbacks.slice(0, 20)) log(`  ${f}`); }
   if (downloadErrors.length) log(`download errors (${downloadErrors.length}, re-run to retry): ${downloadErrors.slice(0, 10).join(', ')}`);
   log(leafDropSummary(droppedLeaves));
@@ -587,6 +590,7 @@ async function main() {
   }
   if (spine.problems.length) { log(`spine notes (${spine.problems.length}):`); for (const p of spine.problems.slice(0, 20)) log(`  ${p}`); }
   for (const e of fontErrors) log(`font error: ${e}`);
+  for (const e of illustrations.errors) log(`illustration error: ${e}`);
   if (orphans.length) log(opts.prune ? `pruned ${orphans.length} unreferenced files` : `${orphans.length} unreferenced files on disk (run with --prune to delete)`);
   if (guard.dropped.length) {
     log(guard.write
@@ -597,12 +601,13 @@ async function main() {
   }
   log(`manifest: ${MANIFEST}${guard.write ? '' : ' (kept)'} · report: ${REPORT} · ${((Date.now() - t0) / 1000).toFixed(0)} s`);
   if (required.length) log(`ERROR: ${required.length} required assets missing: ${required.slice(0, 10).join(', ')}`);
+  if (illustrations.errors.length) log('ERROR: full illustration download incomplete; re-run npm run assets to retry');
   if (opts.strict && droppedLeaves.length) {
     log(strictLeafDropError(droppedLeaves));
     log('  a plain run downloads them again (--refresh-index if the upstream index lost them); without --strict / SP_ASSETS_STRICT this is only a warning');
   }
   if (verifier && (dl.totals.error || fontErrors.length || downloadErrors.length)) return 1;
-  return runExitCode({ requiredMisses: required.length, droppedLeaves: droppedLeaves.length, strict: opts.strict, manifestWritten: guard.write });
+  return runExitCode({ requiredMisses: required.length + illustrations.errors.length, droppedLeaves: droppedLeaves.length, strict: opts.strict, manifestWritten: guard.write });
 }
 
 // run only as a script (tests import parseArgs / shrinkGuard)

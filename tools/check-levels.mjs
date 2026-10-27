@@ -30,7 +30,12 @@ function readManifest() {
   try { return JSON.parse(fs.readFileSync(MANIFEST, 'utf8')).levels || {}; } catch { return {}; }
 }
 
-const files = fs.readdirSync(DIR).filter((n) => n.endsWith('.json') && n !== 'manifest.json' && !n.startsWith('.'));
+let files = [];
+try {
+  files = fs.readdirSync(DIR).filter((n) => n.endsWith('.json') && n !== 'manifest.json' && !n.startsWith('.'));
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
 const manifest = readManifest();
 const next = {};
 const problems = [];
@@ -64,8 +69,9 @@ if (listOnly) {
 }
 
 if (stamp) {
+  fs.mkdirSync(DIR, { recursive: true });
   fs.writeFileSync(MANIFEST, JSON.stringify({ v: 1, levels: next }, null, 1) + '\n');
-  console.log(`已盖章：manifest 记录 ${Object.keys(next).length} 关。记得把这个文件一起提交。`);
+  console.log(`已盖章：manifest 记录 ${Object.keys(next).length} 关，保存在本机关卡库。`);
   process.exit(0);
 }
 

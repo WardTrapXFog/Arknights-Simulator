@@ -14,19 +14,18 @@ function merge(target, patch) {
   return out;
 }
 
-/** Compile local operator definitions into the existing browser/simulation data format. */
-export function buildContent({ operator = null } = {}) {
-  const catalog = read('content/operators/index.json');
-  const entries = operator ? catalog.filter((entry) => entry.id === operator) : catalog;
-  if (!entries.length) throw Error('Unknown operator');
-  const definitions = entries.map((entry) => {
-    if (!/^[a-z0-9-]+\.json$/.test(entry.file)) throw Error('Invalid operator definition filename');
-    return read(`content/operators/${entry.file}`);
+/** Apply project-owned art and audio without rebuilding combat data or browser catalogues. */
+export function applyContentAssets(assets, { operators, enemies } = {}) {
+  const definitions = (kind) => read(`content/${kind}/index.json`).map((entry) => {
+    if (!/^[a-z0-9_-]+\.json$/.test(entry.file)) throw Error('Invalid content definition filename');
+    const d = read(`content/${kind}/${entry.file}`);
+    if (kind === 'enemies' && d.key !== entry.key) throw Error(`Enemy key mismatch in ${entry.file}`);
+    return d;
   });
-  const chess = read('data/chess.json'), units = chess.units || chess;
-  const assets = read('data/assets.json'), backups = read('data/backups.json');
-  for (const d of definitions) {
-    units[d.chessId] = d.record;
+  operators ??= definitions('operators');
+  enemies ??= definitions('enemies');
+  assets.chars ||= {};
+  for (const d of operators) {
     assets.chars[d.charId] = d.art;
     Object.assign(assets.skills ||= {}, d.skillAssets);
     Object.assign(assets.skillsById ||= {}, d.skillAliases);
@@ -42,6 +41,25 @@ export function buildContent({ operator = null } = {}) {
       assets.audio.sfx.units ||= {};
       assets.audio.sfx.units[d.charId] = merge(assets.audio.sfx.units[d.charId], d.audio);
     }
+  }
+  assets.enemies ||= {};
+  for (const d of enemies) assets.enemies[d.key] = d.art;
+  return assets;
+}
+
+/** Compile local operator definitions into the existing browser/simulation data format. */
+export function buildContent({ operator = null } = {}) {
+  const catalog = read('content/operators/index.json');
+  const entries = operator ? catalog.filter((entry) => entry.id === operator) : catalog;
+  if (!entries.length) throw Error('Unknown operator');
+  const definitions = entries.map((entry) => {
+    if (!/^[a-z0-9-]+\.json$/.test(entry.file)) throw Error('Invalid operator definition filename');
+    return read(`content/operators/${entry.file}`);
+  });
+  const chess = read('data/chess.json'), units = chess.units || chess;
+  const assets = read('data/assets.json'), backups = read('data/backups.json');
+  for (const d of definitions) {
+    units[d.chessId] = d.record;
     if (d.selection) {
       backups.units[d.charId] = d.selection.unit;
       if (d.selection.operator) backups.diy.operators[d.charId] = d.selection.operator;
@@ -66,13 +84,13 @@ export function buildContent({ operator = null } = {}) {
   });
   if (enemyDefs.length) {
     const enemies = read('data/enemies.json');
-    assets.enemies ||= {};
     for (const d of enemyDefs) {
       enemies[d.key] = d.record;
-      assets.enemies[d.key] = d.art;
     }
     write('data/enemies.json', JSON.stringify(enemies));
   }
+
+  applyContentAssets(assets, { operators: definitions, enemies: enemyDefs });
 
   // All output paths are fixed under this project; importing an AKF never writes another project.
   write('data/chess.json', JSON.stringify(chess));
