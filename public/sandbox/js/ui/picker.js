@@ -2,8 +2,12 @@
 import { esc } from './html.js';
 import { PROFESSIONS } from '../operator-library.js';
 import { avatar } from '../asset-urls.js';
+import { createAutoScroll } from './auto-scroll.js';
 
-export function setPicker(refs, on) { refs.picker.classList.toggle('is-on', !!on); }
+export function setPicker(refs, on) {
+  refs.picker.classList.toggle('is-on', !!on);
+  if (!on) refs._pickerAuto?.setEnabled(false);
+}
 
 /**
  * 选人器：自设干员与明确开放的支援，后接尚未接入的槽位。
@@ -11,6 +15,7 @@ export function setPicker(refs, on) { refs.picker.classList.toggle('is-on', !!on
  * @param {Array<{name:string,owner:string}>} [reserve]
  */
 export function renderPicker(refs, ops, filter = '', reserve = []) {
+  refs._pickerAuto ||= createAutoScroll(refs.pkGrid, refs.pkAuto);
   const q = filter.trim();
   const prof = refs._pickerProfession || '';
   if (!refs.pkProfessions) {
@@ -28,4 +33,5 @@ export function renderPicker(refs, ops, filter = '', reserve = []) {
   </div>`).join('');
   refs.pkGrid.innerHTML = ready + slots
     || '<p class="dr__hint">没有匹配的干员。</p>';
+  refs.pkGrid.scrollTop = 0;
 }

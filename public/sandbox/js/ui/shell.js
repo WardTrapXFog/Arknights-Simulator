@@ -80,6 +80,7 @@ function shell() {
       <div class="pk__head">
         <h2>加入手牌</h2>
         <input id="pk-search" type="search" placeholder="按名字筛选…" autocomplete="off" />
+        <button type="button" class="dbtn" id="pk-auto" aria-label="自动滚动干员列表" aria-pressed="false" style="flex:none">[Auto]</button>
         <button class="dbtn" data-act="picker-close" style="flex:none">关闭</button>
       </div>
       <div class="pk__grid" id="pk-grid"></div>
@@ -132,6 +133,7 @@ export function mount(root, act) {
     picker: $('picker'),
     pkGrid: $('pk-grid'),
     pkSearch: $('pk-search'),
+    pkAuto: $('pk-auto'),
     wheelHost: $('hud-wheel'),
     selMark: $('selmark'),
     selSpot: $('selspot'),

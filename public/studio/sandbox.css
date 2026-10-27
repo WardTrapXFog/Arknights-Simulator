@@ -1650,11 +1650,9 @@ body.sb {
 .hud__picker.is-on { opacity: 1; pointer-events: auto; }
 
 .pk {
-  /* 牌库只有自设干员，人少的时候盒子跟着收窄，别撑出一个大空壳 */
-  width: fit-content;
-  min-width: 4.8rem;
-  max-width: 8.6rem;
-  max-height: 6.2rem;
+  box-sizing: border-box;
+  width: min(8.6rem, calc(100vw - 32px));
+  height: min(6.2rem, calc(100dvh - 32px));
   display: flex;
   flex-direction: column;
   gap: .1rem;
@@ -1665,11 +1663,11 @@ body.sb {
   clip-path: polygon(0 0, calc(100% - .16rem) 0, 100% .16rem, 100% 100%, .16rem 100%, 0 calc(100% - .16rem));
 }
 
-.pk__head { display: flex; align-items: center; gap: .12rem; }
+.pk__head { display: flex; align-items: center; gap: .12rem; flex: none; }
 .pk__head h2 { font-size: .18rem; font-weight: 700; letter-spacing: .04em; margin: 0; }
 .pk__head input {
   flex: 1;
-  min-width: 2rem;
+  min-width: 0;
   height: .32rem;
   padding: 0 .1rem;
   background: rgba(0, 0, 0, .45);
@@ -1680,12 +1678,15 @@ body.sb {
 }
 
 .pk__grid {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 6px;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-gutter: stable;
+  scroll-behavior: auto;
   padding-right: .04rem;
 }
 

@@ -237,7 +237,7 @@ html[data-text="xl"] .hud { --sandbox-text-scale: 1.4; }
 @media (max-width: 700px) {
   .sb .hud__score { --score-top: max(3.15rem, 155px); width: min(184px, 43vw); right: .12rem; }
 }
-.pk__professions { display: flex; gap: .04rem; flex-wrap: wrap; margin: .1rem 0; }
+.pk__professions { display: flex; gap: .04rem; flex-wrap: wrap; margin: .1rem 0; flex: none; }
 .pk__professions .is-on { border-color: #edbd75; color: #edbd75; }
 .hand--tight .hand__scroll { gap: .04rem; }
 .hand--tight .ocard { width: min(.72rem, calc((100vw - 3.3rem) / var(--hand-count))); }

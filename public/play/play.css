@@ -37,6 +37,7 @@
 .operation-roster-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .operation-roster-tools input { flex: 1; }
 .operation-roster-tools small { font-size: 11px; color: #a4b3ad; }
+.operation-operators { scrollbar-gutter: stable; scroll-behavior: auto; }
 .operation-operators { overflow: auto; flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 12px; min-height: 0; padding: 3px; }
 .operation-operator { position: relative; min-width: 0; text-align: left; border: 1px solid #5b6561; border-radius: 6px; padding: 0 0 7px; background: #222d33; color: inherit; overflow: hidden; cursor: pointer; }
 .operation-operator img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: #11191e; }

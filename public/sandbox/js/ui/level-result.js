@@ -2,32 +2,48 @@ import { scoreTableMarkup } from './scoreboard.js';
 import { esc } from './html.js';
 import { groundPlaneTransform } from '../ground-plane.js';
 import { loadLevels, listLevels, lastLevelsError, saveLevel } from '../../../level/js/level-store.js';
+import { fadeOutLevelBgm } from '../level-bgm.js';
 
 /** 仅消费结算时的快照；延迟和入场动效不参与战斗推进。 */
-export function createLevelResult({ battle, run, canvas, getView, reduceMotion, onRetry }) {
+export function createLevelResult({ battle, run, canvas, getView, preferences, reduceMotion, onRetry }) {
   const success = battle.reason === 'cleared' && battle.leakedCount < battle.flags.lifeLimit;
   const report = { killed: battle.killed, leaked: battle.leakedCount, time: battle.time,
     life: Math.max(0, battle.flags.lifeLimit - battle.leakedCount), lifeLimit: battle.flags.lifeLimit,
     score: structuredClone(battle.sandboxScore.read()) };
   const born = performance.now();
-  const delay = reduceMotion ? 120 : 450, holdUntil = reduceMotion ? 620 : 1900, finishAt = reduceMotion ? 720 : 2150;
+  const delay = reduceMotion ? 120 : 450;
+  let begun = false, cueDone = false, fallbackAt = Infinity, exitAt = null, cue = null;
+  fadeOutLevelBgm();
   const layer = document.createElement('div');
-  layer.className = `operation-complete${reduceMotion ? ' is-reduced' : ''}`;
+  layer.className = `operation-complete${success ? '' : ' operation-failure'}${reduceMotion ? ' is-reduced' : ''}`;
   layer.tabIndex = -1;
   layer.setAttribute('role', 'status');
-  layer.setAttribute('aria-label', `模拟完成，${success ? '作战成功' : '作战失败'}`);
+  layer.setAttribute('aria-label', success ? '模拟完成，作战成功' : '作战失败，等待提示后点击继续');
   layer.innerHTML = `<div class="operation-complete__anchor"><div class="operation-complete__plane">
     <div class="operation-complete__band"><div class="operation-complete__content">
-      <div class="operation-complete__logo"><img src="/assets/ui/settle/operator_rhodes.png" alt="" aria-hidden="true"><span aria-hidden="true">RI</span><small>RHODES ISLAND</small></div>
-      <div class="operation-complete__title"><strong>模拟完成</strong><span>SIMULATION COMPLETE</span><small>${success ? '作战成功' : '作战失败'}</small></div>
-    </div></div></div></div>`;
-  const logo = layer.querySelector('img');
-  logo.addEventListener('load', () => logo.parentElement.classList.add('is-loaded'));
-  logo.addEventListener('error', () => logo.remove());
-  layer.addEventListener('keydown', (event) => { event.preventDefault(); event.stopPropagation(); });
+      ${success ? '<div class="operation-complete__logo"><img src="/icons/app.svg" alt="ARK/SIM"></div>' : '<div class="operation-failure__signal" aria-hidden="true">×</div>'}
+      <div class="operation-complete__title"><strong data-title="${success ? '模拟完成' : '作战失败'}">${success ? '模拟完成' : '作战失败'}</strong><span>${success ? 'SIMULATION COMPLETE' : 'OPERATION FAILED'}</span><small>${success ? '作战成功' : '目标生命耗尽'}</small></div>
+    </div></div></div></div>${success ? '' : '<div class="operation-failure__scan" aria-hidden="true"></div><p class="operation-failure__continue">点击任意处继续</p>'}`;
+  const continueReport = () => { if (!success && cueDone && !destroyed && !dialog) openReport(); };
+  layer.addEventListener('click', continueReport);
+  layer.addEventListener('keydown', (event) => {
+    event.preventDefault(); event.stopPropagation();
+    if (event.key === 'Enter' || event.key === ' ') continueReport();
+  });
   document.body.append(layer); layer.focus({ preventScroll: true });
   const anchor = layer.firstElementChild, plane = anchor.firstElementChild;
   let dialog = null, destroyed = false;
+
+  function finishCue() { cueDone = true; layer.classList.add('is-ready'); }
+  function startCue() {
+    begun = true; layer.classList.add('is-visible');
+    cue = new Audio(`/assets/custom/ui/settlement/${success ? 'mission-accomplished' : 'mission-failed'}.wav`);
+    cue.volume = preferences.muted ? 0 : preferences.sfx;
+    cue.addEventListener('ended', finishCue, { once: true });
+    const unavailable = () => { if (!destroyed && !cueDone && fallbackAt === Infinity) fallbackAt = performance.now() + (success ? 2289 : 2293); };
+    cue.addEventListener('error', unavailable, { once: true });
+    void cue.play().catch(unavailable);
+  }
 
   function openReport() {
     layer.remove();
@@ -67,9 +83,12 @@ export function createLevelResult({ battle, run, canvas, getView, reduceMotion, 
   function paint(now) {
     if (destroyed || dialog) return;
     const elapsed = now - born;
-    if (elapsed >= finishAt) { openReport(); return; }
-    layer.classList.toggle('is-visible', elapsed >= delay);
-    layer.classList.toggle('is-leaving', elapsed >= holdUntil);
+    if (!begun && elapsed >= delay) startCue();
+    if (!cueDone && now >= fallbackAt) finishCue();
+    if (success && cueDone) {
+      if (exitAt === null) { exitAt = now + (reduceMotion ? 80 : 240); layer.classList.add('is-leaving'); }
+      if (now >= exitAt) { openReport(); return; }
+    }
     const box = canvas.getBoundingClientRect(), x = box.left + box.width / 2, y = box.top + box.height * .46;
     anchor.style.left = `${x}px`; anchor.style.top = `${y}px`;
     layer.style.setProperty('--complete-width', `${Math.min(1100, box.width * .86)}px`);
@@ -79,6 +98,7 @@ export function createLevelResult({ battle, run, canvas, getView, reduceMotion, 
 
   function destroy() {
     destroyed = true; layer.remove();
+    if (cue) { cue.pause(); cue.removeAttribute('src'); cue.load(); cue = null; }
     if (dialog?.open) dialog.close();
     dialog?.remove();
     window.removeEventListener('pagehide', destroy);

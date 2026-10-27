@@ -13,6 +13,7 @@ import { parseLevel } from '../../../shared/level.js';
 import { levelThumbnail } from '../../../shared/level-preview.js';
 import { createLevelRun } from '../../sandbox/js/level-run.js';
 import { readTeams, writeTeam, cleanTeam } from './team-store.js';
+import { createAutoScroll } from '../../sandbox/js/ui/auto-scroll.js';
 
 const root = document.getElementById('start');
 const context = { rows: ROWS, cols: COLS, enemyKeys: LIBRARY_KEYS };
@@ -20,6 +21,7 @@ const enemyNames = Object.fromEntries([...ENEMY_LIBRARY.official, ...ENEMY_LIBRA
 let selected = null, transient = null, screen = 'levels', team = cleanTeam(), teamIndex = 0;
 let profession = '', search = '', sort = 'rarity', quick = true, active = null, error = '';
 let records = {}, enemyData = {};
+let rosterAuto = null, autoEnabled = false;
 const teamIds = () => new Set(team.ids);
 function fail(e) { error = e.message || String(e); const el = root.querySelector('[data-status]'); if (el) el.textContent = error; }
 function modal(title, html) {
@@ -33,6 +35,7 @@ function levels() {
   return transient && !library.some((l) => l.id === transient.id) ? [transient, ...library] : library;
 }
 function renderLevels() {
+  rosterAuto?.destroy(); rosterAuto = null;
   screen = 'levels'; root.className = 'operation-screen'; setTerminalState('menu');
   const all = levels(); if (selected && !all.some((l) => l.id === selected.id)) selected = null;
   root.innerHTML = `<header class="operation-head"><span class="op-eyebrow">OPERATION ARCHIVE</span><span class="op-grow"></span><button class="op-button" data-action="import">导入 JSON</button></header>
@@ -97,13 +100,17 @@ function initializeTeam() {
   active = team.ids[0] || AVAILABLE_IDS[0];
 }
 function renderPreparation() {
+  const resumeAuto = autoEnabled;
+  rosterAuto?.destroy();
   screen = 'team'; root.className = 'operation-screen'; setTerminalState('menu', () => { writeTeam(teamIndex, team); error = ''; renderLevels(); });
   root.innerHTML = `<header class="operation-head"><h1>${esc(selected.name)}</h1><span class="op-grow"></span><b>作战编队 <span data-team-count>${team.ids.length}</span> / ${MAX_SQUAD}</b><button class="op-button op-button--primary" data-action="battle">开始战斗 →</button></header>
     <div class="operation-team-bar">${readTeams().map((t, i) => `<button class="op-button${i === teamIndex ? ' is-on' : ''}" data-team="${i}">${esc(t.name)}</button>`).join('')}<input maxlength="24" data-team-name value="${esc(team.name)}" aria-label="编队名称"><button class="op-button" data-action="save-team">保存编队</button><button class="op-button" data-action="clear-team">清空</button><label><input type="checkbox" data-quick${quick ? ' checked' : ''}>快速编队</label></div>
     <div class="operation-team"><nav class="operation-professions">${PROFESSIONS.map(([id, name]) => `<button class="op-button${profession === id ? ' is-on' : ''}" data-profession="${id}">${name}</button>`).join('')}</nav>
-      <main class="operation-roster"><div class="operation-roster-tools"><input type="search" data-search value="${esc(search)}" placeholder="搜索干员 / 分支"><select data-sort><option value="rarity">稀有度</option><option value="cost">部署费用</option><option value="name">名称</option></select><small>满级 · 满潜 · 满信赖 · 技能满级</small></div><div class="operation-operators" data-operators></div></main>
+      <main class="operation-roster"><div class="operation-roster-tools"><input type="search" data-search value="${esc(search)}" placeholder="搜索干员 / 分支"><select data-sort><option value="rarity">稀有度</option><option value="cost">部署费用</option><option value="name">名称</option></select><button type="button" class="op-button" data-roster-auto aria-label="自动滚动干员列表" aria-pressed="false">[Auto]</button><small>满级 · 满潜 · 满信赖 · 技能满级</small></div><div class="operation-operators" data-operators></div></main>
       <aside class="operation-team-side"><h2>已选阵容</h2><div class="operation-selected" data-selected></div><section class="operation-loadout" data-loadout></section><p class="op-status" data-status>${esc(error)}</p></aside></div>`;
   root.querySelector('[data-sort]').value = sort; renderOperators(); renderSelection();
+  rosterAuto = createAutoScroll(root.querySelector('[data-operators]'), root.querySelector('[data-roster-auto]'), (value) => { autoEnabled = value; });
+  rosterAuto.setEnabled(resumeAuto);
 }
 function renderOperators() {
   const list = AVAILABLE_IDS.map((id) => records[id]).filter((r) => r && (!profession || r.profession === profession) && (!search || `${r.name} ${r.subProfessionName} ${r.charId}`.toLowerCase().includes(search.toLowerCase())));
@@ -134,6 +141,7 @@ async function startBattle() {
   const run = createLevelRun(selected, team.ids, team.skills, team.modules);
   // 出战配置只在本次页面内传递；不激活、不覆盖自由沙盒的当前现场或存档槽。
   await terminalTransition(async () => {
+    rosterAuto?.destroy(); rosterAuto = null;
     setTerminalState('battle');
     root.innerHTML = '<div class="operation-empty">正在载入战场…</div>';
     const { bootSandbox } = await import('../../sandbox/js/controller.js');

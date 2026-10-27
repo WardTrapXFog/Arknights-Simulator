@@ -1,0 +1,54 @@
+/* 字号只影响界面文字，不缩放地图、镜头或根布局尺寸。 */
+:root { --interface-text-scale: 1; }
+:root[data-text='md'] { --interface-text-scale: 1.12; }
+:root[data-text='lg'] { --interface-text-scale: 1.25; }
+:root[data-text='xl'] { --interface-text-scale: 1.4; }
+
+.menu-screen, .sandbox-entry, .operation-screen, .lv, .saves { font-size: calc(14px * var(--interface-text-scale)); }
+.terminal-chrome { font-size: calc(13px * var(--interface-text-scale)); }
+.menu__heading h1 { font-size: calc(clamp(30px, 3.2vw, 52px) * var(--interface-text-scale)); }
+.menu-card__body strong { font-size: calc(25px * var(--interface-text-scale)); }
+.menu-card__body > span, .menu-card__foot, .menu__heading p, .menu__button, .lv-btn { font-size: calc(13px * var(--interface-text-scale)); }
+.menu-card__top, .menu-card__top > span, .menu__eyebrow { font-size: calc(11px * var(--interface-text-scale)); }
+.saves__head h2 { font-size: calc(27px * var(--interface-text-scale)); }
+.sandbox-entry .saves__head h2 { font-size: calc(17px * var(--interface-text-scale)); }
+.saves__slotbody b { font-size: calc(13px * var(--interface-text-scale)); }
+.saves__slotbody small, .saves__label, .saves__note { font-size: calc(11px * var(--interface-text-scale)); }
+.saves__slotbody time { font-size: calc(10px * var(--interface-text-scale)); }
+.saves__label input, .saves__label select { font-size: calc(13px * var(--interface-text-scale)); }
+.saves__detail h3 { font-size: calc(18px * var(--interface-text-scale)); }
+.saves__intro, .saves__status { font-size: calc(12px * var(--interface-text-scale)); }
+.settings__sections h3 { font-size: calc(15px * var(--interface-text-scale)); }
+.settings__row { font-size: calc(13px * var(--interface-text-scale)); }
+.settings__row select, .settings__row output, .settings__music > button, .settings__hint, .settings__key { font-size: calc(12px * var(--interface-text-scale)); }
+.settings__theme strong { font-size: calc(14px * var(--interface-text-scale)); }
+.settings__theme small { font-size: calc(11px * var(--interface-text-scale)); }
+.operation-head h1 { font-size: calc(20px * var(--interface-text-scale)); }
+.operation-level-detail h2 { font-size: calc(24px * var(--interface-text-scale)); }
+.operation-professions .op-button, .operation-team-side h2 { font-size: calc(14px * var(--interface-text-scale)); }
+.operation-operator b { font-size: calc(13px * var(--interface-text-scale)); }
+.operation-operator small, .operation-operator-type, .operation-selected-slot span { font-size: calc(10px * var(--interface-text-scale)); }
+.operation-roster-tools small, .op-tags span, .op-eyebrow { font-size: calc(11px * var(--interface-text-scale)); }
+.operation-loadout, .op-dim, .op-status, .lv-card__meta, .lv-hint { font-size: calc(12px * var(--interface-text-scale)); }
+.lv-field input, .lv-field select, .lv-field textarea { font-size: inherit; }
+
+.sb .dbtn, .sb .pk__head input, .sb .workspace__exit-panel p { font-size: calc(max(11px, .12rem) * var(--interface-text-scale)); }
+.sb .pk__head h2 { font-size: calc(.18rem * var(--interface-text-scale)); }
+.sb .pk__op span { font-size: calc(.09rem * var(--interface-text-scale)); }
+.sb .dt__name { font-size: calc(clamp(22px, 1.9vw, 36px) * var(--interface-text-scale)); }
+.sb .dt__stat { font-size: calc(clamp(12px, 1.02vw, 19px) * var(--interface-text-scale)); }
+.sb .dt__tab { font-size: calc(clamp(13px, 1.05vw, 20px) * var(--interface-text-scale)); }
+.sb .dt__info { font-size: calc(clamp(12px, .98vw, 19px) * var(--interface-text-scale)); }
+.sb .dt__seg-p { font-size: inherit; }
+.sb .dt__seg-h b { font-size: calc(clamp(15px, 1.15vw, 22px) * var(--interface-text-scale)); }
+.sb .dt__seg-meta { font-size: calc(clamp(10px, .82vw, 16px) * var(--interface-text-scale)); }
+.sb .dr__hint { font-size: calc(.12rem * var(--interface-text-scale)); }
+.score__table th { font-size: calc(max(10px, .1rem) * var(--interface-text-scale)); }
+.score__table td { font-size: calc(max(10px, .105rem) * var(--interface-text-scale)); }
+.score__table th.score__col--dps, .score__table td.score__col--dps { font-size: calc(max(12px, .12rem) * var(--interface-text-scale)); }
+.operation-result .score__table { font: inherit; }
+.saves.operation-result { font-size: calc(16px * var(--interface-text-scale)); }
+.operation-result .score__table th { font-size: .85em; }
+.operation-result .score__table td { font-size: .95em; }
+.operation-result .score__table .score__col--total, .operation-result .score__table .score__col--dps { font-size: 1.08em; }
+@media (max-width: 650px) { .terminal-history, .terminal-tab { font-size: calc(11px * var(--interface-text-scale)); } }

@@ -63,7 +63,7 @@ function applyPreferences(value) {
   audio.setVoiceNative(value.voiceNative);
   // 关卡自带音乐也遵守共用的背景音乐音量和静音设置。
   const vol = value.muted ? 0 : bgmVolume(value);
-  const bgm = playLevelBgm(levelBgmUrl(levelRun?.document?.meta), vol);
+  const bgm = battle?.finished ? null : playLevelBgm(levelBgmUrl(levelRun?.document?.meta), vol);
   if (bgm) bgm.volume = vol;
   applyInterfaceSettings(value);
   view?.setSettings(value);
@@ -127,6 +127,7 @@ async function resetBattle({ paused = !(runner?.playing), resetSession = false }
   if (state.ui.place === 'route') paintRoute();
   if (state.ui.place === 'batch') paintBatch();
   startRunner({ speed: state.ui.speed, paused, onFrame: presentFrame });
+  if (levelRun) applyPreferences(preferences);
   syncHud(true);
   if (battle.sandboxRestoreErrors.length) warn(battle.sandboxRestoreErrors.join('；'), true);
 }
@@ -1066,6 +1067,7 @@ function showLevelResult() {
   clearSelection(); setSelectionFocus(false);
   audio.stopSkillAmbients();
   levelResult = createLevelResult({ battle, run: levelRun, canvas: refs.canvas, getView: () => view,
+    preferences,
     reduceMotion: preferences.reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches,
     onRetry: () => { resetBattle({ paused: false, resetSession: true }).catch((error) => warn(error.message, true)); } });
 }

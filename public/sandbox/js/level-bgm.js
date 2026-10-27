@@ -14,6 +14,7 @@ let source = null;       // AudioBufferSourceNode 或 HTMLAudioElement
 let currentUrl = null;
 let volume = 0.5;
 let paused = false, generation = 0;
+let fadeFrame = 0;
 const prepared = new Map();
 
 /** 从 OGG 头部读 LOOPSTART / LOOPLENGTH；读不到返回 null。只拉前 64KB，够覆盖 comment header。 */
@@ -87,6 +88,7 @@ export function playLevelBgm(url, vol = 0.5) {
     return source;
   }
   stopLevelBgm();
+  if (gain) gain.gain.value = volume;
   currentUrl = url;
   void start(url, generation);
   return null;   // 异步起播，返回 null 表示「已受理」
@@ -134,9 +136,31 @@ async function start(url, token) {
 
 /** 停掉并释放。 */
 export function stopLevelBgm() {
+  cancelAnimationFrame(fadeFrame); fadeFrame = 0;
+  if (gain && ctx) gain.gain.cancelScheduledValues(ctx.currentTime);
   generation++;
   currentUrl = null;
   stopSource();
+}
+
+/** 结算时快速淡出；完成后释放当前音源，不清理解码缓存。 */
+export function fadeOutLevelBgm(milliseconds = 320) {
+  if (!currentUrl) return;
+  cancelAnimationFrame(fadeFrame);
+  const token = generation, start = performance.now(), initial = source instanceof HTMLAudioElement ? source.volume : volume;
+  if (gain && ctx) {
+    gain.gain.cancelScheduledValues(ctx.currentTime);
+    gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + milliseconds / 1000);
+  }
+  function fade(now) {
+    if (token !== generation) return;
+    const progress = Math.min(1, (now - start) / milliseconds);
+    if (source instanceof HTMLAudioElement) source.volume = initial * (1 - progress);
+    if (progress >= 1) stopLevelBgm();
+    else fadeFrame = requestAnimationFrame(fade);
+  }
+  fadeFrame = requestAnimationFrame(fade);
 }
 
 /** 暂停保留音源与播放位置，恢复时不重新请求或解码。 */

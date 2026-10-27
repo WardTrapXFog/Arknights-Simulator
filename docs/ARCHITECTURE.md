@@ -49,7 +49,7 @@ tools/               生成器与素材脚本
 | `save.js` | `localStorage[arksim-sandbox-v3]` 的当前编辑内容读写与 `serializeSandbox`；`format:3` 从实际战场提取当前在场单位、当前位置、血量、技力、冷却、剩余路线、时间与费用，不保存历史或未出生单位。兼容旧存档。 |
 | `save-slots.js` | 六槽库、旧档迁入、新建／写入／删除／复制／激活、当前槽位 sessionStorage 标记与无确认快存。未绑定时使用空槽，满槽时要求选择。 |
 | `ui/save-manager.js` | 入口使用内嵌预览与六槽管理，战场使用原生 dialog；共用操作确认、命名、复制目标与错误反馈。 |
-| `settings.js` `ui/settings.js` | 复用上游 `sanitizeSettings` 的全局偏好存储与设置窗口；局外不显示战斗快捷键配置；通过 AudioManager、`view.setSettings` 和文字／动效属性即时生效。 |
+| `settings.js` `ui/settings.js` | 复用上游 `sanitizeSettings` 的全局偏好存储与设置窗口；局外不显示战斗快捷键配置；通过 AudioManager、`view.setSettings` 和文字／动效属性即时生效。`interface-text.css` 在四个入口中统一消费 `data-text`，按小／中／大／特大放大菜单、设置、牌库、详情与计分文字，保持地图和布局根尺寸。 |
 | `debug-log.js` | 局外交互日志：`debugLog`／`debugTimer` 写 console 并批量 POST `/api/log`，开关来自 `/api/debug` 或 localStorage。 |
 | `battle-session.js` | 组装 `BattleSpec`、按部署顺序恢复干员布置、部署判定、出生队列、手动敌人的持久化放置／删除与 runner 启动。 |
 | `damage-score.js` `ui/scoreboard.js` | 沙盒伤害计分与右侧六项面板。前者监听 `damaged` 回调累计四种对敌伤害、用固定 150 桶记录近 5 秒；后者每 200 毫秒刷新数字、占比与短促反馈。 |
@@ -129,7 +129,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 `public/studio/play.html` 复用战场样式与资源入口，先加载 `public/play/js/app.js`：关卡库/导入 → 关卡侧栏简图与按 key 去重的敌方情报 → 玩家编队。职业筛选为全部与八职业；牌库还支持搜索、排序和快速勾选。`team-store.js` 在 `arksim-player-teams-v1` 存四个具名编队及各人的技能、模组。编队上限 13 是玩家出战规则，不属于关卡文件。
 
-`public/sandbox/js/level-run.js` 将关卡和本次玩家选择组装为 `levelRun`，通过 `bootSandbox({run})` 在同一页面加载战场。它不调用 activateSave，不写 SAVE_KEY，不选择存档槽。controller 的保存入口在关卡模式直接返回，地图/刷怪/换牌 UI 隐藏且操作入口禁用；预选的技能、模组通过部署输入送入引擎。关卡模式正常扣费，限制同名在场一人，退场记录再部署截止时间，不免费激活技能；`ui/level-result.js` 在结算时固定伤害与时间数据，450 毫秒后显示投影横幅，约 2.15 秒后打开报告；减少动态效果时缩短为 720 毫秒。报告复用计分表，支持重试、重新编队、返回列表和打开编辑器。临时导入的关卡在进入编辑器前等待写盘，已有同 ID 关卡不被出战副本覆盖。
+`public/sandbox/js/level-run.js` 将关卡和本次玩家选择组装为 `levelRun`，通过 `bootSandbox({run})` 在同一页面加载战场。它不调用 activateSave，不写 SAVE_KEY，不选择存档槽。controller 的保存入口在关卡模式直接返回，地图/刷怪/换牌 UI 隐藏且操作入口禁用；预选的技能、模组通过部署输入送入引擎。关卡模式正常扣费，限制同名在场一人，退场记录再部署截止时间，不免费激活技能；`ui/level-result.js` 在结算时固定伤害与时间数据，并调用 `fadeOutLevelBgm()` 在 320 毫秒内淡出作战音乐。成功时短暂延迟后显示带 ARK/SIM 图标的投影横幅，灰层沿地面平面位于黑层下方；横幅出现时播放成功 WAV，收到播放结束事件后淡出并打开报告。失败使用红灰横幅与短暂故障效果，失败 WAV 结束后显示点击继续提示，再由点击或 Enter／空格打开报告。减少动态效果时关闭故障效果并缩短界面过渡，但不跳过音效。音效使用静音与 SFX 音量，文件位于 `public/assets/custom/ui/settlement/`。报告放大文字、计分表与操作按钮，支持重试、重新编队、返回列表和打开编辑器。临时导入的关卡在进入编辑器前等待写盘，已有同 ID 关卡不被出战副本覆盖。
 
 `public/play/js/hand-deployment.js` 仅在关卡对局中绑定 DOM 手牌的 Pointer Events，通过 `tileScreen` 在当前战场范围内命中地块，展示合法格和头像预览，不使用上游拖拽器的固定部署区域。合法落点交给 controller 挂载原有 `FacingWheel`，二次拖动朝向确认后才调用 `deployOperator`；拖放和正式部署共用 `deploymentError`，待确认期间不创建引擎单位、不扣费。视图重建、切换、设置、结算及失焦清理交互。沙盒继续使用点击部署，关卡中单击手牌只选中详情，不将战场切成只认格子的放置模式。
 
