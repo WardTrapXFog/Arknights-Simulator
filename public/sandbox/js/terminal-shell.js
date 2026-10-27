@@ -5,8 +5,8 @@ import { debugLog, debugEnabled, describeNode } from './debug-log.js';
 
 const PAGES = [
   ['sandbox', '/studio/console.html', '自由沙盒', 'M3 4h6v6H3z M13 4h6v6h-6z M3 14h6v6H3z M13 14h6v6h-6z'],
-  ['play', '/studio/play.html', '关卡游玩', 'M5 3h14v18H5z M10 8l6 4-6 4z'],
-  ['editor', '/studio/level.html', '关卡编辑器', 'M3 5h12v15H3z M7 10h4 M7 14h4 M14 10l5-7 3 2-5 7-4 2z'],
+  ['play', '/studio/play.html', '游玩自制关卡', 'M5 3h14v18H5z M10 8l6 4-6 4z'],
+  ['editor', '/studio/level.html', '关卡制作器', 'M3 5h12v15H3z M7 10h4 M7 14h4 M14 10l5-7 3 2-5 7-4 2z'],
 ];
 const section = PAGES.find(([, url]) => location.pathname === url)?.[0] || 'home';
 let mode = 'menu', backAction = null, leaveGuard = null, navigating = false, settings = loadSettings();

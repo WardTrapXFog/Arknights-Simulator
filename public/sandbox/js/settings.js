@@ -5,9 +5,9 @@ const defaults = { sfx: .7, voice: .8, bgm: .5, officialFx: 'lite' };
 export const DEFAULT_MENU_MUSIC = '生命流.ogg';
 const menuMusic = (value) => typeof value === 'string' && /^[^/\\]+\.ogg$/i.test(value) ? value : DEFAULT_MENU_MUSIC;
 export const MENU_THEMES = Object.freeze([
-  { id: 'signal', name: '青磁信号', detail: '青绿高亮 · 平面终端' },
-  { id: 'optical', name: '钛灰光学', detail: '柔青高亮 · 轻微浮层' },
-  { id: 'graphite', name: '石墨琥珀', detail: '暖金高亮 · 实色分区' },
+  { id: 'signal', name: '青磁信号', detail: '青绿操作色 · 深灰与浅灰面板' },
+  { id: 'optical', name: '冰蓝光学', detail: '冰蓝操作色 · 深蓝与浅灰面板' },
+  { id: 'graphite', name: '琥珀档案', detail: '琥珀操作色 · 炭黑与暖灰面板' },
 ]);
 const menuTheme = (value) => MENU_THEMES.some((theme) => theme.id === value) ? value : 'graphite';
 

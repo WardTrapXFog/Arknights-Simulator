@@ -6,7 +6,7 @@ import { loadMenuMusic } from '../menu-audio.js';
 
 export function openSettings({ settings, onChange, onClose, global = false }) {
   const dialog = document.createElement('dialog');
-  dialog.className = 'saves sandbox-settings';
+  dialog.className = `saves sandbox-settings${global ? ' sandbox-settings--global' : ''}`;
   dialog.setAttribute('aria-labelledby', 'settings-title');
   let value = { ...settings };
   const toggle = (key, label) => `<label class="settings__row"><span>${label}</span><input type="checkbox" data-setting="${key}" ${value[key] ? 'checked' : ''}></label>`;
