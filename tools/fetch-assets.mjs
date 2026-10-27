@@ -227,6 +227,22 @@ function contentAudioJobs(content) {
     urls: [joinUrl(RAW.aa2voice, url.slice('/assets/audio/sfx/'.length))] }));
 }
 
+/** Official models borrowed by authored content are dependencies even when their owners are not playable. */
+function contentModelDependencies(content) {
+  const files = new Set(), operators = new Set(), enemies = new Set();
+  const walk = value => {
+    if (typeof value === 'string') {
+      const match = /^\/assets\/spine\/(op|enemy)\/((?:char|enemy)_\d+_[a-z0-9_]+)\//i.exec(value);
+      if (!match) return;
+      files.add(value.slice('/assets/'.length));
+      (match[1] === 'op' ? operators : enemies).add(match[2]);
+    } else if (value && typeof value === 'object') for (const child of Object.values(value)) walk(child);
+  };
+  walk(content.chars);
+  walk(content.enemies);
+  return { files, operators, enemies };
+}
+
 /**
  * The shrink guard of data/assets.json (header): the entries of the current manifest `prev` that `next` would drop,
  * and whether `next` may be written — always when nothing is dropped (or there is no current manifest), otherwise
@@ -447,6 +463,8 @@ async function main() {
     ['data/enemies.json', 'data/tokens.json', 'data/bosses.json', 'data/backups.json', 'data/chess.json'].map((f) => readJson(f).catch(() => null)));
   const extras = dataExtras(dataBackups, dataChess);
   for (const id of Object.keys(contentAssets.chars)) delete extras.extraOperators[id];
+  const contentModels = contentModelDependencies(contentAssets);
+  for (const id of contentModels.operators) extras.extraOperators[id] ||= {};
   const extraHandbook = {};
   for (const b of Object.values(dataBosses || {})) if (b?.enemyKey && typeof b.handbookId === 'string') extraHandbook[b.enemyKey] = b.handbookId;
   const localEnemySpines = await syncLocalSpines(opts, 'enemy');
@@ -457,7 +475,7 @@ async function main() {
     // default: only the slots a battle can play (plan.mjs VOICE_BATTLE_SLOTS); --voice-all takes the whole official set
     voiceSlots: opts.voiceAll ? null : undefined,
     optionalVoice: opts.optionalVoice,
-    extraEnemyIds: Object.keys(dataEnemies || {}),
+    extraEnemyIds: [...new Set([...Object.keys(dataEnemies || {}), ...contentModels.enemies])],
     extraTokenIds: [...Object.keys(dataTokens || {}), ...extras.tokenIds],
     extraHandbook,
     localEnemySpines,
@@ -563,6 +581,8 @@ async function main() {
 
   const charIds = Object.keys(catalog.operators || {});
   const required = requiredMisses(manifest, charIds);
+  const contentModelErrors = [...contentModels.files].filter(rel => !resolved.files.has(rel));
+  required.push(...contentModelErrors.map(rel => `content model: ${rel}`));
   // Leaves the plan had resolved and the manifest loses here (no alternative of theirs on disk): reported on their own
   // line below and kept in the report, whether or not they shrink the committed manifest.
   const droppedLeaves = resolved.droppedLeaves;
@@ -579,6 +599,7 @@ async function main() {
     fontErrors,
     illustrationErrors: illustrations.errors,
     contentAudioErrors,
+    contentModelErrors,
     orphans: opts.prune ? [] : orphans,
     pruned: opts.prune ? orphans : [],
     manifestWritten: guard.write,
