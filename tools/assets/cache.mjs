@@ -56,7 +56,7 @@ export async function cachedJson({ cacheFile, url, refresh = false, offline = fa
   let lastErr = null;
   for (const src of network.urls(verifiedSource?.pinnedUrl ?? url)) {
     if (network.skip(src)) continue;
-    const attempts = network.isProxy(src) ? 1 : 3;
+    const attempts = network.isMirror(src) ? 1 : 3;
     for (let attempt = 1; attempt <= attempts; attempt++) {
       let text, json;
       try {

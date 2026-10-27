@@ -1,11 +1,11 @@
 // Upstream asset sources (GitHub dumps of the official client), URL helpers and
 // local-path helpers shared by the asset pipeline (tools/fetch-assets.mjs).
 //
-// GitHub URLs support a prefix proxy and a jsDelivr fallback. jsDelivr does
-// not serve the voice branch, but the prefix proxy can still be tried there.
+// Mirror mode prefers jsDelivr. A GitHub forwarding proxy is used only when
+// configured by the user; jsDelivr does not serve the voice branch or Releases.
 // See docs/ASSETS.md for the full source list and credits.
 
-export const DEFAULT_GITHUB_PROXY = 'https://gh-proxy.com/';
+export const DEFAULT_GITHUB_PROXY = '';
 export const DEFAULT_ASSET_SOURCE = 'mirror';
 
 export function normalizeProxyPrefix(prefix = DEFAULT_GITHUB_PROXY) {
@@ -35,6 +35,8 @@ export function githubSourceUrl(url) {
   let candidate = String(url);
   while (candidate.startsWith('https://')) {
     if (isGithubDownloadUrl(candidate)) return candidate;
+    const cdn = /^https:\/\/cdn\.jsdelivr\.net\/gh\/([^/]+)\/([^/@]+)@([^/]+)\/(.+)$/.exec(candidate);
+    if (cdn) return `https://raw.githubusercontent.com/${cdn[1]}/${cdn[2]}/${cdn[3]}/${cdn[4]}`;
     const marker = candidate.indexOf('/https://', 8);
     if (marker < 0) break;
     candidate = candidate.slice(marker + 1);
@@ -49,11 +51,12 @@ export function githubProxyUrl(url, prefix = DEFAULT_GITHUB_PROXY) {
   return normalized + url;
 }
 
-/** Ordered transport alternatives; direct mode retains the existing jsDelivr order. */
+/** CDN first in mirror mode; a user-configured forwarding proxy precedes it. */
 export function downloadUrls(url, { source = 'direct', proxyPrefix = DEFAULT_GITHUB_PROXY } = {}) {
   url = githubSourceUrl(url);
   const proxy = source === 'mirror' ? githubProxyUrl(url, proxyPrefix) : null;
-  return [...new Set([proxy, url, mirrorUrl(url)].filter(Boolean))];
+  const cdn = mirrorUrl(url);
+  return [...new Set((source === 'mirror' ? [proxy, cdn, url] : [url, cdn]).filter(Boolean))];
 }
 
 /** Raw base URLs (always end with '/'). */

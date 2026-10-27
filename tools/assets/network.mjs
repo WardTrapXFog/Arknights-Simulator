@@ -12,8 +12,8 @@ export async function selectDownloadSource({ mode = 'direct', offline = false, p
   if (offline) return 'direct';
   const normalizedProxy = mode === 'mirror' ? normalizeProxyPrefix(proxyPrefix) : '';
   log(mode === 'mirror'
-    ? `[network] GitHub 镜像优先：${normalizedProxy || '代理已禁用'}；${verified ? '原始文件校验 Git blob。' : '文件按下载流程校验。'}`
-    : '[network] 原始源（未开启 GitHub 镜像）');
+    ? `[network] jsDelivr CDN 优先；${normalizedProxy ? `用户配置的 GitHub 代理：${normalizedProxy}` : '未配置通用 GitHub 代理，CDN 不覆盖的下载使用原始源'}；${verified ? '原始文件校验 Git blob。' : '文件按下载流程校验。'}`
+    : '[network] 原始源优先，保留 jsDelivr 回退；未开启通用 GitHub 代理');
   return mode;
 }
 
@@ -39,10 +39,14 @@ export class MirrorPolicy {
     return this.source === 'mirror' && !!this.proxyPrefix && url.startsWith(this.proxyPrefix);
   }
 
-  skip(url) { return this.isProxy(url) && this.disabled; }
+  isMirror(url) {
+    return this.isProxy(url) || this.source === 'mirror' && url.startsWith('https://cdn.jsdelivr.net/gh/');
+  }
+
+  skip(url) { return this.isMirror(url) && this.disabled; }
 
   async request(url, fetchImpl, options = {}, timeoutMs = 120000) {
-    if (!this.isProxy(url)) {
+    if (!this.isMirror(url)) {
       return fetchImpl(url, { ...options, signal: options.signal ?? AbortSignal.timeout(timeoutMs) });
     }
     const headerDeadline = new AbortController();
@@ -60,14 +64,14 @@ export class MirrorPolicy {
       await response.body?.cancel();
       throw new Error(`JSON exceeds ${maxBytes} bytes`);
     }
-    if (!this.isProxy(url) && !Number.isFinite(maxBytes)) return Buffer.from(await response.arrayBuffer());
+    if (!this.isMirror(url) && !Number.isFinite(maxBytes)) return Buffer.from(await response.arrayBuffer());
     if (!response.body) return Buffer.alloc(0);
     const reader = response.body.getReader();
     const chunks = [];
     let size = 0;
     try {
       while (true) { // loop-cap: response EOF, maxBytes for bounded JSON, and body idle deadline
-        const { value, done } = this.isProxy(url)
+        const { value, done } = this.isMirror(url)
           ? await readChunk(reader, this.timeoutMs, this.abortMirror.signal)
           : await readChunk(reader, this.timeoutMs);
         if (done) break;
@@ -87,14 +91,14 @@ export class MirrorPolicy {
 
   succeeded(url) {
     // A success from a request already in flight must not reopen a tripped circuit.
-    if (this.isProxy(url) && !this.disabled) this.failures = 0;
+    if (this.isMirror(url) && !this.disabled) this.failures = 0;
   }
 
   failed(url) {
-    if (this.isProxy(url)) {
+    if (this.isMirror(url)) {
       if (this.disabled || ++this.failures < this.failureLimit) return;
       this.disabled = true;
-      this.log(`[network] GitHub 镜像连续失败 ${this.failures} 次：本次运行停用镜像，继续使用原始源 / jsDelivr。`);
+      this.log(`[network] 下载镜像连续失败 ${this.failures} 次：本次运行停用 CDN 与转发代理，继续使用原始源。`);
       this.abortMirror.abort(new Error('GitHub mirror disabled for this run'));
     }
   }
@@ -102,7 +106,7 @@ export class MirrorPolicy {
   directFailureHint() {
     if (this.source !== 'direct' || this.hintShown) return;
     this.hintShown = true;
-    this.log('[network] GitHub 下载失败；如需使用第三方镜像，可重新运行并加 --asset-source=mirror（或 SP_ASSET_SOURCE=mirror）。');
+    this.log('[network] 原始源下载失败；可用 --asset-source=mirror 优先尝试 jsDelivr CDN；CDN 未覆盖的下载需可用的本机代理。');
   }
 }
 

@@ -128,7 +128,7 @@ export class Downloader {
   async fetchWithRetries(url, kind, verifiedSource) {
     if (this.network.skip(url)) return { skipped: true };
     let lastErr = 'unknown error';
-    const attempts = this.network.isProxy(url) ? 1 : this.retries;
+    const attempts = this.network.isMirror(url) ? 1 : this.retries;
     for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
         const res = await this.network.request(url, this.fetch, {

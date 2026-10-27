@@ -35,7 +35,7 @@
 //   --no-assets      skip art/audio downloads
 //   --refresh-index  re-download needed official tables (otherwise existing tables are reused)
 //   --asset-source=M mirror (default) or direct (no public-IP lookup)
-//                    SP_ASSET_SOURCE sets the default; SP_GITHUB_PROXY sets the HTTPS prefix (https://gh-proxy.com/)
+//                    SP_ASSET_SOURCE sets the default; SP_GITHUB_PROXY optionally sets an HTTPS forwarding proxy
 //                    An empty SP_GITHUB_PROXY disables the proxy, including in mirror mode.
 //   --no-local       skip the local-client detection and extraction (the scene step still runs unless --no-scenes)
 //   --local          extract local art and used official effects, for the SI roster

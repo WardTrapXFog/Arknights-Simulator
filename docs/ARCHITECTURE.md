@@ -149,7 +149,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 只更新塔露拉：`node tools/build-content.mjs --operator talula`。
 
-`npm run assets` 的公开下载目录由 `tools/assets/catalog.json` 提供，结合 `data/` 补充当前角色和敌人。下载入口默认优先 GitHub 镜像，连续失败时回退原始源，可通过 `--asset-source=direct` 改用直连。上游音频、语音与模型索引缺失时在线下载并缓存。完整立绘按仓库中记录的版本和哈希从 AKDP 图片包读取；下载清单写入前调用 `build-content.mjs` 的 `applyContentAssets` 合并内容源中的自设素材与音频配置，不重建战斗数据。中断后复用校验合格的完整文件，未完成的单个文件重新下载；下载器的 `--prune` 保留 `public/assets/custom/` 与 `public/assets/local/`。Node 与浏览器的默认模拟数据均使用正式运行数据。
+`npm run assets` 的公开下载目录由 `tools/assets/catalog.json` 提供，结合 `data/` 补充当前角色和敌人。下载入口默认优先 jsDelivr 可覆盖的仓库文件，失败时回退原始源；语音分支和 GitHub Release 使用原始源或用户自配代理。没有内置通用 GitHub 转发代理，`--asset-source=direct` 可改为原始源优先。上游音频、语音与模型索引缺失时在线下载并缓存。完整立绘按仓库中记录的版本和哈希从 AKDP 图片包读取；下载清单写入前调用 `build-content.mjs` 的 `applyContentAssets` 合并内容源中的自设素材与音频配置，不重建战斗数据。中断后复用校验合格的完整文件，未完成的单个文件重新下载；下载器的 `--prune` 保留 `public/assets/custom/` 与 `public/assets/local/`。Node 与浏览器的默认模拟数据均使用正式运行数据。
 
 ## 7. 塔露拉专属特效
 

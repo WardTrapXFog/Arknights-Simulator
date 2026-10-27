@@ -17,7 +17,7 @@
 //
 // Idempotent: existing files with the right size are skipped, so re-running is
 // cheap. Downloads use ~16 parallel connections, 3 retries per direct source,
-// a preferred GitHub mirror (one short attempt per URL), then original/jsDelivr sources.
+// preferred jsDelivr CDN URLs (one short attempt per URL), then original sources.
 // HTTP(S)_PROXY is picked up by restarting once with NODE_USE_ENV_PROXY=1
 // (Node >=22.21 or >=24). An older Node warns and fetches directly, as before.
 // Spine atlases get `size:` (and `pma: true` for enemies); every skeleton is
@@ -133,10 +133,12 @@ const HELP = `Usage: node tools/fetch-assets.mjs [options]
                     (public/assets/local/spine/enemy/, public/assets/local/spine/token/)
   --help            this text
 Environment: SP_ASSET_SOURCE sets the default source; SP_GITHUB_PROXY sets the
-HTTPS mirror prefix (default https://gh-proxy.com/; empty disables the proxy);
+HTTPS forwarding proxy prefix (unset by default; empty disables the proxy);
 SP_ASSETS_STRICT=1 is the same as --strict (CI / packaging builds).
 Mirror attempts have an 8 s response header timeout; response body has a separate idle timeout. Stops for this run after 3 consecutive
-failures. GitHub downloads prefer the third-party mirror by default; --asset-source=direct disables it.`;
+failures. Mirror mode prefers jsDelivr where supported, otherwise the original source.
+A forwarding proxy is used only if SP_GITHUB_PROXY is set. --asset-source=direct prefers
+original sources, keeps the jsDelivr fallback and disables the forwarding proxy.`;
 
 /**
  * True for the usual truthy spellings of a boolean environment variable (`1`, `true`, `yes`, `on`); empty, `0`,
