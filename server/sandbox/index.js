@@ -14,6 +14,8 @@ import { startupMessage } from '../../scripts/startup-message.mjs';
 export async function startSandboxServer(opts = {}) {
   const { port, host } = listenAddress({ ...opts, port: opts.port ?? Number(process.env.PORT || 3100) });
   const log = opts.log || makeLogger(!!opts.quiet), cache = new CompressCache();
+  // 调试日志：启动器传 --debug 时打开，浏览器端经 /api/debug 读取，交互日志经 /api/log 回到本窗口。
+  const debug = opts.debug ?? /^(1|true|yes)$/i.test(process.env.SI_DEBUG || '');
   const publicDir = path.join(ROOT, 'public'), csp = siteCsp(publicDir), startedAt = Date.now();
   const mounts = { data: path.join(ROOT, 'data'), shared: path.join(ROOT, 'shared'), sim: path.join(ROOT, 'server/sim'),
     // 作战音乐只发布 OGG；MP3 等源文件保留在本地。
@@ -72,18 +74,40 @@ export async function startSandboxServer(opts = {}) {
       .sort((a, b) => a.localeCompare(b, 'zh')).map((n) => ({ name: n, url: `/music/${encodeURIComponent(n)}` }));
   }
 
+  /**
+   * 浏览器交互日志（/api/log）：浏览器端把每个文档的日志行整批发回来，统一在启动窗口里按时间顺序打出来。
+   * 未开启调试时照常收下并丢弃，避免浏览器端为了判断开关而多跑一条请求路径。
+   */
+  function debugLines(body) {
+    if (!debug) return;
+    let lines;
+    try { lines = JSON.parse(body)?.lines; } catch { return; }
+    if (!Array.isArray(lines)) return;
+    const at = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+    for (const line of lines.slice(0, 80)) {
+      if (typeof line === 'string') log.info(`[浏览器 ${at}] ${line.slice(0, 600)}`);
+    }
+  }
+
   async function handle(req, res) {
     setSecurityHeaders(res);
     res.setHeader('Content-Security-Policy', csp);
     if (!req.url || req.url.length > 4096) return sendError(req, res, 414, '请求地址过长');
     const parts = splitUrl(req.url);
     if (!parts) return sendError(req, res, 400, '请求地址无效');
-    // 关卡库是唯一允许写入的接口（编辑器保存/删除）；其余一律只读
+    // 关卡库是唯一允许写入的接口（编辑器保存/删除）；调试日志另有一个只进不出的 /api/log。
     const levelPath = parts.rawPath.startsWith('/api/levels') ? parts.rawPath.slice('/api/levels'.length) : null;
     const isLevelWrite = levelPath != null && (req.method === 'PUT' || req.method === 'DELETE' || req.method === 'POST');
+    if (parts.rawPath === '/api/log' && req.method === 'POST') {
+      let body = '';
+      try { body = await readBody(req, 64 * 1024); } catch { return sendJson(req, res, 413, { ok: false }); }
+      debugLines(body);
+      return sendJson(req, res, 200, { ok: true });
+    }
     if (!isLevelWrite && req.method !== 'GET' && req.method !== 'HEAD') { res.setHeader('Allow', 'GET, HEAD'); return sendError(req, res, 405, '仅支持读取'); }
     if (parts.rawPath === '/') { res.writeHead(302, { Location: '/studio/home.html', 'Cache-Control': 'no-store' }); res.end(); return; }
     if (parts.rawPath === '/healthz') return sendJson(req, res, 200, { ok: true, mode: 'sandbox', app: APP_VERSION, version: PROTOCOL_VERSION, uptimeSec: Math.round((Date.now() - startedAt) / 1000) });
+    if (parts.rawPath === '/api/debug') return sendJson(req, res, 200, { debug });
     if (parts.rawPath === '/api/music') return sendJson(req, res, 200, { files: await musicFiles() });
     if (parts.rawPath === '/api/levels') return sendJson(req, res, 200, { levels: await readLevels() });
     if (levelPath != null && levelPath !== '/') {

@@ -8,7 +8,7 @@
 |---|---|---|
 | SI 沙盒（日常） | `npm start` → `server/sandbox/index.js`，默认 `3100` | 纯静态文件服务：页面、素材、`/data/`、`/shared/`、`/sim/`、`/data.js`。不建房间、不开 WebSocket、不托管对局。 |
 
-双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。`scripts/start-windows.bat` 检查 Node.js，并在缺少 `node_modules/ws/package.json` 时自动运行 `npm ci`，失败则回退 `npm install`；前端库由安装后的 `postinstall` 准备。后续 JS 启动器不执行 `tools/setup.mjs`，整条双击链不自动下载官方素材或提取本地客户端。
+双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。`scripts/start-windows.bat` 检查 Node.js，并在缺少 `node_modules/ws/package.json` 时自动运行 `npm ci`，失败则回退 `npm install`；前端库由安装后的 `postinstall` 准备。后续 JS 启动器不执行 `tools/setup.mjs`，整条双击链不自动下载官方素材或提取本地客户端。`--debug`（或环境变量 `SI_DEBUG=1`）开启浏览器交互日志：服务端向页面回 `/api/debug`，前端经 `/api/log` 把导航、点击与模块耗时打回启动窗口。
 
 服务监听时把 `/` 重定向到 `/studio/home.html`（工作区选择页），`/healthz` 返回 `{ok, mode:'sandbox'}`。
 
@@ -50,6 +50,7 @@ tools/               生成器与素材脚本
 | `save-slots.js` | 六槽库、旧档迁入、新建／写入／删除／复制／激活、当前槽位 sessionStorage 标记与无确认快存。未绑定时使用空槽，满槽时要求选择。 |
 | `ui/save-manager.js` | 入口使用内嵌预览与六槽管理，战场使用原生 dialog；共用操作确认、命名、复制目标与错误反馈。 |
 | `settings.js` `ui/settings.js` | 复用上游 `sanitizeSettings` 的全局偏好存储与设置窗口；局外不显示战斗快捷键配置；通过 AudioManager、`view.setSettings` 和文字／动效属性即时生效。 |
+| `debug-log.js` | 局外交互日志：`debugLog`／`debugTimer` 写 console 并批量 POST `/api/log`，开关来自 `/api/debug` 或 localStorage。 |
 | `battle-session.js` | 组装 `BattleSpec`、按部署顺序恢复干员布置、部署判定、出生队列、手动敌人的持久化放置／删除与 runner 启动。 |
 | `damage-score.js` `ui/scoreboard.js` | 沙盒伤害计分与右侧六项面板。前者监听 `damaged` 回调累计四种对敌伤害、用固定 150 桶记录近 5 秒；后者每 200 毫秒刷新数字、占比与短促反馈。 |
 | `battle-runner.js` | 固定步长推进战斗并产出快照/事件（沙盒与关卡游玩共用）。 |
@@ -65,7 +66,11 @@ tools/               生成器与素材脚本
 
 `public/studio/home.html` 是自由沙盒 / 游玩自制关卡 / 关卡制作器的三入口菜单；菜单和存档窗口的样式在 `public/sandbox/menu.css`，也由它提供共用的扫描线和静态噪点变量。`public/studio/sandbox.css` 保留 HUD 布局，`public/sandbox/hud-theme.css` 定义炭灰面板、琥珀状态、青绿交互、警报红、小圆角、倒角与菱形控件。状态栏直接使用原有 `public/assets/ui/hudPanel/bg_battle.png` 八边形长条底板。扫描线与噪点只用于面板和菜单，不覆盖战场画布；打开与点击动画走 CSS 分段关键帧，系统减少动态效果设置会关闭动画。`controller.js` 的 `onSaves` 打开窗口前暂停 runner，关闭后按此前播放状态恢复；`pagehide` 保存当前编辑内容。
 
-`terminal-shell.js` 与 `terminal.css` 统一主菜单和三个二级入口的导航、设置、上浮粒子与按键立体反馈。主菜单开屏只在当前标签页会话首次进入时播放；常驻宿主页通过同文档 View Transition 保持旧工作区图像，等待目标页 `terminalReady()` 后再按选项卡顺序左右滑动；不使用宿主页的独立入口保留 `terminal-navigation.js` 的跨文档切换。页面不再输出两段启动加载文字。主菜单在首次开屏结束后依次浮现标题、三个入口与页脚；返回主菜单时只播放内容入场。三个二级入口共用同一深色背景，制作器的顶部工具区使用对应半透明底色。实际关卡编辑工具关闭这些交互音效与动效，页面角落保留全局设置和音乐开关。顶层工作区请求由服务端加载 `music-shell.html`，内层页面保留各自的导航和生命周期；`music-shell.js` 持有跨页共用的局外播放器，`menu-audio.js` 将局外状态和选曲转交给它。曲目与关卡编辑器共用 `/api/music`，默认《生命流》，选择写入 `arksim-sandbox-settings-v1.menuBgmTrack`。`level-bgm.js` 保留暂停音源和最多两首解码缓存，开关、静音及音量调整不重新加载；局内外切换和换曲重新起播。使用见[背景音乐](../content/music/README.md)。文字选择与链接、图片拖拽在页面层禁用，输入框仍可编辑。
+`terminal-shell.js` 与 `terminal.css` 统一主菜单和三个二级入口的导航、设置、上浮粒子与按键立体反馈。主菜单开屏只在当前标签页会话首次进入时播放；常驻宿主页通过同文档 View Transition 保持旧工作区图像并左右滑动；不使用宿主页的独立入口保留 `terminal-navigation.js` 的跨文档切换。页面不再输出两段启动加载文字。主菜单在首次开屏结束后依次浮现标题、三个入口与页脚；返回主菜单时只播放内容入场。三个二级入口共用同一深色背景，制作器的顶部工具区使用对应半透明底色。实际关卡编辑工具关闭这些交互音效与动效，页面角落保留全局设置和音乐开关。顶层工作区请求由服务端加载 `music-shell.html`，内层页面保留各自的导航和生命周期；`music-shell.js` 持有跨页共用的局外播放器，`menu-audio.js` 将局外状态和选曲转交给它。曲目与关卡编辑器共用 `/api/music`，默认《生命流》，选择写入 `arksim-sandbox-settings-v1.menuBgmTrack`。`level-bgm.js` 保留暂停音源和最多两首解码缓存，开关、静音及音量调整不重新加载；局内外切换和换曲重新起播。使用见[背景音乐](../content/music/README.md)。文字选择与链接、图片拖拽在页面层禁用，输入框仍可编辑。
+
+宿主页的导航一步到位：View Transition 的 DOM 更新回调只换 iframe 的 `src` 并立即结算，260 毫秒滑动动画自己跑完，`moving` 锁由 `transition.finished`（另加 1600 毫秒兜底计时）释放。过渡回调**不允许**返回等待子页 `terminalReady()` 的 Promise——浏览器会因此把子文档的提交压到 Promise 结算之后，而子页要先加载才能 `terminalReady`，双方互等只能由 Chrome 的四秒超时解开；主菜单页从不调用 `terminalReady`，那样锁就再也打不开，之后所有入口点击都会被丢弃。子页仍用 `html[data-terminal-pending]` 把自己藏到就绪为止，所以不会露出半成品界面。被宿主框住时子文档不做自己的 View Transition（`terminal-navigation.js` 直接 `skipTransition()`），动画只由宿主播放，避免两套快照互相打断。交互音效与 BGM 的 AudioContext 只存在于宿主窗口，子页的 `menu-audio.js` 把调用转发过来，每次导航不会新建上下文。
+
+`debug-log.js` 提供局外交互日志：`debugLog` 写一行 console 并批量 POST 到 `/api/log`，`debugTimer` 记录一段耗时，`describeNode` 描述被点击的元素。开关由 `/api/debug`（服务端 `SI_DEBUG=1`，启动器 `--debug`）或 localStorage 的 `arksim-debug=1/0` 决定；关闭时不发请求。服务端 `/api/log` 只在 `SI_DEBUG` 开启时把收到的行打到启动窗口，文字以 `[浏览器 时间]` 前缀与本机日志区分。
 
 `menu-themes.css` 为局外页面提供青磁信号、钛灰光学、石墨琥珀三套配色与材质，默认石墨琥珀。全局设置的「局外主题」使用单选项即时切换，偏好写入 `arksim-sandbox-settings-v1.menuTheme`；head 中的 `terminal-navigation.js` 在首次绘制前恢复配色。主入口倒角卡片、当前选项卡加高、六槽布局与各模块控件尺寸沿用现有结构；主要操作用实色高亮，次要操作使用深色表面，危险操作保留红色。主题只作用于局外页面的控件和面板，地形色义与战斗 HUD 使用原有样式。
 

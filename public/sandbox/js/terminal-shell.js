@@ -1,6 +1,7 @@
 import { loadSettings, saveSettings, applyInterfaceSettings } from './settings.js';
 import { openSettings } from './ui/settings.js';
 import { setMenuAudio, unlockMenuAudio, menuCue, loadMenuMusic } from './menu-audio.js';
+import { debugLog, debugEnabled, describeNode } from './debug-log.js';
 
 const PAGES = [
   ['sandbox', '/studio/console.html', '自由沙盒', 'M3 4h6v6H3z M13 4h6v6h-6z M3 14h6v6H3z M13 14h6v6h-6z'],
@@ -36,7 +37,9 @@ export function setTerminalState(next = 'menu', onBack = null, beforeLeave = nul
 
 export function terminalReady() {
   delete document.documentElement.dataset.terminalPending;
-  if (window.frameElement?.name === 'simulator-workspace') parent.arksimMenuAudio.ready();
+  debugLog('页面', `就绪 ${section} ${location.pathname}`);
+  // 宿主窗口不再等这一步来放行导航；有就通知一声，没有（单独打开页面）也无所谓。
+  try { window.frameElement?.name === 'simulator-workspace' && parent.arksimMenuAudio?.ready?.(); } catch { /* 跨窗口引用已失效 */ }
 }
 
 export function terminalTransition(render) {
@@ -49,16 +52,20 @@ export function terminalTransition(render) {
 }
 
 function navigate(url) {
-  if (navigating) return;
+  if (navigating) { debugLog('导航', `已在上一次跳转中，忽略 ${url}`); return; }
   const next = new URL(url, location.href);
-  if (next.pathname === location.pathname && next.search === location.search) return;
-  if (leaveGuard && !leaveGuard()) return;
+  if (next.pathname === location.pathname && next.search === location.search) { debugLog('导航', `已是当前页 ${next.pathname}`); return; }
+  if (leaveGuard && !leaveGuard()) { debugLog('导航', `离开守卫拦下 ${next.pathname}`); return; }
   navigating = true;
   const from = PAGES.findIndex(([id]) => id === section), to = PAGES.findIndex(([, path]) => path === next.pathname);
+  debugLog('导航', `请求 ${next.pathname}${next.search || ''}；选项卡 ${from} → ${to}`);
   if (window.frameElement?.name === 'simulator-workspace') {
-    parent.arksimMenuAudio.navigate(next.href, from >= 0 && to >= 0 ? Math.sign(to - from) : 0,
-      settings.reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
-    return;
+    try {
+      parent.arksimMenuAudio?.navigate(next.href, from >= 0 && to >= 0 ? Math.sign(to - from) : 0,
+        settings.reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
+      navigating = false;
+      return;
+    } catch { /* 宿主窗口已不可达，退回本文档跳转 */ }
   }
   if (from >= 0 && to >= 0 && from !== to) {
     const direction = Math.sign(to - from);
@@ -86,17 +93,21 @@ document.addEventListener('pointerover', (e) => {
   if (node && !node.contains(e.relatedTarget)) void menuCue('hover');
 });
 document.addEventListener('click', (e) => {
-  const node = interactive(e.target);
+  const node = e.target.closest?.('button,a[href],select');
   if (!node) return;
+  // 点击是高频路径：先问开关，再拼描述串。
+  if (debugEnabled()) debugLog('点击', `${mode} 模式 ${describeNode(node)}`);
+  const action = interactive(e.target);
+  if (!action) { if (debugEnabled()) debugLog('点击', '未进入终端交互（战斗/编辑器内部区域）'); return; }
   void menuCue('click');
-  if (node.matches('[data-terminal-settings]')) {
+  if (action.matches('[data-terminal-settings]')) {
     if (!document.querySelector('.sandbox-settings[open]')) openSettings({ settings, global: true, onChange: preferences });
-  } else if (node.matches('[data-terminal-music]')) preferences(saveSettings({ ...settings, menuBgm: !settings.menuBgm }));
-  else if (node.matches('[data-terminal-back]')) {
+  } else if (action.matches('[data-terminal-music]')) preferences(saveSettings({ ...settings, menuBgm: !settings.menuBgm }));
+  else if (action.matches('[data-terminal-back]')) {
     if (backAction) terminalTransition(backAction);
     else navigate('/studio/home.html');
-  } else if (node.matches('a[href]') && !e.defaultPrevented && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && !node.target && !node.download) {
-    const url = new URL(node.href);
+  } else if (action.matches('a[href]') && !e.defaultPrevented && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && !action.target && !action.download) {
+    const url = new URL(action.href);
     if (url.origin === location.origin && /^\/studio\/(home|console|play|level)\.html$/.test(url.pathname)) { e.preventDefault(); navigate(url.href); }
   }
 }, true);
@@ -104,7 +115,9 @@ window.addEventListener('storage', (e) => { if (e.key === 'arksim-sandbox-settin
 window.addEventListener('pageshow', () => {
   navigating = false; curtain.classList.remove('is-active'); document.body.classList.remove('terminal-slide-out', 'terminal-fade-out');
   preferences(loadSettings());
-  if (window.frameElement?.name === 'simulator-workspace') parent.arksimMenuAudio.syncLocation(location.href, document.title);
+  if (window.frameElement?.name === 'simulator-workspace') {
+    try { parent.arksimMenuAudio?.syncLocation(location.href, document.title); } catch { /* 宿主窗口已不可达 */ }
+  }
 });
 window.addEventListener('pagehide', () => { if (window.frameElement?.name !== 'simulator-workspace') setMenuAudio(settings, section, false); });
 setTerminalState();

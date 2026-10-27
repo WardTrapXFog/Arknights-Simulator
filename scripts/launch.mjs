@@ -26,7 +26,7 @@ const { probePort } = await import('../tools/doctor.mjs');
 const { applyPendingUpdate, UPDATE_FILE } = await import('../server/update.js');
 
 export function parseArgs(argv) {
-  const o = { port: Number(process.env.PORT) || 3100, host: process.env.HOST || '::', open: !/^(1|true|yes)$/i.test(process.env.SP_NO_BROWSER || ''), help: false };
+  const o = { port: Number(process.env.PORT) || 3100, host: process.env.HOST || '::', open: !/^(1|true|yes)$/i.test(process.env.SP_NO_BROWSER || ''), debug: /^(1|true|yes)$/i.test(process.env.SI_DEBUG || ''), help: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const [k, v] = a.split('=');
@@ -34,6 +34,8 @@ export function parseArgs(argv) {
     if (k === '--port') o.port = Number(val()) || o.port;
     else if (k === '--host') o.host = val() || o.host;
     else if (a === '--no-open') o.open = false;
+    else if (a === '--debug') o.debug = true;
+    else if (a === '--no-debug') o.debug = false;
     else if (a === '--no-setup') continue;
     else if (a === '-h' || a === '--help') o.help = true;
     else throw new Error(`不支持的启动参数：${a}。素材下载与本地提取请使用 npm run setup。`);
@@ -44,6 +46,7 @@ export function parseArgs(argv) {
 /** 单机服务只读取监听地址，启动器不启用插件或联机测试房间。 */
 export function serverEnv(o, base = process.env) {
   const env = { ...base, PORT: String(o.port), HOST: o.host };
+  if (o.debug) env.SI_DEBUG = '1'; else delete env.SI_DEBUG;
   return env;
 }
 

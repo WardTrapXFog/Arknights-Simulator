@@ -9,14 +9,24 @@ import { createHash } from 'node:crypto';
 // SES evaluates confined code. This relaxation belongs only to the simulation Worker, never its parent document.
 export const SIM_WORKER_CSP = "default-src 'none'; script-src 'self' 'unsafe-eval'; connect-src 'none'";
 
+const HASHED_PAGES = ['index.html', 'studio/index.html', 'studio/home.html', 'studio/console.html', 'studio/play.html',
+  'studio/level.html', 'dev/game-mock.html', 'dev/render-demo.html', 'dev/battle-perf.html', 'dev/uikit.html'];
+
+/**
+ * Inline script/code hashes must be computed the way the browser hashes them: the HTML parser normalises CRLF and lone
+ * CR to LF before hashing, so a repository file checked out with CRLF would otherwise bake a hash that never matches
+ * and the page would silently lose its import map.
+ */
+export function inlineHash(source) {
+  return `'sha256-${createHash('sha256').update(source.replace(/\r\n?/g, '\n'), 'utf8').digest('base64')}'`;
+}
+
 export function siteCsp(publicDir) {
   const hashes = new Set();
-  for (const rel of ['index.html', 'studio/index.html', 'studio/console.html', 'dev/game-mock.html', 'dev/render-demo.html', 'dev/battle-perf.html', 'dev/uikit.html']) {
+  for (const rel of HASHED_PAGES) {
     let html;
     try { html = fs.readFileSync(path.join(publicDir, rel), 'utf8'); } catch { continue; }
-    for (const m of html.matchAll(/<script\s+type=["']importmap["']\s*>([\s\S]*?)<\/script>/g)) {
-      hashes.add(`'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`);
-    }
+    for (const m of html.matchAll(/<script\s+type=["']importmap["']\s*>([\s\S]*?)<\/script>/g)) hashes.add(inlineHash(m[1]));
   }
   return `default-src 'self'; script-src 'self'${hashes.size ? ' ' + [...hashes].join(' ') : ''}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:; frame-src 'self'; object-src 'none'; base-uri 'none'`;
 }

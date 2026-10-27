@@ -8,7 +8,10 @@ const CUES = {
 let settings = {}, section = 'home', active = true, unlocked = false, tracks = [];
 let ctx = null, output = null, lastCue = -Infinity, menuUrl = null;
 const buffers = new Map();
-const host = window.frameElement?.name === 'simulator-workspace' ? parent.arksimMenuAudio : null;
+// 宿主窗口（music-shell）持有唯一的局外音源；被它框住时这里只转交调用，不自己建 AudioContext。
+const host = (() => {
+  try { return window.frameElement?.name === 'simulator-workspace' ? parent.arksimMenuAudio || null : null; } catch { return null; }
+})();
 let loaded = false, loading = null;
 
 export async function loadMenuMusic(refresh = false) {
@@ -53,7 +56,9 @@ export function setMenuAudio(value, scene = section, enabled = active) {
 
 export function unlockMenuAudio() {
   if (!active) return;
-  host?.unlockMenuAudio();
+  // 被宿主框住时音频上下文只在宿主窗口建一份；子页每次导航都是新文档，自己建就会一路堆到浏览器的
+  // 上下文上限，越切越卡。
+  if (host) { host.unlockMenuAudio(); return; }
   unlocked = true;
   if (!ctx) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -69,6 +74,7 @@ export function unlockMenuAudio() {
 }
 
 export async function menuCue(kind) {
+  if (host) { host.menuCue(kind); return; }
   if (!active || !unlocked || !ctx || settings.muted || !(settings.sfx > 0)) return;
   const now = performance.now();
   if (now - lastCue < (kind === 'hover' ? 125 : 45)) return;
