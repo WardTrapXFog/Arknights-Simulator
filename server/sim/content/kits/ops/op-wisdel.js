@@ -31,7 +31,9 @@
 //   summon read alike [ASSUMED]). A shadow coming in gives her 迷彩 while it
 //   stays when she stands on its x-5 (token_wisdel_passive[to_host] + token_wisdel_host[Camouflage]: only the host keeps
 //   it; PRTS "仅在登场时尝试给予维什戴尔迷彩…可受孤立干扰", "本天赋的迷彩不会因维什戴尔阻挡敌人而解除" — the engine's 迷彩
-//   never lifts by blocking). Shadows stay when she leaves [ASSUMED: no source withdraws them; their skill needs her range].
+//   never lifts by blocking). 持有者离场即强制撤退场上的魂灵之影 (the rule every 干员附带单位 follows — PRTS 狼群 / Mon3tr /
+//   重构体 备注 "持有者离场后强制撤退场上的…" applied here; the shadow's 迷彩 leaves with it). Both summons obey it: the
+//   talent's and S3's (they are the same token, and a shadow outlives neither her retreat nor her knock-out).
 //   魂灵之影 (shadowKit): its stats are the form's (token variant), 禁疗, no normal attack, no range of its own (PRTS 备注 "持有
 //   禁疗 / 无视野范围 / 不进行普通攻击"); its skill (AUTO, 5 SP over time) "对一名在维什戴尔攻击范围内的敌人造成法术伤害，对其造成
 //   1秒停顿并附着残影，之后获得0-2点技力" — PRTS "技能仅攻击维什戴尔攻击范围内的敌人，优先攻击未携带残影的敌人，不可对空" (prefab
@@ -295,6 +297,15 @@ export default {
         } },
         { install(battle, unit) { // 死魂灵的余息: a shadow at each deployment
           battle.on('deploy', (ctx) => { if (ctx.unit === unit) summonShadows(battle, unit, 1); }, { owner: unit });
+          // 持有者离场后强制撤退场上全部魂灵之影 — 干员附带单位的通用规则（PRTS 狼群 / Mon3tr / 重构体 备注同句），
+          // 她的阵亡与主动撤退都算。挂在持有者这一侧：一次注册覆盖天赋与三技能召唤的全部影子，不依赖各自的 kit 路径。
+          battle.on('death', (ctx) => {
+            if (ctx.unit !== unit) return;
+            for (const t of shadowsOf(battle, unit)) {
+              if (unit.findBuff(camoKey(t))) battle.removeBuff(unit, camoKey(t));
+              battle.retreat(t, { reason: 'expired', permanent: true });
+            }
+          }, { owner: unit });
         } },
       ],
       install(battle, unit) {
