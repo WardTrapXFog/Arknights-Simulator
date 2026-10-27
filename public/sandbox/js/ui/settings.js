@@ -69,7 +69,7 @@ export function openSettings({ settings, onChange, onClose, global = false }) {
     const refresh = dialog.querySelector('[data-music-refresh]');
     const reloadMusic = async () => {
       refresh.disabled = true;
-      const files = await loadMenuMusic();
+      const files = await loadMenuMusic(true);
       if (!dialog.isConnected) return;
       refresh.disabled = false;
       if (!files) {

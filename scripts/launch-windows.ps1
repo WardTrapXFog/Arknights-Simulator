@@ -62,10 +62,28 @@ public static class SimulatorProcessJob {
         // Keep the non-inheritable handle alive until PowerShell itself exits.
     }
 }
+
+public static class SimulatorWindowIcon {
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr GetConsoleWindow();
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern IntPtr LoadImage(IntPtr instance, string name, uint type, int cx, int cy, uint flags);
+    [DllImport("user32.dll")]
+    private static extern IntPtr SendMessage(IntPtr window, uint message, IntPtr wParam, IntPtr lParam);
+    public static void Apply(string path) {
+        IntPtr window = GetConsoleWindow();
+        if (window == IntPtr.Zero) return;
+        IntPtr small = LoadImage(IntPtr.Zero, path, 1, 16, 16, 0x10);
+        IntPtr large = LoadImage(IntPtr.Zero, path, 1, 32, 32, 0x10);
+        if (small != IntPtr.Zero) SendMessage(window, 0x80, IntPtr.Zero, small);
+        if (large != IntPtr.Zero) SendMessage(window, 0x80, new IntPtr(1), large);
+    }
+}
 '@
 
 try {
     [SimulatorProcessJob]::Attach()
+    try { [SimulatorWindowIcon]::Apply((Join-Path $PSScriptRoot '../public/icons/favicon.ico')) } catch { }
     $env:SI_WINDOW_JOB = '1'
     $nodeExecutable = (Get-Command node -CommandType Application).Source
     & $nodeExecutable (Join-Path $PSScriptRoot 'launch.mjs') @launchArguments

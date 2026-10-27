@@ -125,7 +125,9 @@ export async function startSandboxServer(opts = {}) {
     if (mountName === 'music' && relative[0]?.toLowerCase() === 'original') return sendError(req, res, 404, '文件不存在');
     if (mountName === 'music' && !MUSIC_EXT.has(path.extname(pathname).toLowerCase())) return sendError(req, res, 404, '文件不存在');
     if ((mountName === 'sim' && (path.extname(pathname) !== '.js' || /nodedata\.js$/i.test(pathname))) || (mountName === 'data' && path.extname(pathname) !== '.json')) return sendError(req, res, 404, '文件不存在');
-    const candidate = path.join(root, ...relative);
+    const musicShell = mountName === 'public' && req.headers['sec-fetch-dest'] === 'document'
+      && /^\/studio\/(home|console|play|level)\.html$/.test(pathname);
+    const candidate = path.join(root, ...(musicShell ? ['studio', 'music-shell.html'] : relative));
     const files = media && !path.extname(candidate) ? [candidate + '.mp3', candidate + '.ogg'] : [candidate];
     for (const file of files) {
       try {

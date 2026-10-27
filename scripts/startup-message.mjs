@@ -16,7 +16,7 @@ export function startupMessage(url, { reused = false } = {}) {
     ink(91, '本同人项目完全免费，仅供学习交流与个人非商业使用，禁止售卖游戏整合包或收费运营。'),
     ink(91, '如有人以官方名义收费，请勿付款，谨防受骗！代码与游戏素材的许可范围见 LICENSE、NOTICE.md。'),
     '',
-    ink(94, reused ? '关卡模拟器 项目正在运行' : '关卡模拟器 项目已启动'),
+    ink(94, reused ? '◇ ARK/SIM · 关卡模拟器 项目正在运行' : '◇ ARK/SIM · 关卡模拟器 项目已启动'),
     '',
     `请按住 Ctrl 点击此链接打开浏览器（可能需要权限）访问：${ink(96, url)}`,
     '',

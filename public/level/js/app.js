@@ -4,7 +4,7 @@ import { data } from '../../js/data.js';
 import { ROWS, COLS } from '../../sandbox/js/battlefield.js';
 import { ENEMY_LIBRARY, LIBRARY_KEYS } from '../../sandbox/js/enemy-library.js';
 import { listLevels, loadLevels, lastLevelsError, saveLevel, deleteLevel, duplicateLevel, createLevel, importLevel, importLevelFromUrl, exportLevel } from './level-store.js';
-import { validateLevel, cloneLevel, LevelError, MAX_SPAWNS } from '../../../shared/level.js';
+import { validateLevel, cloneLevel, LevelError, MAX_SPAWNS, DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT } from '../../../shared/level.js';
 import { newSpawn, routeOf, invalidateTrajectories, playableUntil } from './level-model.js';
 import { LevelTerrainEditor } from './terrain.js';
 import { LevelRoutesEditor, previewRoute } from './routes.js';
@@ -79,7 +79,7 @@ function refresh() {
   for (const el of root.querySelectorAll('[data-level-field]')) {
     if (el === document.activeElement) continue;
     const f = el.dataset.levelField;
-    el.value = f === 'name' ? current.name : f === 'tags' ? current.meta.tags.join('，') : f === 'bgm' ? (current.meta.bgm || '') : f === 'author' ? (current.meta.author || '') : current.meta[f];
+    el.value = f === 'name' ? current.name : f === 'tags' ? current.meta.tags.join('，') : f === 'bgm' ? (current.meta.bgm || '') : f === 'author' ? (current.meta.author || '') : f === 'deployLimit' ? (current.meta.deployLimit ?? DEFAULT_DEPLOY_LIMIT) : f === 'lifeLimit' ? (current.meta.lifeLimit ?? DEFAULT_LIFE_LIMIT) : current.meta[f];
   }
   const note = root.querySelector('.lv-note-preview'); if (note) note.textContent = notePreview(current.meta.note);
   renderSpawn(); timeline?.setCursor(cursor); tracer?.highlight(timeline?.selected); markDirty(); showError();
@@ -209,7 +209,7 @@ function renderEditor() {
     <div class="lv-toolbar"><button class="lv-btn lv-btn--pri" data-act="save">保存</button><button class="lv-btn" data-act="export">导出</button><button class="lv-btn" data-act="play">试玩</button><button class="lv-btn" data-act="undo">撤销</button><button class="lv-btn" data-act="redo">重做</button><span id="lv-dirty" class="lv-dirty"></span><button class="lv-btn lv-enemy-button" data-open-panel="lv-enemy-dialog">选择敌人 ▾</button><span class="lv-spacer"></span><button class="lv-btn" data-mode="terrain">地形</button><button class="lv-btn" data-mode="route">路线</button><button class="lv-btn" data-mode="spawn">出生</button></div>
     <button id="lv-error" class="lv-err lv-editor-error" data-open-panel="lv-error-dialog" hidden></button>
     <div class="lv-stage"><div class="lv-canvas-wrap"><div id="lv-map-host"></div></div><aside class="lv-side"><nav class="lv-side-tabs"><button class="lv-btn" data-side-page="tool">当前工具</button><button class="lv-btn" data-side-page="info">关卡信息</button></nav>
-      <section id="lv-info"><h2>关卡信息</h2><div class="lv-field"><label>名称</label><input data-level-field="name" maxlength="40" value="${esc(current.name)}"></div><div class="lv-field"><label>难度</label><input data-level-field="difficulty" type="number" min="0" max="5" value="${current.meta.difficulty}"></div><div class="lv-field"><label>标签</label><input data-level-field="tags" value="${esc(current.meta.tags.join('，'))}" placeholder="用逗号分隔"></div><div class="lv-field"><label>作者</label><input data-level-field="author" maxlength="40" value="${esc(current.meta.author || '')}" placeholder="署名，会写进关卡 JSON"></div><div class="lv-field"><label>作战音乐</label><select data-level-field="bgm">${musicOptions(current.meta.bgm)}</select></div><button class="lv-btn" data-open-panel="lv-note-dialog">编辑备注</button><p class="lv-note-preview">${esc(notePreview(current.meta.note))}</p></section>
+      <section id="lv-info"><h2>关卡信息</h2><div class="lv-field"><label>名称</label><input data-level-field="name" maxlength="40" value="${esc(current.name)}"></div><div class="lv-field"><label>难度星级</label><input data-level-field="difficulty" type="number" min="0" max="5" step="1" value="${current.meta.difficulty}"></div><div class="lv-field"><label>部署上限</label><input data-level-field="deployLimit" type="number" min="1" max="13" step="1" value="${current.meta.deployLimit ?? DEFAULT_DEPLOY_LIMIT}"></div><div class="lv-field"><label>目标生命上限</label><input data-level-field="lifeLimit" type="number" min="1" max="999" step="1" value="${current.meta.lifeLimit ?? DEFAULT_LIFE_LIMIT}"></div><div class="lv-field"><label>标签</label><input data-level-field="tags" value="${esc(current.meta.tags.join('，'))}" placeholder="用逗号分隔"></div><div class="lv-field"><label>作者</label><input data-level-field="author" maxlength="40" value="${esc(current.meta.author || '')}" placeholder="署名，会写进关卡 JSON"></div><div class="lv-field"><label>作战音乐</label><select data-level-field="bgm">${musicOptions(current.meta.bgm)}</select></div><button class="lv-btn" data-open-panel="lv-note-dialog">编辑备注</button><p class="lv-note-preview">${esc(notePreview(current.meta.note))}</p></section>
 
       <section id="lv-terrain"></section><section id="lv-routes"></section><section id="lv-spawns"></section></aside></div><div class="lv-timeline" id="lv-timeline"></div>      <dialog id="lv-enemy-dialog" class="lv-dialog"><header><h2>敌人库</h2><button class="lv-btn" data-close-panel>完成选择</button></header><div class="lv-dialog-body"><input id="lv-enemy-search" placeholder="搜索敌人名称 / 编号" value="${esc(search)}"><div class="lv-row"><select id="lv-enemy-rank"><option value="">全部等级</option><option value="NORMAL">普通</option><option value="ELITE">精英</option><option value="BOSS">首领</option></select><label><input id="lv-enemy-fly" type="checkbox"${flyOnly ? ' checked' : ''}>飞行</label><label><input id="lv-enemy-ranged" type="checkbox"${rangedOnly ? ' checked' : ''}>远程</label></div><label class="lv-hint"><input id="lv-enemy-stats" type="checkbox"${showStats ? ' checked' : ''}>显示未验证（特性未实现）</label><div class="lv-field"><select id="lv-enemy-pick"></select></div><p id="lv-enemy-note" class="lv-hint"></p></div></dialog><dialog id="lv-note-dialog" class="lv-dialog"><header><h2>关卡备注</h2><button class="lv-btn" data-close-panel>完成</button></header><div class="lv-dialog-body"><textarea data-level-field="note" maxlength="400" rows="8">${esc(current.meta.note)}</textarea></div></dialog><dialog id="lv-error-dialog" class="lv-dialog"><header><h2>关卡问题</h2><button class="lv-btn" data-close-panel>关闭</button></header><pre class="lv-dialog-body" id="lv-error-details"></pre></dialog>`;
   timeline = new LevelTimeline(root.querySelector('#lv-timeline'), { enemies: ENEMY_LIBRARY.official, names, speeds: () => speedOf, duration: () => duration,
@@ -258,7 +258,7 @@ function renderEditor() {
       else if (el.id === 'lv-enemy-stats') showStats = el.checked;
       else if (el.id === 'lv-enemy-pick') { draftEnemy = el.value; renderEnemyPick(); return; }
       else if (el.dataset.levelField) {
-        const f = el.dataset.levelField; change(() => { if (f === 'name') current.name = el.value; else if (f === 'difficulty') current.meta.difficulty = el.valueAsNumber; else if (f === 'tags') current.meta.tags = el.value.split(/[,，]/).map((v) => v.trim()).filter(Boolean); else if (f === 'bgm') { if (el.value) current.meta.bgm = el.value; else delete current.meta.bgm; } else if (f === 'author') { const v = el.value.trim().slice(0, 40); if (v) current.meta.author = v; else delete current.meta.author; } else current.meta.note = el.value; }); const note = root.querySelector('.lv-note-preview'); if (note) note.textContent = notePreview(current.meta.note); return;
+        const f = el.dataset.levelField; change(() => { if (f === 'name') current.name = el.value; else if (['difficulty', 'deployLimit', 'lifeLimit'].includes(f)) { const v = el.valueAsNumber, min = f === 'difficulty' ? 0 : 1, max = f === 'difficulty' ? 5 : f === 'deployLimit' ? 13 : 999; if (!Number.isInteger(v) || v < min || v > max) throw new Error(`此项须为 ${min}–${max} 的整数`); current.meta[f] = v; } else if (f === 'tags') current.meta.tags = el.value.split(/[,，]/).map((v) => v.trim()).filter(Boolean); else if (f === 'bgm') { if (el.value) current.meta.bgm = el.value; else delete current.meta.bgm; } else if (f === 'author') { const v = el.value.trim().slice(0, 40); if (v) current.meta.author = v; else delete current.meta.author; } else current.meta.note = el.value; }); const note = root.querySelector('.lv-note-preview'); if (note) note.textContent = notePreview(current.meta.note); return;
       } else if (el.dataset.spawnField && timeline.selected) {
         const s = timeline.selected, f = el.dataset.spawnField;
         if (f === 'route' && el.value === '__new') { drawingSpawnId = s.id; setMode('route'); routes.startNew(); return; }
@@ -301,7 +301,10 @@ async function boot() {
     // 关卡库来自服务端目录（content/levels/），先拉一次再渲染列表
     await loadLevels(ctx());
     if (lastLevelsError()) error = lastLevelsError();
-    renderList(); requestAnimationFrame(frame);
+    const requested = new URLSearchParams(location.search).get('level');
+    if (requested && listLevels().some((level) => level.id === requested)) openLevel(requested);
+    else { if (requested) error = '找不到这张关卡，请从关卡列表重新选择或导入'; renderList(); }
+    requestAnimationFrame(frame);
     void loadMusic();   // 曲目清单先拉一次，关卡信息里的「作战音乐」下拉就有内容
   } catch (e) { root.innerHTML = `<div class="lv-err">${esc(e.message)}</div>`; }
   finally { terminalReady(); }

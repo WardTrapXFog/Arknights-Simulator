@@ -6,7 +6,7 @@ rem Assets and content are not rebuilt automatically. Pass --port to override.
 rem Keep launcher commands ASCII-only to avoid cmd encoding hazards.
 chcp 65001 >nul
 setlocal EnableExtensions
-title Arknights Simulator (3100)
+title ARK/SIM - Arknights Simulator
 cd /d "%~dp0.."
 
 where node >nul 2>nul

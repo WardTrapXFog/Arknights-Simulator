@@ -45,7 +45,7 @@ export async function loadLevels(ctx = {}) {
 
 export function lastLevelsError() { return lastError; }
 
-/** 读全部关卡（已通过校验的才算数，坏数据悄悄跳过，不让一个坏存档毁掉整个列表）。 */
+/** 读全部关卡；无效的关卡文件不会阻塞其他关卡的读取。 */
 export function listLevels() {
   return levels.slice();
 }
@@ -64,8 +64,10 @@ async function put(level) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     files.set(level.id, file);
     lastError = '';
+    return true;
   } catch (e) {
     lastError = `保存失败：${e.message}（改动只在内存里，刷新会丢）`;
+    return false;
   }
 }
 
@@ -83,7 +85,7 @@ async function remove(level) {
 }
 
 /** 保存（同 id 覆盖，否则追加）。返回保存后的整张列表。 */
-export function saveLevel(level, ctx = {}) {
+export function saveLevel(level, ctx = {}, { wait = false } = {}) {
   level = validateLevel(level, ctx);
   if (levels.length >= MAX_LEVELS && !levels.some((x) => x.id === level.id)) {
     throw new LevelError('levels', `关卡库最多保存 ${MAX_LEVELS} 关`);
@@ -92,8 +94,8 @@ export function saveLevel(level, ctx = {}) {
   const copy = cloneLevel(level);
   if (i >= 0) levels[i] = copy; else levels.push(copy);
   levels.sort((a, b) => a.name.localeCompare(b.name, 'zh'));
-  void put(copy);
-  return levels.slice();
+  const writing = put(copy);
+  return wait ? writing.then((ok) => { if (!ok) throw new Error(lastError); return copy; }) : levels.slice();
 }
 
 export function deleteLevel(id) {

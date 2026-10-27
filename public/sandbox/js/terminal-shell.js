@@ -36,6 +36,7 @@ export function setTerminalState(next = 'menu', onBack = null, beforeLeave = nul
 
 export function terminalReady() {
   delete document.documentElement.dataset.terminalPending;
+  if (window.frameElement?.name === 'simulator-workspace') parent.arksimMenuAudio.ready();
 }
 
 export function terminalTransition(render) {
@@ -54,6 +55,11 @@ function navigate(url) {
   if (leaveGuard && !leaveGuard()) return;
   navigating = true;
   const from = PAGES.findIndex(([id]) => id === section), to = PAGES.findIndex(([, path]) => path === next.pathname);
+  if (window.frameElement?.name === 'simulator-workspace') {
+    parent.arksimMenuAudio.navigate(next.href, from >= 0 && to >= 0 ? Math.sign(to - from) : 0,
+      settings.reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
+    return;
+  }
   if (from >= 0 && to >= 0 && from !== to) {
     const direction = Math.sign(to - from);
     sessionStorage.setItem('arksim-terminal-navigation', JSON.stringify({ to: next.pathname, direction }));
@@ -95,8 +101,12 @@ document.addEventListener('click', (e) => {
   }
 }, true);
 window.addEventListener('storage', (e) => { if (e.key === 'arksim-sandbox-settings-v1') preferences(loadSettings()); });
-window.addEventListener('pageshow', () => { navigating = false; curtain.classList.remove('is-active'); document.body.classList.remove('terminal-slide-out', 'terminal-fade-out'); });
-window.addEventListener('pagehide', () => setMenuAudio(settings, section, false));
+window.addEventListener('pageshow', () => {
+  navigating = false; curtain.classList.remove('is-active'); document.body.classList.remove('terminal-slide-out', 'terminal-fade-out');
+  preferences(loadSettings());
+  if (window.frameElement?.name === 'simulator-workspace') parent.arksimMenuAudio.syncLocation(location.href, document.title);
+});
+window.addEventListener('pagehide', () => { if (window.frameElement?.name !== 'simulator-workspace') setMenuAudio(settings, section, false); });
 setTerminalState();
 void loadMenuMusic();
 

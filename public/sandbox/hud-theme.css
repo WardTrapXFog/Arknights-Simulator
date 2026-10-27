@@ -187,11 +187,11 @@ html[data-text="lg"] .hud { --sandbox-text-scale: 1.25; }
 html[data-text="xl"] .hud { --sandbox-text-scale: 1.4; }
 .sb .dr__hint, .sb .dt__seg-p { font-size: calc(.12rem * var(--sandbox-text-scale, 1)); }
 
-/* 右侧火力计分板：一个干员一行，物理/法术/元素/真实/总伤/DPS，按总伤降序；不滚动。 */
+/* 右侧火力计分板：最多 13 行，小窗口允许滚动。 */
 .sb .hud__score {
   --score-top: max(2.05rem, 140px);
   top: var(--score-top); right: .2rem; width: clamp(300px, 4.1rem, 430px);
-  max-height: calc(100% - var(--score-top) - max(1.55rem, 100px)); overflow: hidden;
+  max-height: calc(100% - var(--score-top) - max(1.55rem, 100px)); overflow: auto;
   padding: max(10px, .12rem) max(10px, .12rem) max(8px, .09rem);
   border: 1px solid #b5ae9360; border-top: 2px solid var(--amber);
   border-radius: .06rem .16rem .06rem .06rem;

@@ -13,6 +13,8 @@ let gain = null;
 let source = null;       // AudioBufferSourceNode 或 HTMLAudioElement
 let currentUrl = null;
 let volume = 0.5;
+let paused = false, generation = 0;
+const prepared = new Map();
 
 /** 从 OGG 头部读 LOOPSTART / LOOPLENGTH；读不到返回 null。只拉前 64KB，够覆盖 comment header。 */
 async function readLoopTags(url) {
@@ -43,6 +45,7 @@ function audioCtx() {
   gain = ctx.createGain();
   gain.gain.value = volume;
   gain.connect(ctx.destination);
+  if (paused) void ctx.suspend().catch(() => {});
   return ctx;
 }
 
@@ -77,7 +80,7 @@ export function playLevelBgm(url, vol = 0.5) {
   volume = Math.max(0, Math.min(1, Number.isFinite(vol) ? vol : 0.5));
   if (!url) { stopLevelBgm(); return null; }
   const ac = audioCtx();
-  if (ac?.state === 'suspended') void ac.resume().catch(() => {});
+  if (!paused && ac?.state === 'suspended') void ac.resume().catch(() => {});
   if (url === currentUrl) {
     if (gain) gain.gain.value = volume;
     if (source instanceof HTMLAudioElement) source.volume = volume;
@@ -85,19 +88,22 @@ export function playLevelBgm(url, vol = 0.5) {
   }
   stopLevelBgm();
   currentUrl = url;
-  void start(url);
+  void start(url, generation);
   return null;   // 异步起播，返回 null 表示「已受理」
 }
 
-async function start(url) {
-  const tags = /\.[a-z0-9]+(\?|$)/i.test(url) ? await readLoopTags(url) : null;
+async function start(url, token) {
   const ac = audioCtx();
   if (!ac) return;
   // 浏览器要求用户手势后才能出声；没有手势时 resume() 会被拒绝，下一次点击时 applyPreferences 会重试
-  if (ac.state === 'suspended') { try { await ac.resume(); } catch { /* 等下一次手势 */ } }
-  if (currentUrl !== url) return;   // 期间换歌了
-  const buffer = await decode(url).catch(() => null);
-  if (currentUrl !== url) return;
+  if (!paused && ac.state === 'suspended') { try { await ac.resume(); } catch { /* 等下一次手势 */ } }
+  if (token !== generation) return;
+  if (!prepared.has(url)) {
+    prepared.set(url, Promise.all([readLoopTags(url), decode(url).catch(() => null)]));
+    if (prepared.size > 2) prepared.delete(prepared.keys().next().value);
+  }
+  const [tags, buffer] = await prepared.get(url);
+  if (token !== generation || currentUrl !== url) return;
   if (buffer) {
     const node = ac.createBufferSource();
     node.buffer = buffer;
@@ -122,14 +128,25 @@ async function start(url) {
   el.loop = true;
   el.volume = volume;
   el.addEventListener('error', () => { if (source === el) { source = null; currentUrl = null; } }, { once: true });
-  el.play().catch(() => {});
+  if (!paused) el.play().catch(() => {});
   source = el;
 }
 
 /** 停掉并释放。 */
 export function stopLevelBgm() {
+  generation++;
   currentUrl = null;
   stopSource();
+}
+
+/** 暂停保留音源与播放位置，恢复时不重新请求或解码。 */
+export function pauseLevelBgm(value) {
+  paused = value;
+  if (source instanceof HTMLAudioElement) {
+    if (paused) source.pause(); else void source.play().catch(() => {});
+  }
+  if (ctx && paused && ctx.state === 'running') void ctx.suspend().then(() => { if (!paused) return ctx.resume(); }).catch(() => {});
+  else if (ctx && !paused && ctx.state === 'suspended') void ctx.resume().then(() => { if (paused) return ctx.suspend(); }).catch(() => {});
 }
 
 /** 音乐音量（0..1）。 */

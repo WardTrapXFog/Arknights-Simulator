@@ -6,6 +6,8 @@ export const MAX_SPAWNS = 8000;
 export const MAX_SQUAD = 13;
 export const MAX_ROUTE_POINTS = 24;
 export const MAX_LEVELS = 60;
+export const DEFAULT_DEPLOY_LIMIT = 8;
+export const DEFAULT_LIFE_LIMIT = 3;
 export const LEVELS_KEY = 'arksim-levels-v2';
 export class LevelError extends Error {
   constructor(path, reason) { super(`${path}: ${reason}`); this.name = 'LevelError'; this.path = path; this.reason = reason; }
@@ -65,7 +67,7 @@ export function validateLevel(input, ctx = {}) {
   keys(input, ['v', 'id', 'name', 'meta', 'stage', 'spawns', 'thumbnail', 'squad'], 'level');
   str(input.id, 'level.id', 40); if (!input.id) fail('level.id', '不能为空');
   str(input.name, 'level.name', 40); if (!input.name.trim()) fail('level.name', '不能为空');
-  const meta = input.meta; keys(meta, ['difficulty', 'tags', 'note', 'deployLimit', 'theme', 'bgm', 'author'], 'level.meta');
+  const meta = input.meta; keys(meta, ['difficulty', 'tags', 'note', 'deployLimit', 'lifeLimit', 'theme', 'bgm', 'author'], 'level.meta');
   num(meta.difficulty ?? 1, 'level.meta.difficulty', 0, 5, true);
   array(meta.tags ?? [], 'level.meta.tags').forEach((v, i) => str(v, `level.meta.tags.${i}`, 40)); str(meta.note ?? '', 'level.meta.note', 400);
   // 署名：关卡作者（可选）。协作时用来标明这关是谁做的——不参与任何玩法计算。
@@ -74,6 +76,7 @@ export function validateLevel(input, ctx = {}) {
   if (meta.bgm != null) str(meta.bgm, 'level.meta.bgm', 120);
   // 部署上限：不填则沿用战斗默认（8）。集成战略关卡按官方写 6，或由作者自定。
   if (meta.deployLimit != null) num(meta.deployLimit, 'level.meta.deployLimit', 1, 13, true);
+  if (meta.lifeLimit != null) num(meta.lifeLimit, 'level.meta.lifeLimit', 1, 999, true);
   // 主题（集成战略剧本标识，如 rogue_6）：战斗把它交给内容层作 `flags.siTheme`，特勤模组据此决定局内部分是否生效。
   if (meta.theme != null) { str(meta.theme, 'level.meta.theme', 32); if (!/^[a-z0-9_]*$/.test(meta.theme)) fail('level.meta.theme', '只允许小写字母、数字与下划线'); }
   const rows = ctx.rows ?? 19, cols = ctx.cols ?? 21, stage = input.stage;

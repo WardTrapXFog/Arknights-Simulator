@@ -91,7 +91,6 @@ body[data-workspace='level'] .hud__hand.is-deploy-dragging .ocard.is-on { opacit
 .level-deploy-ghost.is-legal { opacity: .88; filter: none; }
 .level-deploy-ghost.is-legal img { border-color: #efb65c; }
 .level-deploy-ghost.is-pending { opacity: .72; }
-.operation-result .saves__intro { display: grid; gap: 12px; }
 @media (max-width: 1050px) { .operation-team { grid-template-columns: 70px minmax(0, 1fr) 280px; } .operation-team-bar { gap: 5px; padding: 8px 12px; } .operation-team-bar .op-button { padding: 6px 9px; } .operation-head { gap: 12px; padding: 10px 14px; } .operation-head h1 { font-size: 16px; } }
 @media (max-width: 760px) { .operation-levels { grid-template-columns: minmax(0, 1fr) 240px; } .operation-team { grid-template-columns: 60px minmax(0, 1fr) 240px; } .operation-operators { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); } .operation-roster { padding: 8px; } .operation-team-side { padding: 8px; } .operation-head { font-size: 12px; } }
 

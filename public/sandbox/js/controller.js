@@ -43,10 +43,12 @@ import { openSettings } from './ui/settings.js';
 import { loadKeybinds, actionFor } from './keybinds.js';
 import { createScoreboard } from './ui/scoreboard.js';
 import { createHandDeployment } from '../../play/js/hand-deployment.js';
+import { createLevelResult } from './ui/level-result.js';
+import { groundPlaneTransform } from './ground-plane.js';
 
 const state = createSandboxState();
 
-let levelRun = null, resultShown = false;
+let levelRun = null, resultShown = false, levelResult = null;
 let levelDeployment = null;
 let exitWasPlaying = false;
 const sceneSnapshot = () => serializeSandbox(state, battle);
@@ -96,6 +98,7 @@ const { units, opVM, allOps, reserveSlots, squadVMs, charIdOf, rangeGridOf } = c
 /* -------------------------------------------------------------------------------------------------------------- */
 
 async function resetBattle({ paused = !(runner?.playing), resetSession = false } = {}) {
+  levelResult?.destroy(); levelResult = null;
   if (levelRun) cancelLevelDeployment();
   if (levelRun && resetSession) {
     state.document = structuredClone(levelRun.document); resultShown = false;
@@ -571,7 +574,7 @@ function syncHud(force = false) {
   hud.setStats(refs, {
     kill: killed,
     total,
-    life: 3 - (battle.leakedCount || 0),
+    life: Math.max(0, battle.flags.lifeLimit - (battle.leakedCount || 0)),
     time: battle.time,
     dp: displayedDp(),
     playing: !!runner?.playing,
@@ -610,12 +613,7 @@ function positionSelectionActions() {
   panel.style.top = `${p.y}px`;
   panel.style.setProperty('--selection-radius', `${radius}px`);
   // One projective plane for the frame, buttons, icons and SP strip, parallel to this tile's ground.
-  const cam = view.debug.cam, rect = refs.canvas.getBoundingClientRect();
-  const roll = (cam.roll || 0) * Math.PI / 180, tilt = cam.tilt * Math.PI / 180;
-  const c = Math.cos(roll), s = Math.sin(roll), g = Math.sin(tilt) / cam.focal();
-  const dx = p.x - rect.left - cam.cx, dy = p.y - rect.top - cam.cy;
-  const a = -s * Math.cos(tilt) + dx * g, b = c * Math.cos(tilt) + dy * g;
-  panel.firstElementChild.style.transform = `matrix3d(${c},${s},0,0,${a},${b},0,${-g},0,0,1,0,0,0,0,1)`;
+  panel.firstElementChild.style.transform = groundPlaneTransform(view, refs.canvas, p.x, p.y);
 }
 
 function renderHand() {
@@ -1065,17 +1063,11 @@ globalThis.__sandbox = {
 function showLevelResult() {
   cancelLevelDeployment();
   resultShown = true;
-  const success = battle.reason === 'cleared' && battle.leakedCount < 3;
-  const dialog = document.createElement('dialog'); dialog.className = 'saves operation-result';
-  dialog.innerHTML = `<header class="saves__head"><h2>${success ? '作战成功' : '作战失败'}</h2></header><div class="saves__intro"><h3>${hud.esc(levelRun.levelName)}</h3><p>歼灭 ${battle.killed} · 漏敌 ${battle.leakedCount} · 用时 ${Math.floor(battle.time)} 秒</p><button class="menu__button menu__button--primary" data-result="retry">再次作战</button><button class="menu__button" data-result="squad">重新编队</button><button class="menu__button" data-result="back">返回关卡列表</button></div>`;
-  dialog.oncancel = (e) => e.preventDefault();
-  dialog.onclick = (e) => {
-    const act = e.target.closest('[data-result]')?.dataset.result;
-    if (act === 'retry') { dialog.close(); dialog.remove(); resetBattle({ paused: false, resetSession: true }).catch((e) => warn(e.message, true)); }
-    if (act === 'squad') location.assign(`/studio/play.html?level=${encodeURIComponent(levelRun.levelId)}&squad=1`);
-    if (act === 'back') location.assign('/studio/play.html');
-  };
-  document.body.append(dialog); dialog.showModal();
+  clearSelection(); setSelectionFocus(false);
+  audio.stopSkillAmbients();
+  levelResult = createLevelResult({ battle, run: levelRun, canvas: refs.canvas, getView: () => view,
+    reduceMotion: preferences.reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches,
+    onRetry: () => { resetBattle({ paused: false, resetSession: true }).catch((error) => warn(error.message, true)); } });
 }
 
 function frame(now) {
@@ -1093,6 +1085,7 @@ function frame(now) {
     positionSelectionActions();
     paintBattleFeedback(now);
     if (levelRun && battle?.finished && !resultShown) showLevelResult();
+    levelResult?.paint(now);
   } catch (e) {
     // HUD / 详情面板的渲染出错，不该拖死战斗。上一版 detailTabBody 里一个未定义变量就是这样
     // 把 requestAnimationFrame 链彻底断掉的（时间不走、面板不显示）。
@@ -1218,6 +1211,7 @@ function runKeyAction(action) {
 }
 
 function onGlobalKey(e) {
+  if (levelResult) return;
   if (refs?.exitMenu.open) return;
   // 正在输入框里打字、或开着对话框/选择器时，快捷键让位
   const el = document.activeElement;

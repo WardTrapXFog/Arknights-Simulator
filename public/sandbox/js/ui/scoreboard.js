@@ -5,8 +5,7 @@ import { displayName } from './hand.js';
 
 const COLUMNS = ['phys', 'arts', 'elemental', 'true'];
 const LABEL = { phys: '物理', arts: '法术', elemental: '元素', true: '真实' };
-/** 行数上限：右侧这块地方够放这些，再多就只留前几名（不加滚动条）。 */
-const MAX_ROWS = 12;
+const MAX_ROWS = 13;
 const number = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 });
 
 /** 大数字压成 万 / 亿，一列里塞得下；小于一万照常显示。 */
@@ -26,11 +25,27 @@ const rate = (value) => {
 export function scoreboardMarkup() {
   return `<aside class="hud__score score" id="damage-score" aria-label="伤害计分板" aria-live="off">
     <header class="score__head"><span><i aria-hidden="true">◆</i> 谁尽力，谁又在犯罪</span><button type="button" data-act="score-clear" title="只清零伤害统计，不改变战场">清零</button></header>
-    <table class="score__table">
-      <thead><tr><th class="score__unit">干员</th>${COLUMNS.map((key) => `<th class="score__col score__col--${key}">${LABEL[key]}</th>`).join('')}<th class="score__col score__col--total">总伤</th><th class="score__col score__col--dps">DPS</th></tr></thead>
-      <tbody data-score-body></tbody>
-    </table>
+    ${scoreTableMarkup()}
   </aside>`;
+}
+
+export function scoreTableMarkup(rows = null) {
+  return `<table class="score__table">
+      <thead><tr><th class="score__unit">干员</th>${COLUMNS.map((key) => `<th class="score__col score__col--${key}">${LABEL[key]}</th>`).join('')}<th class="score__col score__col--total">总伤</th><th class="score__col score__col--dps">DPS</th></tr></thead>
+      <tbody data-score-body>${rows ? scoreRowsMarkup(rows) : ''}</tbody>
+    </table>`;
+}
+
+function scoreRowsMarkup(rows) {
+  return rows.slice(0, MAX_ROWS).map((r) => {
+    const pic = r.kind === 'token' ? tokenIcon(r.defId) : avatar(r.charId || r.defId);
+    return `<tr class="score__row" title="${esc(r.name)}">
+      <td class="score__unit"><span class="score__identity"><img class="score__ava" src="${esc(pic)}" alt="" loading="lazy"><b>${esc(displayName({ name: r.name, defId: r.defId }))}</b></span></td>
+      ${COLUMNS.map((key) => `<td class="score__col score__col--${key}">${compact(r.types[key])}</td>`).join('')}
+      <td class="score__col score__col--total">${compact(r.total)}</td>
+      <td class="score__col score__col--dps">${rate(r.dps)}</td>
+    </tr>`;
+  }).join('') || '<tr class="score__row score__row--empty"><td class="score__unit" colspan="7">暂无伤害</td></tr>';
 }
 
 export function createScoreboard(root) {
@@ -49,15 +64,7 @@ export function createScoreboard(root) {
       const sig = rows.map((r) => `${r.key}:${r.types.phys},${r.types.arts},${r.types.elemental},${r.types.true},${Math.round(r.dps)}`).join('|');
       if (sig === signature) return;
       signature = sig;
-      body.innerHTML = rows.map((r) => {
-        const pic = r.kind === 'token' ? tokenIcon(r.defId) : avatar(r.charId || r.defId);
-        return `<tr class="score__row" title="${escapeHtml(r.name)}">
-        <td class="score__unit"><span class="score__identity"><img class="score__ava" src="${esc(pic)}" alt="" loading="lazy"><b>${esc(displayName({ name: r.name, defId: r.defId }))}</b></span></td>
-        ${COLUMNS.map((key) => `<td class="score__col score__col--${key}">${compact(r.types[key])}</td>`).join('')}
-        <td class="score__col score__col--total">${compact(r.total)}</td>
-        <td class="score__col score__col--dps">${rate(r.dps)}</td>
-      </tr>`;
-      }).join('') || '<tr class="score__row score__row--empty"><td class="score__unit" colspan="7">暂无伤害</td></tr>';
+      body.innerHTML = scoreRowsMarkup(rows);
     },
   };
 }

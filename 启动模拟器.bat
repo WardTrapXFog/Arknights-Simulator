@@ -10,7 +10,7 @@ rem Sandbox, not the game: skip the content-hash asset index (SP_ASSET_INDEX=0).
 rem SHA-256s public/assets + public/fonts (31k files here) shortly after every start, only to
 rem cache-bust URLs for players over the internet. Single-player local sandbox: no need at all.
 set "SP_ASSET_INDEX=0"
-title Arknights Simulator (3100)
+title ARK/SIM - Arknights Simulator
 cd /d "%~dp0"
 call "%~dp0scripts\start-windows.bat" --port 3100 %*
 exit /b %errorlevel%

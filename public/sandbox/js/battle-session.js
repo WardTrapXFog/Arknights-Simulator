@@ -5,6 +5,7 @@ import { COLS, normRect, routesOf } from './battlefield.js';
 import { ENEMIES } from './spawn-catalog.js';
 import { useLevelSpawns } from './state.js';
 import { createDamageScore } from './damage-score.js';
+import { DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT } from '../../../shared/level.js';
 
 export let battle = null;
 export let runner = null;
@@ -26,7 +27,8 @@ export function buildBattle(document, baseSource, opts = {}) {
     flags: { dpInit: opts.mode === 'level' ? 10 : 30, dpPerSec: 1, dpMax: 99, startOpCooldown: 0, manualOnly: true,
       manualDeployment: true, siLevel: opts.mode === 'level',
       // 关卡可在 meta.deployLimit 指定部署上限（官方集成战略关卡是 6）；未写时沿用 8。
-      deployLimit: Math.max(1, Math.min(13, Number(document.meta?.deployLimit) || 8)),
+      deployLimit: Math.max(1, Math.min(13, Number(document.meta?.deployLimit) || DEFAULT_DEPLOY_LIMIT)),
+      lifeLimit: Math.max(1, Math.min(999, Number(document.meta?.lifeLimit) || DEFAULT_LIFE_LIMIT)),
       // 集成战略主题（meta.theme，如 rogue_6）：内容层的特勤模组据此决定局内部分是否生效。
       siTheme: document.meta?.theme ?? null, ...(opts.flags || {}) },
   });
@@ -38,7 +40,7 @@ export function buildBattle(document, baseSource, opts = {}) {
   b.timeLimit = Infinity;
   b._checkEnd = () => {
     if (!b.siLevel || b.finished) return;
-    if (b.leakedCount >= 3) { b.forceEnd('forced'); return; }
+    if (b.leakedCount >= b.flags.lifeLimit) { b.forceEnd('forced'); return; }
     if (!b._pending.length && !b.enemies.some((e) => e.alive) && b.started && !b._hasPendingEnemySchedules()) b._finish('cleared');
   };
   b.__uid = Math.max(0, ...b.allyUnits.map((u) => u.uid || 0), ...(document.operators || []).map((o) => o.uid));

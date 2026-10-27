@@ -1,4 +1,4 @@
-import { playLevelBgm, stopLevelBgm, currentLevelBgm } from './level-bgm.js';
+import { playLevelBgm, stopLevelBgm, currentLevelBgm, pauseLevelBgm } from './level-bgm.js';
 import { DEFAULT_MENU_MUSIC } from './settings.js';
 
 const CUES = {
@@ -8,20 +8,35 @@ const CUES = {
 let settings = {}, section = 'home', active = true, unlocked = false, tracks = [];
 let ctx = null, output = null, lastCue = -Infinity, menuUrl = null;
 const buffers = new Map();
+const host = window.frameElement?.name === 'simulator-workspace' ? parent.arksimMenuAudio : null;
+let loaded = false, loading = null;
 
-export async function loadMenuMusic() {
-  try {
-    const response = await fetch('/api/music', { cache: 'no-store' });
-    if (!response.ok) return null;
-    tracks = (await response.json()).files || [];
-  } catch { return null; }
-  refreshMusic();
-  return tracks;
+export async function loadMenuMusic(refresh = false) {
+  if (host) return host.loadMenuMusic(refresh);
+  if (loading) return loading;
+  if (loaded && !refresh) return tracks;
+  loading = (async () => {
+    try {
+      const response = await fetch('/api/music', { cache: 'no-store' });
+      if (!response.ok) return null;
+      tracks = (await response.json()).files || []; loaded = true;
+    } catch { return null; }
+    refreshMusic(); return tracks;
+  })();
+  try { return await loading; } finally { loading = null; }
 }
 
 function refreshMusic() {
+  if (host) return;
   const track = tracks.find((item) => item.name === (settings.menuBgmTrack || DEFAULT_MENU_MUSIC));
-  if (!active || !unlocked || !settings.menuBgm || !track || settings.muted || settings.bgm <= 0) {
+  if (!active || !track) {
+    if (menuUrl && currentLevelBgm() === menuUrl) stopLevelBgm();
+    menuUrl = null; return;
+  }
+  if (!unlocked) return;
+  const hold = !settings.menuBgm || settings.muted || settings.bgm <= 0;
+  pauseLevelBgm(hold);
+  if (hold && currentLevelBgm() !== track.url) {
     if (menuUrl && currentLevelBgm() === menuUrl) stopLevelBgm();
     menuUrl = null; return;
   }
@@ -32,11 +47,13 @@ function refreshMusic() {
 export function setMenuAudio(value, scene = section, enabled = active) {
   settings = value; section = scene; active = enabled;
   if (output && ctx) output.gain.setTargetAtTime(value.muted ? 0 : value.sfx, ctx.currentTime, .035);
-  refreshMusic();
+  if (host) host.setMenuAudio(value, scene, enabled);
+  else refreshMusic();
 }
 
 export function unlockMenuAudio() {
   if (!active) return;
+  host?.unlockMenuAudio();
   unlocked = true;
   if (!ctx) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;

@@ -1,8 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <title>Stronghold Protocol — refined mint rook</title>
-  <desc>Refines the existing 0.2.x project castle: three battlements, inset tower and splayed base. Original project geometry; no official artwork, lettering, gradients or texture.</desc>
-  <rect width="512" height="512" fill="#0c0f0e"/>
-  <g id="mark">
-    <polygon fill="#4ed8af" points="128,88 184,88 184,128 224,128 224,88 288,88 288,128 328,128 328,88 384,88 384,184 344,224 344,352 384,392 384,424 128,424 128,392 168,352 168,224 128,184"/>
+  <title>ARK/SIM · 明日方舟模拟器</title>
+  <path d="M256 24 494 262 256 500 18 262Z" fill="#000" opacity=".35"/>
+  <path d="M256 14 498 256 256 498 14 256Z" fill="#161b1f"/>
+  <g font-family="Arial Black,Arial,sans-serif" font-weight="900" text-anchor="middle" fill="#fff" stroke="#050607" stroke-width="3" paint-order="stroke fill">
+    <text x="256" y="216" font-size="142" letter-spacing="-9">ARK</text>
+    <text x="256" y="392" font-size="142" letter-spacing="-9">SIM</text>
   </g>
+  <path d="M83 234H429L407 278H105Z" fill="#e1e5e3" stroke="#07090b" stroke-width="3"/>
+  <text x="256" y="266" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="30" letter-spacing="-1" fill="#080a0b">RHODES ISLAND</text>
+  <path d="M256 14 498 256 256 498 14 256Z" fill="none" stroke="#08090a" stroke-width="11"/>
+  <path d="M256 25 487 256 256 487 25 256Z" fill="none" stroke="#55504a" stroke-width="3"/>
 </svg>
