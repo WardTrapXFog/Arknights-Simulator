@@ -257,18 +257,31 @@ export async function createFieldView(host, options = {}) {
   host.appendChild(canvas);
 
   // ---- layers ---------------------------------------------------------------------------------------------
+  // Draw order, back to front: ground art → shadows → the official ground pass → a unit's own ground effects →
+  // ground / normal effects → ENEMIES and the board props (depth-sorted together) → ADDITIVE and projectile effects →
+  // the official over pass → enemy HUD → DEPLOYED OPERATORS → operator HUD → floating text.
+  // Deployed operators and their bars sit above every enemy, enemy HP bar and battle effect on purpose (user report:
+  // 「被部署在场上的干员...被置顶，不能被怪物和怪物的血条挡住」) — the player deploys, selects and reads them, so nothing on
+  // the field may cover them. Each unit layer is depth-sorted on its own, so units still order correctly among
+  // themselves; allies keep their terrain-correct order among each other, and the enemy HUD keeps its own place above
+  // the enemy effects exactly as before.
   const stage = app.stage;
   const backdrop = new P.Container();
   const world = new P.Container();
   const layers = {
     ground: new P.Container(), anim: new P.Container(), overlay: new P.Container(), shadow: new P.Container(),
-    groundFx: new P.Container(), fxNormal: new P.Container(), units: new P.Container(), fxAdd: new P.Container(),
-    bars: new P.Container(), text: new P.Container(), screen: new P.Container(),
-    // the official battle effects (render/vfx): their ground pass under the units, their over pass above them
-    vfxGround: new P.Container(), vfxOver: new P.Container(),
+    groundFx: new P.Container(), fxNormal: new P.Container(), units: new P.Container(), bars: new P.Container(),
+    fxAdd: new P.Container(), vfxOver: new P.Container(),
+    // deployed operators and their HUD: above the enemies, their bars and the effects (see above)
+    allyUnits: new P.Container(), allyBars: new P.Container(),
+    text: new P.Container(), screen: new P.Container(),
+    // the official battle effects (render/vfx): their ground pass under the units
+    vfxGround: new P.Container(),
   };
   layers.units.sortableChildren = true;
-  world.addChild(layers.ground, layers.anim, layers.overlay, layers.shadow, layers.groundFx, layers.vfxGround, layers.fxNormal, layers.units, layers.fxAdd, layers.vfxOver, layers.bars, layers.text);
+  layers.allyUnits.sortableChildren = true;
+  world.addChild(layers.ground, layers.anim, layers.overlay, layers.shadow, layers.groundFx, layers.vfxGround,
+    layers.fxNormal, layers.units, layers.fxAdd, layers.vfxOver, layers.bars, layers.allyUnits, layers.allyBars, layers.text);
   stage.addChild(backdrop, world, layers.screen);
 
   const bg = backdropTextures();

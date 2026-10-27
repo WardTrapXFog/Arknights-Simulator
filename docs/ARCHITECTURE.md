@@ -90,6 +90,10 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 `server/sim/battle/economy.js` 管理费用下限、可透支判断、`dpRegen` 自然回复倍率和 `dpGain` 表现事件。`projectiles.js` 同时支持追踪目标、固定落点以及带 `velocity`／`onStep` 的逐帧直线弹道；`ai.js` 的 `resolveAttack` 允许技能替换普通攻击的结算方式，同时保留攻击计数和攻击完成回调。`deployment-hand.js` 区分无需朝向确认和需要朝向确认的 token ID，并在流形复制提交时写回选定朝向。
 
+`render/app.js` 的图层顺序保证被部署的干员永远可见：地面美术与阴影 → 官方地面特效 → 地面／普通特效 → 敌人与地块道具（共用一份深度排序）→ 敌方血条 → 叠加与弹道特效 → 官方 over 特效 → 干员与召唤物（`allyUnits`）→ 干员 HUD（`allyBars`）→ 浮动文字。敌我各占一层、各自按 `unitDepthKey` 深度排序，因此同阵营内部仍遵守地形前后遮挡，而干员与血条、技力条、技能就绪菱形、状态图标不会被任何敌人、敌人血条或战场特效盖住。`units.js` 的 `UnitView` 按 `info.side` 选层，`DeviceView` 与地块道具留在敌人的 `units` 层。
+
+音效有两套独立的发声额度。战斗限流器（`SfxLimiter`，8 路）管攻击／命中／技能等高频音效；部署落地音与单位退场音各自拥有独立额度（`LAND_VOICES`／`DIE_VOICES`，各 3 路），超额时最旧的一个让位并淡出，新音效不会被丢弃。退场音效因此不会在密集战斗中因额度耗尽而消失。`deathSfxUrl` 只在单位被击倒时播放，但带 `dying` 标记的强制退场（史尔特尔的余烬、斩业星熊 S3 临死模式结束）同样播放——引擎在 `die` 事件第四位写 1 标记这类退场，客户端据此放行。
+
 ## 4. 关卡制作器 `public/level/js/`
 
 | 文件 | 职责 |

@@ -159,8 +159,10 @@ export class BattleDeploy {
         if (unit.bounty && unit.bounty.coins > 0) this.addCoins(this._bountyPayee(unit, killer), unit.bounty.coins);
       }
     }
-    // the reason ('killed' | 'retreat' | 'expired' | …) lets the client keep the knock-down sound for real knock-outs
-    if (reason !== 'leak') this._ev(['die', unit.id, reason]);
+    // the reason ('killed' | 'retreat' | 'expired' | …) lets the client keep the knock-down sound for real knock-outs;
+    // a 4th field marks an exit that plays the knock-down animation (史尔特尔's 余烬, 斩业星熊 S3's 临死模式) — its reason is
+    // 'retreat' but it IS a 退场 the player hears (client audio.deathSfxUrl)
+    if (reason !== 'leak') this._ev(dying ? ['die', unit.id, reason, 1] : ['die', unit.id, reason]);
     if (this._hooks.death) this.emit('death', { unit, reason, killer, dying: !!dying });
     if (unit.removed) this._toRelease.push(unit);
   }

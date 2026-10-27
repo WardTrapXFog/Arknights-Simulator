@@ -136,6 +136,14 @@ const PENDING_SKILL_MAX = 64;
 export const LAND_VOICES = 3;
 /** Seconds a landing sound taken over by a newer one fades out (a hard stop clicks). */
 const LAND_STEAL_S = 0.03;
+/**
+ * Unit death sounds at once, in their own voices apart from the battle limiter. A knock-out must always be heard: in a
+ * dense moment (a skill hitting a dozen enemies, a boss burst) the battle limiter's 8 voices are all taken by attack /
+ * hit sounds, and a death that had to queue behind them was simply dropped — the user's report of an operator knocked
+ * out or forced out (斩业星熊 S3's 临死模式, 史尔特尔's 余烬) with no 退场 sound. Over the cap the oldest death sound gives
+ * its voice up (it fades out in LAND_STEAL_S) instead of the new one being lost, exactly like a landing sound.
+ */
+export const DIE_VOICES = 3;
 /** Official operator sound files of a skill mode: `…_d` / `…_h` / `…_s` (+ digits) — the normal attack's end in `_n`. */
 const SKILL_MODE_FILE = /_(d|h|s)\d*\.mp3$/i;
 /**
@@ -250,17 +258,20 @@ function tokenDieUrl(manifest) {
 /**
  * Death sound of a battle unit ('die' event): the unit's own ON_UNIT_DEAD sound, else its class default — only
  * operators play the operator-knocked-down sound (charDie). A summon that fired and was used up (香槟炸弹: its
- * explosion is the sound) is silent, and so is an operator leaving without being knocked out, when the event says so
- * (`reason` ≠ 'killed').
+ * explosion is the sound) is silent.
+ *
+ * An operator leaving without being knocked out is silent too — EXCEPT when the exit plays the knock-down animation
+ * (`dying`: 史尔特尔's 余烬, 斩业星熊 S3's 临死模式 ending, an item's forced exit), which is a 退场 the player must hear;
+ * that exit's `reason` is `retreat`, so a rule keyed on 'killed' alone silenced it (user report).
  * @param {any} manifest data/assets.json
  * @param {{ side?: string, kind?: string, defId?: string, def?: string, boss?: boolean }|null} info
- * @param {{ consumed?: boolean, reason?: string|null }} [o]
+ * @param {{ consumed?: boolean, reason?: string|null, dying?: boolean }} [o]
  * @returns {string|null} sound URL
  */
-export function deathSfxUrl(manifest, info, { consumed = false, reason = null } = {}) {
+export function deathSfxUrl(manifest, info, { consumed = false, reason = null, dying = false } = {}) {
   if (!info || consumed) return null;
   const cls = unitSoundClass(info);
-  if (cls === 'char' && reason && reason !== 'killed') return null;
+  if (cls === 'char' && reason && reason !== 'killed' && !dying) return null;
   const own = manifest?.audio?.sfx?.units?.[info.def]?.die;
   if (typeof own === 'string') return own;
   const b = manifest?.audio?.sfx?.battle ?? {};
@@ -602,6 +613,9 @@ export class AudioManager {
     this.landLimiter = new SfxLimiter({ maxVoices: LAND_VOICES, maxPerUrl: LAND_VOICES, urlGapMs: 0 });
     this.landVoices = [];      // the landing sounds holding a voice, oldest first: { url, src, gain, over, release }
     this.landStats = { started: 0, stolen: 0 }; // landing sounds started / taken over since the page opened (dev / tests)
+    // unit death sounds (DIE_VOICES): their own voices so a knock-out is never dropped behind attack / hit sounds
+    this.dieLimiter = new SfxLimiter({ maxVoices: DIE_VOICES, maxPerUrl: DIE_VOICES, urlGapMs: 0 });
+    this.dieVoices = [];       // the death sounds holding a voice, oldest first: { url, src, gain, over, release }
     this.landWarm = false;     // the field view asked for the landing sounds ahead while they could not be fetched (warmLandings)
     this.voiceGate = new VoiceGate();
     this.voiceNode = null;    // { src, gain, url, token } of the line on air
@@ -1712,15 +1726,74 @@ export class AudioManager {
   _stealLanding(v) {
     v.release();
     this.landStats.stolen += 1;
-    if (!v.src || !v.gain || !this.ctx) return;
+    this._fadeOutVoice(v, LAND_STEAL_S);
+  }
+
+  /**
+   * Free a stoleable voice's sound: the source fades out over `fade` s and stops (a hard stop clicks). The voice itself
+   * is released by the caller — the pool needs it back before the new sound may take it.
+   */
+  _fadeOutVoice(v, fade = LAND_STEAL_S) {
+    if (!v?.src || !v.gain || !this.ctx) return;
     try {
       const t = this.ctx.currentTime;
       const g = v.gain.gain;
       g.cancelScheduledValues(t);
       g.setValueAtTime(g.value, t);
-      g.linearRampToValueAtTime(0, t + LAND_STEAL_S);
-      v.src.stop(t + LAND_STEAL_S + 0.005);
+      g.linearRampToValueAtTime(0, t + Math.max(0.01, fade));
+      v.src.stop(t + Math.max(0.01, fade) + 0.005);
     } catch { /* ignore */ }
+  }
+
+  /**
+   * Play a unit death sound in the death voices — apart from the battle limiter, so a knock-out in a dense moment is
+   * never dropped for want of a voice (DIE_VOICES). Over the cap the oldest death sound gives its voice up
+   * (_stealDie) instead of this one being lost; a repeated `unitKey` inside the battle cooldown is refused first, so
+   * one unit's death never rings twice.
+   * @param {string} url
+   * @param {string} unitKey cooldown key (`<id>:die`)
+   * @param {number} volume gain of this sound under the SFX channel
+   */
+  _playDie(url, unitKey, volume) {
+    if (!this.ctx || typeof url !== 'string' || !url || this.volumes.muted || this.volumes.sfx <= 0) return;
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const pool = this.dieLimiter;
+    if (pool.cooling(now, unitKey)) return;
+    while (!pool.tryAcquire(now, unitKey, url)) {
+      if (!this.dieVoices.length) return;   // (a full pool always holds voices; never loop on a refusal it cannot lift)
+      this._stealDie(this.dieVoices[0]);
+    }
+    const v = { url, src: null, gain: null, over: false, release: null };
+    v.release = () => {
+      if (v.over) return;
+      v.over = true;
+      pool.release(url);
+      const i = this.dieVoices.indexOf(v);
+      if (i >= 0) this.dieVoices.splice(i, 1);
+    };
+    this.dieVoices.push(v);
+    this._buffer(url).then((buf) => {
+      if (v.over || !buf || !this.ctx) { v.release(); return; }   // taken over while it loaded: it never starts
+      try {
+        const s = this.ctx.createBufferSource();
+        s.buffer = buf;
+        const g = this.ctx.createGain();
+        g.gain.value = Math.max(0, Math.min(1.5, volume));
+        s.connect(g); g.connect(this.sfxGain);
+        v.src = s; v.gain = g;
+        let done = false;
+        const end = () => { if (done) return; done = true; v.release(); try { g.disconnect(); } catch { /* ignore */ } };
+        s.onended = end;
+        setTimeout(end, (buf.duration || 0) * 1000 + 250); // safety if onended never fires
+        s.start();
+      } catch { v.release(); }
+    }, v.release);
+  }
+
+  /** A death sound gives its voice to a newer one: the voice is free at once, the sound fades out over LAND_STEAL_S. */
+  _stealDie(v) {
+    v.release();
+    this._fadeOutVoice(v, LAND_STEAL_S);
   }
 
   /**
@@ -1814,12 +1887,15 @@ export class AudioManager {
           }
           const consumed = this.consumed.delete(e[1]);
           const m = this.getManifest();
-          const url = deathSfxUrl(m, u, { consumed, reason: typeof e[2] === 'string' ? e[2] : null });
+          // e[3] = the exit plays the knock-down animation (sim deploy.js `dying`): a 退场 with reason 'retreat' that
+          // still needs its sound
+          const url = deathSfxUrl(m, u, { consumed, reason: typeof e[2] === 'string' ? e[2] : null, dying: e[3] === 1 });
           if (!url) continue;
           const own = url === m?.audio?.sfx?.units?.[u.def]?.die;
           const mix = own ? m.audio.sfx.units[u.def].mix?.die : null;
           if (!unitSoundPlays(mix, this.random())) continue;
-          this._playUnitUrl(url, own ? `${e[1]}:die` : `die:${e[1]}`, own ? unitGain(0.8, mix) : 0.7);
+          // death voices, apart from the battle limiter: a dense moment must not swallow a knock-out (DIE_VOICES)
+          this._playDie(url, `${e[1]}:die`, own ? unitGain(0.8, mix) : 0.7);
         } else if (kind === 'leak') {
           // 漏怪: an enemy reached its goal (Battle.leak emits the sim's own EV.LEAK — it is NOT a `die`, so until now a
           // leak was completely silent, for the player's own field and for a 联防 the helpers could not hold alike).

@@ -738,7 +738,11 @@ export class UnitView {
 
     this.root = new P.Container();
     this.root.sortableChildren = false;
-    ctx.layers.units.addChild(this.root);
+    // allies (operators, summons, tokens) live in their own layer above enemies and every field effect; enemies and
+    // the board props share the depth-sorted `units` layer (render/app.js layers)
+    this._unitLayer = this.isEnemy ? ctx.layers.units : (ctx.layers.allyUnits || ctx.layers.units);
+    this._hudLayer = this.isEnemy ? ctx.layers.bars : (ctx.layers.allyBars || ctx.layers.bars);
+    this._unitLayer.addChild(this.root);
 
     const fx = fxAtlas();
     this.aura = null;
@@ -767,7 +771,7 @@ export class UnitView {
     this.baseTint = 0xffffff;            // the drawn model's own tint (ALIAS_TINT), under the status tints
 
     this.hud = new P.Container();
-    ctx.layers.bars.addChild(this.hud);
+    this._hudLayer.addChild(this.hud);
     this._buildHud();
 
     this.facingArrow = null;
