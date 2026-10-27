@@ -8,7 +8,7 @@
 |---|---|---|
 | SI 沙盒（日常） | `npm start` → `server/sandbox/index.js`，默认 `3100` | 纯静态文件服务：页面、素材、`/data/`、`/shared/`、`/sim/`、`/data.js`。不建房间、不开 WebSocket、不托管对局。 |
 
-双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。启动器**不自动执行** `tools/setup.mjs`（`--no-setup` 是默认值，也没有相反的开关）。
+双击启动链：`启动模拟器.bat` → `scripts/start-windows.bat` → `scripts/launch-windows.ps1` → `scripts/launch.mjs` → `server/sandbox/index.js`。PowerShell 将自身加入带 `KILL_ON_JOB_CLOSE` 的 Windows Job，保留非继承句柄；启动器、服务端及子进程继承该 Job，关闭窗口结束 PowerShell 时由系统一并结束。已有服务复用时明确提示关闭原启动窗口。启动提示由 `scripts/startup-message.mjs` 共用输出，TTY 下使用亮红声明、蓝青重点与彩色模块名称；不列举局域网／公网分享地址。`scripts/start-windows.bat` 检查 Node.js，并在缺少 `node_modules/ws/package.json` 时自动运行 `npm ci`，失败则回退 `npm install`；前端库由安装后的 `postinstall` 准备。后续 JS 启动器不执行 `tools/setup.mjs`，整条双击链不自动下载官方素材或提取本地客户端。
 
 服务监听时把 `/` 重定向到 `/studio/home.html`（工作区选择页），`/healthz` 返回 `{ok, mode:'sandbox'}`。
 
