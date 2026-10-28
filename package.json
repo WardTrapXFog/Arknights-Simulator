@@ -37,7 +37,8 @@
     "levels:stamp": "node tools/check-levels.mjs --stamp",
     "levels:list": "node tools/check-levels.mjs --list",
     "session": "node tools/check-session-boundary.mjs",
-    "check": "npm run session && npm run levels"
+    "ui": "node tools/check-ui-assets.mjs",
+    "check": "npm run session && npm run ui && npm run levels"
   },
   "engines": {
     "node": ">=22"

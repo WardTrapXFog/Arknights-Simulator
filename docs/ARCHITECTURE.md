@@ -110,6 +110,8 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 关卡身份：`name` 就是磁盘文件名（`content/levels/<name>.json`），编辑器里改名即改文件名，保存走服务端一次 `rename`（`PUT /api/levels/<新名>?from=<旧名>`，目标已存在时返回 409），不做「写新 + 删旧」；`id` 是英文半角指纹 `lv_<时间 base36>_<6 位随机>`，创建、另存为、复制时生成，之后不随保存改变，只用于 URL 参数与内存查找。读入时以文件名为准（`loadLevels` 用文件名主干覆盖 `name`），因此手动在资源管理器改名不会留下第二份真相。编辑器「另存为」写新文件并换新 id；导入撞 id 时选覆盖或另存为新关，名字撞了自动让成「原名 2」。`manifest.json` 是关卡库登记表，不参与读取。
 
 
+UI 素材清单按 `tools/assets/ui-groups.mjs` 的 `UI_GROUPS` 白名单生成：`plan.mjs` 的 `addUi` 与 statistics 分支都过 `uiAllowed`，`catalog.autochessUi` 里没进白名单的分组（官方联机界面的商店、结算、徽标等）不再下载。`npm run ui`（`tools/check-ui-assets.mjs`）核对三件事：清单里出现名单外分组、名单写了清单里没有、标了在用却在代码里找不到引用，并检查 `plan.mjs` 的闸门是否在位。
+
 `tools/build-enemy-library.mjs` 读取敌人数据、KITS/STATS_ONLY/BOSS_KEYS 和 `ENEMY_PRESETS`，生成 `public/sandbox/js/enemy-library.js` 的正式/仅数值/玩具分层。`LIBRARY_KEYS` 用于关卡校验；编辑器只列正常敌人，沙盒将共用目录追加到旧投放预设后。筛选等级取共用目录的 `rank`，木桩独立分档。
 
 关卡战斗左上角使用「退出战斗」下拉确认，红色「确认」返回关卡列表；展开时暂停，收起时恢复此前播放状态。沙盒保留原来的开始菜单入口。`/api/music` 提供局外设置与关卡编辑器共用的音乐列表，`/music/` 提供 OGG 文件；播放器按文件的源采样率换算循环秒数。音乐使用范围见 `content/music/README.md`。

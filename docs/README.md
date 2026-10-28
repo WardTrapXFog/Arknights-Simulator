@@ -22,5 +22,6 @@
 | [发行版设想](发行版设想.md) | 便携运行环境、素材下载界面与更新方式 |
 | [AUE 引擎迁移评估](AUE引擎迁移评估.md) | 对 Arknights-Universal-Engine 固定快照的静态分析、四类障碍与保留路线 |
 | [引擎迁移工作清单](引擎迁移工作清单.md) | 会话边界收口、素材索引瘦身与迁移判定点 |
+| [表现事件清单](表现事件清单.md) | 引擎向画面发出的 186 个事件，接入新引擎时的验收清单 |
 
 官方数据表说明见 [data/gamedata/README.md](../data/gamedata/README.md)，战斗机制接口见 [kit 说明](../server/sim/content/kits/README.md)。许可文件为根目录的 [LICENSE](../LICENSE)、[NOTICE.md](../NOTICE.md) 和 [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md)。
