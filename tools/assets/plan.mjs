@@ -26,7 +26,7 @@ import { kindOf } from './formats.mjs';
 import { pickUnitSfx, assignSkillModeSfx, UI_SFX, BATTLE_SFX, resolveSpec, indexVoice, nativeVoiceDirs, VOICE_DIRS, VOICE_CUSTOM_DIR, VOICE_BATTLE_SLOTS } from './audio.mjs';
 import { literal } from './manifest.mjs';
 import { EMOTE_CATALOG } from '../../shared/constants.js';
-import { UI_GROUPS } from './ui-groups.mjs';
+import { KEEP_GROUPS } from './ui-groups.mjs';
 
 /**
  * The voice slots are read from the zh_CN charword table, whose voiceIds are always `CN_*`: the other dubs
@@ -585,13 +585,14 @@ export function buildPlan({ catalog, audio, modelsData, charword = null, voiceLa
   }
 
   // --- UI ------------------------------------------------------------------
-  // 只建 UI_GROUPS 里的分组（tools/assets/ui-groups.mjs）。catalog.autochessUi 是全量目录——
-  // 官方联机界面（商店面板、回合开始对话框、结算图、阵营徽标……）都在里面，而 SI 不读它们。
-  // 没进白名单的分组不再出清单：`fetch-assets --prune` 会顺手删掉本地文件。
-  // 分组名单与漏网的核对见 tools/check-ui-assets.mjs。
+  // 只建 KEEP_GROUPS 里的分组（tools/assets/ui-groups.mjs：确定要用 + 可能要用）。
+  // catalog.autochessUi 是全量目录——官方联机界面（商店面板、回合开始对话框、结算图、阵营徽标……）
+  // 都在里面，而项目里对应的界面文件早已删除，留着是纯重量。
+  // 没进名单的分组不再出清单：`fetch-assets --prune` 会顺手删掉本地文件。
+  // 三档名单与漏网的核对见 tools/check-ui-assets.mjs。
   const ui = {};
-  // 分组名可以是两段（表情是 `emoticon/<主题>`），按第一段认白名单。
-  const uiAllowed = (group) => Object.hasOwn(UI_GROUPS, String(group).split('/')[0]);
+  // 分组名可以是两段（表情是 `emoticon/<主题>`），按第一段认名单。
+  const uiAllowed = (group) => Object.hasOwn(KEEP_GROUPS, String(group).split('/')[0]);
   const skippedUi = new Set();
   const addUi = (group, key, url) => {
     if (!uiAllowed(group)) { skippedUi.add(group); return; }
@@ -617,7 +618,7 @@ export function buildPlan({ catalog, audio, modelsData, charword = null, voiceLa
     if (uiAllowed('statistics')) ui[`statistics/${name}`] = { alts: [job] };
     else skippedUi.add('statistics');
   }
-  if (skippedUi.size) notes.push(`UI groups skipped (not in UI_GROUPS): ${[...skippedUi].sort().join(', ')}`);
+  if (skippedUi.size) notes.push(`UI groups skipped (legacy, not in KEEP_GROUPS): ${[...skippedUi].sort().join(', ')}`);
 
   // --- audio ----------------------------------------------------------------
   const bgmLeaf = (bankName) => {
