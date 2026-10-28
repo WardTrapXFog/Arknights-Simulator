@@ -20,5 +20,7 @@
 | [关卡自动复刻设想](关卡自动复刻设想.md) | 官方关卡数据到可编辑关卡的转换方案 |
 | [地图美术接入设想](地图美术素材来源与接入.md) | 主题地块与固定官方场景模板 |
 | [发行版设想](发行版设想.md) | 便携运行环境、素材下载界面与更新方式 |
+| [AUE 引擎迁移评估](AUE引擎迁移评估.md) | 对 Arknights-Universal-Engine 固定快照的静态分析、四类障碍与保留路线 |
+| [引擎迁移工作清单](引擎迁移工作清单.md) | 会话边界收口、素材索引瘦身与迁移判定点 |
 
 官方数据表说明见 [data/gamedata/README.md](../data/gamedata/README.md)，战斗机制接口见 [kit 说明](../server/sim/content/kits/README.md)。许可文件为根目录的 [LICENSE](../LICENSE)、[NOTICE.md](../NOTICE.md) 和 [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md)。
