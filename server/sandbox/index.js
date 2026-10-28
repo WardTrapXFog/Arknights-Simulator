@@ -30,15 +30,19 @@ export async function startSandboxServer(opts = {}) {
   const LEVEL_FILE = /^[^\\/:*?"<>|\u0000-\u001f]{1,80}\.json$/;
   const MAX_LEVEL_BYTES = 600 * 1024;
   const resolveLevel = (name) => {
-    if (typeof name !== 'string' || !LEVEL_FILE.test(name)) return null;
+    if (typeof name !== 'string' || !LEVEL_FILE.test(name) || name === 'manifest.json') return null;
     const abs = path.join(levelsDir, name);
     return abs.startsWith(levelsDir + path.sep) ? abs : null;
   };
-  /** 目录里的关卡文件（按名字排序，跳过隐藏文件）。 */
+  /** 文件是否存在（关卡写入前的重名检查）。 */
+  const exists = async (abs) => { try { await fs.access(abs); return true; } catch { return false; } };
+  /** 写接口的错误：客户端要读 message，所以走 JSON 而不是通用错误页。 */
+  const denyWrite = (req, res, status, message) => sendJson(req, res, status, { ok: false, error: message });
+  /** 目录里的关卡文件（按名字排序，跳过隐藏文件与关卡库登记表 manifest.json）。 */
   async function levelNames() {
     try {
       const names = await fs.readdir(levelsDir);
-      return names.filter((n) => LEVEL_FILE.test(n) && !n.startsWith('.')).sort((a, b) => a.localeCompare(b, 'zh'));
+      return names.filter((n) => LEVEL_FILE.test(n) && !n.startsWith('.') && n !== 'manifest.json').sort((a, b) => a.localeCompare(b, 'zh'));
     } catch { return []; }
   }
   async function readLevels() {
@@ -123,6 +127,20 @@ export async function startSandboxServer(opts = {}) {
           return sendError(req, res, 400, '不是 v2 关卡');
         }
         await fs.mkdir(levelsDir, { recursive: true });
+        // 改名：?from=旧文件名。先把旧文件搬到新名字（rename 是原子的），再把新内容写进去，
+        // 这样改名不会出现「写新 + 删旧」中间失败留下的两份或零份。
+        const from = new URLSearchParams(parts.query).get('from');
+        if (from && from !== file) {
+          const oldAbs = resolveLevel(from);
+          if (!oldAbs) return denyWrite(req, res, 400, '原关卡文件名无效');
+          if (await exists(abs)) return denyWrite(req, res, 409, '已经有同名的关卡文件了');
+          try { await fs.rename(oldAbs, abs); } catch (e) { if (e.code !== 'ENOENT') throw e; }
+        } else if (await exists(abs)) {
+          // 名字没变、也不是改名：目标文件属于另一关（id 不同）就是覆盖别人的关卡，拒绝。
+          let current = null;
+          try { current = JSON.parse(await fs.readFile(abs, 'utf8')); } catch { /* 坏档，按可覆盖处理 */ }
+          if (current && current.id !== level.id) return denyWrite(req, res, 409, '这个名字已被另一张关卡占用');
+        }
         // 先写临时文件再改名：中途失败不会留下半个关卡
         const tmp = `${abs}.tmp`;
         await fs.writeFile(tmp, JSON.stringify(level, null, 1), 'utf8');

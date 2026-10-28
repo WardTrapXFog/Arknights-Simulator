@@ -111,6 +111,8 @@
   & .operation-level-detail { gap: 16px; scroll-padding-bottom: 90px; }
   & .operation-level-detail h2 { line-height: 1.45; font-size: calc(26px * var(--interface-text-scale,1)); }
   & .operation-level-detail :is(.op-eyebrow,.op-dim) { color: var(--workspace-light-muted); }
+  /* 关卡标签：浅色详情栏上必须用深色字，否则和底色同为浅灰看不清（三套主题共用 --workspace-ink）。 */
+  & .operation-level-detail .op-tags span { color: var(--workspace-ink); border-color: color-mix(in srgb,var(--workspace-ink) 24%,transparent); background: color-mix(in srgb,var(--workspace-ink) 6%,transparent); }
   & .operation-briefing-map { width: 100%; height: clamp(100px,17vh,190px); background: var(--workspace-bg); object-fit: contain; }
   & .operation-briefing-summary { margin: 0; gap: 18px; }
   & .operation-briefing-summary div { padding: 4px 12px; color: var(--workspace-light-muted); background: none; border-left: 2px solid var(--workspace-accent); }

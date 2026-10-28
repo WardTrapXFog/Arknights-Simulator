@@ -5,16 +5,30 @@ import { levelWithPreview } from '../../../shared/level-preview.js';
 // 之后 listLevels 这类同步接口照旧从内存读；保存/删除则 PUT / DELETE 回目录。
 // 这样既保持了界面代码的同步调用方式，又让磁盘上的文件成为唯一真源：
 // 改完保存即产生 git diff，换浏览器、清缓存都不会丢。
-import { MAX_LEVELS, LevelError, cloneLevel, newLevel, parseLevel, validateLevel } from "../../../shared/level.js";
+//
+// 身份分三处，各有唯一的职责，互不覆盖：
+//   文件名 = 关卡名（name），玩家在编辑器里改的就是它；改名保存时服务端做一次 rename。
+//   id     = 英文半角指纹（lv_<时间>_<随机>），创建时生成，此后不随保存改变；只用于 URL 与内存查找。
+import { MAX_LEVELS, LevelError, cloneLevel, newLevel, newLevelId, parseLevel, validateLevel, levelNameProblem, levelFileName } from "../../../shared/level.js";
 
 /** 内存里的关卡表；boot 时由 loadLevels() 填。 */
 let levels = [];
-/** 关卡 id → 目录里的文件名（保存时写回原文件，避免同一关出现两份）。 */
+/** 关卡 id → 目录里的文件名。保存时写回原文件；名字变了就改名过去。 */
 const files = new Map();
+/** 文件名 → 关卡 id，用来挡住「两关同名」。 */
+const owners = new Map();
 /** 最近一次写盘失败的原因，界面用来提示。 */
 let lastError = '';
 
 const API = '/api/levels';
+const stemOf = (file) => String(file).replace(/\.json$/i, '');
+
+/** 新关卡的 id：撞上库里已有 id 就重抽（时间相同、随机后缀碰巧相同的情况）。 */
+function freshId() {
+  let id = newLevelId();
+  for (let i = 0; i < 8 && files.has(id); i++) id = newLevelId();
+  return id;
+}
 
 /** 一次请求拉齐整个关卡库。返回已通过校验的关卡数组。 */
 export async function loadLevels(ctx = {}) {
@@ -28,17 +42,32 @@ export async function loadLevels(ctx = {}) {
     lastError = `读取关卡目录失败：${e.message}（服务端没启动？）`;
     levels = [];
     files.clear();
+    owners.clear();
     return [];
   }
   levels = [];
   files.clear();
+  owners.clear();
+  const skipped = [];
   for (const entry of data.levels || []) {
+    const stem = stemOf(entry.file);
+    if (entry.file === 'manifest.json') continue;
+    let lv;
     try {
-      const lv = validateLevel(entry.level, ctx);
-      levels.push(lv);
-      files.set(lv.id, entry.file);
-    } catch { /* 坏档跳过 */ }
+      // 文件名是关卡名的唯一真源：文件被手动改过名，读进来就按新名字显示，
+      // 不会在库里留下「显示名与文件名不一致」的第二份真相。
+      lv = validateLevel({ ...entry.level, name: stem }, ctx);
+    } catch (e) {
+      skipped.push(`${entry.file}：${e.reason || e.message}`);
+      continue;
+    }
+    if (files.has(lv.id)) { skipped.push(`${entry.file}：关卡 id ${lv.id} 与另一个文件重复（同一关的副本请用编辑器「另存为」，不要直接复制文件）`); continue; }
+    if (owners.has(stem.toLowerCase())) { skipped.push(`${entry.file}：文件名重复`); continue; }
+    levels.push(lv);
+    files.set(lv.id, entry.file);
+    owners.set(stem.toLowerCase(), lv.id);
   }
+  if (skipped.length) lastError = `有 ${skipped.length} 个关卡文件没能读入：\n${skipped.join('\n')}`;
   levels.sort((a, b) => a.name.localeCompare(b.name, 'zh'));
   return levels;
 }
@@ -50,19 +79,40 @@ export function listLevels() {
   return levels.slice();
 }
 
-/** 文件名：沿用已有文件名；新关卡用 id。 */
-function fileNameFor(level) {
-  return files.get(level.id) || `${level.id}.json`;
+/** 关卡名（= 文件名主干）是否已被别的关卡占用。按小写比：Windows 上只差大小写的两个文件名是同一个文件。 */
+export function nameTaken(name, exceptId = '') {
+  const owner = owners.get(String(name).toLowerCase());
+  return owner != null && owner !== exceptId;
 }
 
-async function put(level) {
-  const file = fileNameFor(level);
+/** 给一个还没被占用的名字：原名、原名 2、原名 3…… */
+export function uniqueName(base, exceptId = '') {
+  const root = String(base || '未命名关卡').slice(0, 34);
+  if (!nameTaken(root, exceptId) && !levelNameProblem(root)) return root;
+  for (let i = 2; i < 100; i++) {
+    const candidate = `${root} ${i}`;
+    if (!nameTaken(candidate, exceptId) && !levelNameProblem(candidate)) return candidate;
+  }
+  throw new LevelError('level.name', '找不到可用的关卡名');
+}
+
+async function put(level, previous) {
+  const file = levelFileName(level);
+  // 名字变了就用 ?from=旧文件名 让服务端做一次原子 rename，避免「写新 + 删旧」中间失败留下两份。
+  const query = previous && previous !== file ? `?from=${encodeURIComponent(previous)}` : '';
   try {
-    const res = await fetch(`${API}/${encodeURIComponent(file)}`, {
+    const res = await fetch(`${API}/${encodeURIComponent(file)}${query}`, {
       method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(level),
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      if (res.status === 409) throw new Error('关卡库里已经有同名的关卡了，先改个名字');
+      throw new Error(body?.error || `HTTP ${res.status}`);
+    }
+    const previousKey = previous ? stemOf(previous).toLowerCase() : '';
+    if (previous && previous !== file && owners.get(previousKey) === level.id) owners.delete(previousKey);
     files.set(level.id, file);
+    owners.set(stemOf(file).toLowerCase(), level.id);
     lastError = '';
     return true;
   } catch (e) {
@@ -78,24 +128,55 @@ async function remove(level) {
     const res = await fetch(`${API}/${encodeURIComponent(file)}`, { method: 'DELETE' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     files.delete(level.id);
+    owners.delete(stemOf(file).toLowerCase());
     lastError = '';
   } catch (e) {
     lastError = `删除失败：${e.message}`;
   }
 }
 
-/** 保存（同 id 覆盖，否则追加）。返回保存后的整张列表。 */
+function commit(level, { wait }) {
+  const copy = cloneLevel(level);
+  const apply = () => {
+    const i = levels.findIndex((x) => x.id === copy.id);
+    if (i >= 0) levels[i] = copy; else levels.push(copy);
+    levels.sort((a, b) => a.name.localeCompare(b.name, 'zh'));
+  };
+  const previous = files.get(copy.id);
+  // 等待写盘的那条路径先落盘再改内存：改名撞车（409）时内存里不会留下一个并不存在的名字。
+  if (wait) return put(copy, previous).then((ok) => { if (!ok) throw new Error(lastError); apply(); return copy; });
+  apply();
+  // 不等待的路径（新建、复制）写完发现失败时把内存退回去，别留一条磁盘上没有的关卡。
+  void put(copy, previous).then((ok) => {
+    if (ok) return;
+    levels = levels.filter((x) => x.id !== copy.id);
+  });
+  return levels.slice();
+}
+
+/**
+ * 保存（同 id 覆盖，否则追加）。名字变了就把磁盘上的文件改名过去。
+ * 默认不等待写盘，返回保存后的整张列表；`wait` 为真时返回 Promise<关卡>。
+ */
 export function saveLevel(level, ctx = {}, { wait = false } = {}) {
   level = validateLevel(level, ctx);
+  if (nameTaken(level.name, level.id)) throw new LevelError('level.name', `已经有叫「${level.name}」的关卡了`);
   if (levels.length >= MAX_LEVELS && !levels.some((x) => x.id === level.id)) {
     throw new LevelError('levels', `关卡库最多保存 ${MAX_LEVELS} 关`);
   }
-  const i = levels.findIndex((x) => x.id === level.id);
+  return commit(level, { wait });
+}
+
+/**
+ * 另存为：拿一个新 id 和新名字写成新文件，原关卡一个字不动。
+ * 返回 Promise<保存后的新关卡>，界面随后把编辑对象切到它。
+ */
+export async function saveLevelAs(level, ctx = {}, name) {
   const copy = cloneLevel(level);
-  if (i >= 0) levels[i] = copy; else levels.push(copy);
-  levels.sort((a, b) => a.name.localeCompare(b.name, 'zh'));
-  const writing = put(copy);
-  return wait ? writing.then((ok) => { if (!ok) throw new Error(lastError); return copy; }) : levels.slice();
+  copy.id = freshId();
+  copy.name = name;
+  const saved = await saveLevel(copy, ctx, { wait: true });
+  return saved;
 }
 
 export function deleteLevel(id) {
@@ -105,19 +186,19 @@ export function deleteLevel(id) {
   return levels.slice();
 }
 
-export function duplicateLevel(id) {
+export function duplicateLevel(id, ctx = {}) {
   const src = levels.find((x) => x.id === id);
   if (!src) return levels.slice();
   const copy = cloneLevel(src);
-  copy.id = `lv_${Date.now().toString(36)}`;
-  copy.name = `${src.name.slice(0, 37)} 副本`;
-  return saveLevel(copy);
+  copy.id = freshId();
+  copy.name = uniqueName(`${src.name} 副本`);
+  return saveLevel(copy, ctx);
 }
 
 /** 新建一关并立刻存下，返回它。 */
 export function createLevel({ name = '未命名关卡', rows, cols } = {}, ctx = {}) {
   const level = newLevel({ rows, cols });
-  level.name = name;
+  level.name = uniqueName(name);
   saveLevel(level, ctx);
   return level;
 }
@@ -125,12 +206,22 @@ export function createLevel({ name = '未命名关卡', rows, cols } = {}, ctx =
 /** 导出成文本（给"下载 JSON"用）。 */
 export const exportLevel = (level) => JSON.stringify(levelWithPreview(level), null, 2);
 
-/** 从文本导入；校验失败抛 LevelError，界面显示 path。 */
-export function importLevel(text, ctx = {}) {
+/**
+ * 从文本导入；校验失败抛 LevelError，界面显示 path。写盘完成才返回解析后的关卡。
+ * id 撞上库里已有的关卡时不报错：`mode` 为 'copy'（默认）会换一个新 id 存成另一关，
+ * 为 'overwrite' 则当作同一关覆盖。名字撞了自动让开（原名 2、原名 3……），不静默覆盖别人的文件。
+ */
+export async function importLevel(text, ctx = {}, { mode = 'copy', name } = {}) {
   const level = parseLevel(text, ctx);
-  saveLevel(level, ctx);
-  return level;
+  const same = levels.find((x) => x.id === level.id) || null;
+  if (same && mode !== 'overwrite') level.id = freshId();
+  if (name) level.name = name;
+  if (nameTaken(level.name, same && mode === 'overwrite' ? same.id : '')) level.name = uniqueName(level.name);
+  return saveLevel(level, ctx, { wait: true });
 }
+
+/** 库里已有的同一关（导入时用来提示）。 */
+export const findLevel = (id) => levels.find((x) => x.id === id) || null;
 
 /**
  * 从 URL 取一份关卡 JSON 文本。
@@ -161,6 +252,6 @@ export async function fetchLevelText(url) {
 }
 
 /** 从 URL 直接导入并入库。 */
-export async function importLevelFromUrl(url, ctx = {}) {
-  return importLevel(await fetchLevelText(url), ctx);
+export async function importLevelFromUrl(url, ctx = {}, options = {}) {
+  return importLevel(await fetchLevelText(url), ctx, options);
 }

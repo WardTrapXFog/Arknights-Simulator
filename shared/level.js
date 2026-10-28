@@ -9,6 +9,8 @@ export const MAX_LEVELS = 60;
 export const DEFAULT_DEPLOY_LIMIT = 8;
 export const DEFAULT_LIFE_LIMIT = 3;
 export const LEVELS_KEY = 'arksim-levels-v2';
+export const MAX_DIFFICULTY = 10;
+export const LEVEL_NAME_MAX = 40;
 export class LevelError extends Error {
   constructor(path, reason) { super(`${path}: ${reason}`); this.name = 'LevelError'; this.path = path; this.reason = reason; }
 }
@@ -30,6 +32,40 @@ function tile(v, p, rows, cols) {
   num(v[0], `${p}.0`, 0, rows - 1, true); num(v[1], `${p}.1`, 0, cols - 1, true);
 }
 function id(v, p) { str(v, p, 24); if (!/^[a-z0-9_-]{1,24}$/.test(v)) fail(p, '只允许 1–24 位小写字母、数字、下划线与短横线'); }
+/** 关卡 id：英文半角、与显示名和文件名完全脱钩，创建时生成，之后不随保存改变。 */
+const LEVEL_ID = /^[a-z0-9_-]{1,40}$/;
+/** 关卡文件名（= 关卡名）里不允许的字符：各平台文件系统的交集，再加控制字符。 */
+const NAME_BAD = /[\\/:*?"<>|\u0000-\u001f]/;
+/**
+ * 关卡名就是文件名主干，所以规则按文件名来：非空、不超过 40 字、不含路径分隔符与保留字符、
+ * 不以点开头、不以点或空格收尾（Windows 会悄悄吃掉）。返回 null 表示合法。
+ */
+export function levelNameProblem(name) {
+  if (typeof name !== 'string') return '须为文本';
+  const v = name.trim();
+  if (!v) return '不能为空';
+  if (v.length > LEVEL_NAME_MAX) return `不能超过 ${LEVEL_NAME_MAX} 字`;
+  if (v !== name) return '首尾不能有空格';
+  if (NAME_BAD.test(v)) return '不能含 \\ / : * ? " < > | 这些字符';
+  if (v.startsWith('.')) return '不能以点开头';
+  if (/[. ]$/.test(v)) return '不能以点或空格结尾';
+  if (v.toLowerCase() === 'manifest') return '这个名字留给关卡库目录的登记表';
+  return null;
+}
+const rand36 = (n) => {
+  const bytes = new Uint32Array(1);
+  globalThis.crypto.getRandomValues(bytes);
+  return (bytes[0] % 36 ** n).toString(36).padStart(n, '0');
+};
+/**
+ * 新关卡 id：`lv_` + 创建时间(base36) + `_` + 6 位随机(base36)，如 `lv_mvryawf6_q8x2kd`。
+ * 时间前缀让 id 按创建顺序自然排序，随机后缀让同一毫秒内连续新建也不会撞车。
+ */
+export function newLevelId(now = Date.now()) {
+  return `lv_${now.toString(36)}_${rand36(6)}`;
+}
+/** 关卡对应的文件名：关卡名 + .json。文件名就是关卡名的唯一真源。 */
+export const levelFileName = (level) => `${level.name}.json`;
 export const TILES = Object.freeze({ r: '地面：可部署、敌人可走', f: '空地：敌人可走、站不了人', h: '高台：只有远程能部署', X: '围墙：不可部署、敌人不通', '#': '挖空：背景洞', S: '红门：敌人出生点', E: '蓝门：敌人目标点' });
 export function blankRows(rows = 19, cols = 21, rect = null) {
   const R = rect ?? { r0: 6, r1: 12, c0: 2, c1: 18 }, out = Array.from({ length: rows }, () => '#'.repeat(cols));
@@ -42,7 +78,7 @@ export function blankRows(rows = 19, cols = 21, rect = null) {
 }
 export function newLevel({ rows = 19, cols = 21 } = {}) {
   const rect = { r0: Math.min(6, rows - 2), r1: Math.min(12, rows - 1), c0: Math.min(2, cols - 2), c1: Math.min(18, cols - 1) };
-  return { v: 2, id: `lv_${Date.now().toString(36)}`, name: '未命名关卡', meta: { difficulty: 1, tags: [], note: '' }, stage: { rows: blankRows(rows, cols, rect), rect, routes: [] }, spawns: [] };
+  return { v: 2, id: newLevelId(), name: '未命名关卡', meta: { difficulty: 1, tags: [], note: '' }, stage: { rows: blankRows(rows, cols, rect), rect, routes: [] }, spawns: [] };
 }
 function validateRoute(r, p, rows, cols, template = false) {
   keys(r, ['id', 'name', 'motion', 'start', 'end', 'checkpoints'], p);
@@ -66,9 +102,12 @@ export function validateLevel(input, ctx = {}) {
   if (input.v !== LEVEL_VERSION) fail('level.v', input.v === 1 ? '这是 v1 旧关卡，本版不再支持' : '须为版本 2');
   keys(input, ['v', 'id', 'name', 'meta', 'stage', 'spawns', 'thumbnail', 'squad'], 'level');
   str(input.id, 'level.id', 40); if (!input.id) fail('level.id', '不能为空');
-  str(input.name, 'level.name', 40); if (!input.name.trim()) fail('level.name', '不能为空');
+  if (!LEVEL_ID.test(input.id)) fail('level.id', '只允许 1–40 位小写字母、数字与下划线（关卡 id 与文件名、关卡名互不相干）');
+  str(input.name, 'level.name', LEVEL_NAME_MAX);
+  const nameProblem = levelNameProblem(input.name);
+  if (nameProblem) fail('level.name', nameProblem);
   const meta = input.meta; keys(meta, ['difficulty', 'tags', 'note', 'deployLimit', 'lifeLimit', 'theme', 'bgm', 'author'], 'level.meta');
-  num(meta.difficulty ?? 1, 'level.meta.difficulty', 0, 5, true);
+  num(meta.difficulty ?? 1, 'level.meta.difficulty', 0, MAX_DIFFICULTY, true);
   array(meta.tags ?? [], 'level.meta.tags').forEach((v, i) => str(v, `level.meta.tags.${i}`, 40)); str(meta.note ?? '', 'level.meta.note', 400);
   // 署名：关卡作者（可选）。协作时用来标明这关是谁做的——不参与任何玩法计算。
   if (meta.author != null) str(meta.author, 'level.meta.author', 40);

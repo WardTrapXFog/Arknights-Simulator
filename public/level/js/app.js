@@ -3,8 +3,8 @@ import { setTerminalState, terminalReady } from '../../sandbox/js/terminal-shell
 import { data } from '../../js/data.js';
 import { ROWS, COLS } from '../../sandbox/js/battlefield.js';
 import { ENEMY_LIBRARY, LIBRARY_KEYS } from '../../sandbox/js/enemy-library.js';
-import { listLevels, loadLevels, lastLevelsError, saveLevel, deleteLevel, duplicateLevel, createLevel, importLevel, importLevelFromUrl, exportLevel } from './level-store.js';
-import { validateLevel, cloneLevel, LevelError, MAX_SPAWNS, DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT } from '../../../shared/level.js';
+import { listLevels, loadLevels, lastLevelsError, saveLevel, saveLevelAs, deleteLevel, duplicateLevel, createLevel, importLevel, fetchLevelText, exportLevel, nameTaken, findLevel } from './level-store.js';
+import { validateLevel, cloneLevel, parseLevel, LevelError, MAX_SPAWNS, DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT, MAX_DIFFICULTY, levelNameProblem } from '../../../shared/level.js';
 import { newSpawn, routeOf, invalidateTrajectories, playableUntil } from './level-model.js';
 import { LevelTerrainEditor } from './terrain.js';
 import { LevelRoutesEditor, previewRoute } from './routes.js';
@@ -82,6 +82,7 @@ function refresh() {
     el.value = f === 'name' ? current.name : f === 'tags' ? current.meta.tags.join('，') : f === 'bgm' ? (current.meta.bgm || '') : f === 'author' ? (current.meta.author || '') : f === 'deployLimit' ? (current.meta.deployLimit ?? DEFAULT_DEPLOY_LIMIT) : f === 'lifeLimit' ? (current.meta.lifeLimit ?? DEFAULT_LIFE_LIMIT) : current.meta[f];
   }
   const note = root.querySelector('.lv-note-preview'); if (note) note.textContent = notePreview(current.meta.note);
+  renderNameHints();
   renderSpawn(); timeline?.setCursor(cursor); tracer?.highlight(timeline?.selected); markDirty(); showError();
 }
 function previewChange() { invalidateTrajectories(current); duration = playableUntil(current, speedOf); terrain.renderMap(); routes?.render(); tracer?.showAt(cursor); markDirty(); }
@@ -141,7 +142,51 @@ function requireReady() {
   current.spawns.forEach((s, i) => { if (s.route && typeof s.route === 'object') problems.push(...previewRoute(current.stage, s.route).problems.map((p) => `出生 ${i + 1}：${p}`)); });
   if (problems.length) throw new Error(problems.join('\n'));
 }
-function save() { requireReady(); saveLevel(current, ctx()); saved = fingerprint(); markDirty(); }
+/**
+ * 导入一份关卡文本：撞 id 就问「覆盖更新」还是「另存为新关」，绝不静默改写别人的关卡。
+ * 导入后重新拉一次关卡库：写盘失败（磁盘错误、权限）会体现在 lastLevelsError 里，界面能看到真实结果。
+ */
+async function importWithChoice(text) {
+  const probe = parseLevel(text, ctx());
+  const same = findLevel(probe.id);
+  const overwrite = same
+    ? confirm(`关卡库里已经有同一关「${same.name}」（id ${same.id}）。\n\n确定 = 覆盖更新那一关（内容会被这份文件替换）\n取消 = 另存为新关卡（新 id，旧关卡保留）`)
+    : false;
+  const level = await importLevel(text, ctx(), { mode: overwrite ? 'overwrite' : 'copy' });
+  await loadLevels(ctx());
+  if (lastLevelsError()) throw new Error(lastLevelsError());
+  return level;
+}
+function requireName(name, exceptId = current?.id) {
+  const problem = levelNameProblem(name);
+  if (problem) throw new LevelError('level.name', problem);
+  if (nameTaken(name, exceptId)) throw new LevelError('level.name', `已经有叫「${name}」的关卡了`);
+}
+/** 保存：id 不动；关卡名变了，磁盘上的文件跟着改名。失败抛出，界面显示原因。 */
+async function save() {
+  requireReady();
+  await saveLevel(current, ctx(), { wait: true });
+  saved = fingerprint(); markDirty(); showError(); renderNameHints();
+  return current;
+}
+/** 另存为：新 id、新文件名，当前编辑对象切到那一关，原关卡一个字不动。 */
+async function saveAs(name) {
+  requireReady();
+  requireName(name, '');   // 另存为总造新关卡，所以名字不能被任何一关占着
+  const savedLevel = await saveLevelAs(current, ctx(), name);
+  current = cloneLevel(savedLevel); past = []; future = []; transaction = null;
+  timeline?.setLevel(current);
+  // 地址栏跟着换成新关卡的 id：另存为之后再刷新，打开的是刚存下的这一份，而不是原关卡。
+  history.replaceState(null, '', `/studio/level.html?level=${encodeURIComponent(current.id)}`);
+  saved = fingerprint(); markDirty(); refresh(); renderNameHints();
+}
+function renderNameHints() {
+  if (!current) return;
+  const nameHint = root.querySelector('#lv-name-hint');
+  if (nameHint) nameHint.textContent = nameTaken(current.name, current.id) ? `关卡库里已经有叫「${current.name}」的关卡了，换个名字再保存。` : `关卡名同时是文件名（${current.name}.json），保存时一并重命名。`;
+  const idHint = root.querySelector('#lv-id-hint'); if (idHint) idHint.textContent = current.id;
+  const sub = root.querySelector('.lv-head .lv-sub'); if (sub) sub.textContent = `${current.name}.json`;
+}
 function download(name, text) {
   const url = URL.createObjectURL(new Blob([text], { type: 'application/json' })), a = document.createElement('a'); a.href = url; a.download = `${name}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -181,17 +226,17 @@ function renderList() {
       else if (b.dataset.act === 'del' && confirm('删除这张关卡？')) { deleteLevel(id, ctx()); renderList(); }
       else if (b.dataset.act === 'export') { const lv = levels.find((v) => v.id === id); download(lv.name, exportLevel(lv)); }
       else if (b.dataset.act === 'import') root.querySelector('#lv-import').showModal();
-      else if (b.dataset.act === 'import-text') openLevel(importLevel(root.querySelector('#lv-import-text').value, ctx()).id);
+      else if (b.dataset.act === 'import-text') { importWithChoice(root.querySelector('#lv-import-text').value).then((lv) => openLevel(lv.id)).catch(fail); }
       else if (b.dataset.act === 'import-url') {
         const url = root.querySelector('#lv-import-url').value.trim();
         if (!url) { fail(new Error('先填一个链接')); return; }
         b.disabled = true;
-        importLevelFromUrl(url, ctx()).then((lv) => { root.querySelector('#lv-import')?.close(); openLevel(lv.id); })
+        fetchLevelText(url).then((text) => importWithChoice(text)).then((lv) => { root.querySelector('#lv-import')?.close(); openLevel(lv.id); })
           .catch((err) => fail(err)).finally(() => { b.disabled = false; });
       }
     } catch (err) { fail(err); }
   };
-  root.onchange = async (e) => { if (e.target.id !== 'lv-file' || !e.target.files[0]) return; try { openLevel(importLevel(await e.target.files[0].text(), ctx()).id); } catch (err) { fail(err); } };
+  root.onchange = async (e) => { if (e.target.id !== 'lv-file' || !e.target.files[0]) return; try { openLevel((await importWithChoice(await e.target.files[0].text())).id); } catch (err) { fail(err); } };
 }
 function renderEditor() {
   setTerminalState('editor', () => {
@@ -205,13 +250,13 @@ function renderEditor() {
   });
   root.className = 'lv-workspace lv-workspace--editor';
   sidePage = 'tool';
-  root.innerHTML = `<header class="lv-head"><h1>关卡制作器</h1><span class="lv-sub">${esc(current.id)}</span><span class="lv-spacer"></span></header>
-    <div class="lv-toolbar"><button class="lv-btn lv-btn--pri" data-act="save">保存</button><button class="lv-btn" data-act="export">导出</button><button class="lv-btn" data-act="play">试玩</button><button class="lv-btn" data-act="undo">撤销</button><button class="lv-btn" data-act="redo">重做</button><span id="lv-dirty" class="lv-dirty"></span><button class="lv-btn lv-enemy-button" data-open-panel="lv-enemy-dialog">选择敌人 ▾</button><span class="lv-spacer"></span><button class="lv-btn" data-mode="terrain">地形</button><button class="lv-btn" data-mode="route">路线</button><button class="lv-btn" data-mode="spawn">出生</button></div>
+  root.innerHTML = `<header class="lv-head"><h1>关卡制作器</h1><span class="lv-sub">${esc(current.name)}.json</span><span class="lv-spacer"></span></header>
+    <div class="lv-toolbar"><button class="lv-btn lv-btn--pri" data-act="save">保存</button><button class="lv-btn" data-act="save-as">另存为</button><button class="lv-btn" data-act="export">导出</button><button class="lv-btn" data-act="play">试玩</button><button class="lv-btn" data-act="undo">撤销</button><button class="lv-btn" data-act="redo">重做</button><span id="lv-dirty" class="lv-dirty"></span><button class="lv-btn lv-enemy-button" data-open-panel="lv-enemy-dialog">选择敌人 ▾</button><span class="lv-spacer"></span><button class="lv-btn" data-mode="terrain">地形</button><button class="lv-btn" data-mode="route">路线</button><button class="lv-btn" data-mode="spawn">出生</button></div>
     <button id="lv-error" class="lv-err lv-editor-error" data-open-panel="lv-error-dialog" hidden></button>
     <div class="lv-stage"><div class="lv-canvas-wrap"><div id="lv-map-host"></div></div><aside class="lv-side"><nav class="lv-side-tabs"><button class="lv-btn" data-side-page="tool">当前工具</button><button class="lv-btn" data-side-page="info">关卡信息</button></nav>
-      <section id="lv-info"><h2>关卡信息</h2><div class="lv-field"><label>名称</label><input data-level-field="name" maxlength="40" value="${esc(current.name)}"></div><div class="lv-field"><label>难度星级</label><input data-level-field="difficulty" type="number" min="0" max="5" step="1" value="${current.meta.difficulty}"></div><div class="lv-field"><label>部署上限</label><input data-level-field="deployLimit" type="number" min="1" max="13" step="1" value="${current.meta.deployLimit ?? DEFAULT_DEPLOY_LIMIT}"></div><div class="lv-field"><label>目标生命上限</label><input data-level-field="lifeLimit" type="number" min="1" max="999" step="1" value="${current.meta.lifeLimit ?? DEFAULT_LIFE_LIMIT}"></div><div class="lv-field"><label>标签</label><input data-level-field="tags" value="${esc(current.meta.tags.join('，'))}" placeholder="用逗号分隔"></div><div class="lv-field"><label>作者</label><input data-level-field="author" maxlength="40" value="${esc(current.meta.author || '')}" placeholder="署名，会写进关卡 JSON"></div><div class="lv-field"><label>作战音乐</label><select data-level-field="bgm">${musicOptions(current.meta.bgm)}</select></div><button class="lv-btn" data-open-panel="lv-note-dialog">编辑备注</button><p class="lv-note-preview">${esc(notePreview(current.meta.note))}</p></section>
+      <section id="lv-info"><h2>关卡信息</h2><div class="lv-field"><label>关卡名</label><input data-level-field="name" maxlength="40" value="${esc(current.name)}" title="关卡名就是磁盘上的文件名，保存时一并重命名"></div><p class="lv-hint" id="lv-name-hint">关卡名同时是文件名（${esc(current.name)}.json），保存时一并重命名。</p><p class="lv-hint">关卡 id：<code id="lv-id-hint">${esc(current.id)}</code>（创建时固定，不随改名改变）</p><div class="lv-field"><label>难度星级</label><input data-level-field="difficulty" type="number" min="0" max="${MAX_DIFFICULTY}" step="1" value="${current.meta.difficulty}"></div><div class="lv-field"><label>部署上限</label><input data-level-field="deployLimit" type="number" min="1" max="13" step="1" value="${current.meta.deployLimit ?? DEFAULT_DEPLOY_LIMIT}"></div><div class="lv-field"><label>目标生命上限</label><input data-level-field="lifeLimit" type="number" min="1" max="999" step="1" value="${current.meta.lifeLimit ?? DEFAULT_LIFE_LIMIT}"></div><div class="lv-field"><label>标签</label><input data-level-field="tags" value="${esc(current.meta.tags.join('，'))}" placeholder="用逗号分隔"></div><div class="lv-field"><label>作者</label><input data-level-field="author" maxlength="40" value="${esc(current.meta.author || '')}" placeholder="署名，会写进关卡 JSON"></div><div class="lv-field"><label>作战音乐</label><select data-level-field="bgm">${musicOptions(current.meta.bgm)}</select></div><button class="lv-btn" data-open-panel="lv-note-dialog">编辑备注</button><p class="lv-note-preview">${esc(notePreview(current.meta.note))}</p></section>
 
-      <section id="lv-terrain"></section><section id="lv-routes"></section><section id="lv-spawns"></section></aside></div><div class="lv-timeline" id="lv-timeline"></div>      <dialog id="lv-enemy-dialog" class="lv-dialog"><header><h2>敌人库</h2><button class="lv-btn" data-close-panel>完成选择</button></header><div class="lv-dialog-body"><input id="lv-enemy-search" placeholder="搜索敌人名称 / 编号" value="${esc(search)}"><div class="lv-row"><select id="lv-enemy-rank"><option value="">全部等级</option><option value="NORMAL">普通</option><option value="ELITE">精英</option><option value="BOSS">首领</option></select><label><input id="lv-enemy-fly" type="checkbox"${flyOnly ? ' checked' : ''}>飞行</label><label><input id="lv-enemy-ranged" type="checkbox"${rangedOnly ? ' checked' : ''}>远程</label></div><label class="lv-hint"><input id="lv-enemy-stats" type="checkbox"${showStats ? ' checked' : ''}>显示未验证（特性未实现）</label><div class="lv-field"><select id="lv-enemy-pick"></select></div><p id="lv-enemy-note" class="lv-hint"></p></div></dialog><dialog id="lv-note-dialog" class="lv-dialog"><header><h2>关卡备注</h2><button class="lv-btn" data-close-panel>完成</button></header><div class="lv-dialog-body"><textarea data-level-field="note" maxlength="400" rows="8">${esc(current.meta.note)}</textarea></div></dialog><dialog id="lv-error-dialog" class="lv-dialog"><header><h2>关卡问题</h2><button class="lv-btn" data-close-panel>关闭</button></header><pre class="lv-dialog-body" id="lv-error-details"></pre></dialog>`;
+      <section id="lv-terrain"></section><section id="lv-routes"></section><section id="lv-spawns"></section></aside></div><div class="lv-timeline" id="lv-timeline"></div>      <dialog id="lv-enemy-dialog" class="lv-dialog"><header><h2>敌人库</h2><button class="lv-btn" data-close-panel>完成选择</button></header><div class="lv-dialog-body"><input id="lv-enemy-search" placeholder="搜索敌人名称 / 编号" value="${esc(search)}"><div class="lv-row"><select id="lv-enemy-rank"><option value="">全部等级</option><option value="NORMAL">普通</option><option value="ELITE">精英</option><option value="BOSS">首领</option></select><label><input id="lv-enemy-fly" type="checkbox"${flyOnly ? ' checked' : ''}>飞行</label><label><input id="lv-enemy-ranged" type="checkbox"${rangedOnly ? ' checked' : ''}>远程</label></div><label class="lv-hint"><input id="lv-enemy-stats" type="checkbox"${showStats ? ' checked' : ''}>显示未验证（特性未实现）</label><div class="lv-field"><select id="lv-enemy-pick"></select></div><p id="lv-enemy-note" class="lv-hint"></p></div></dialog><dialog id="lv-note-dialog" class="lv-dialog"><header><h2>关卡备注</h2><button class="lv-btn" data-close-panel>完成</button></header><div class="lv-dialog-body"><textarea data-level-field="note" maxlength="400" rows="8">${esc(current.meta.note)}</textarea></div></dialog><dialog id="lv-saveas-dialog" class="lv-dialog"><header><h2>另存为</h2><button class="lv-btn" data-close-panel>取消</button></header><div class="lv-dialog-body"><div class="lv-field"><label>新关卡名</label><input id="lv-saveas-name" maxlength="40" value="${esc(current.name)} 副本"></div><p class="lv-hint">会以这个名字新建一份关卡文件，原关卡一个字不动；新关卡拿到一个新的 id。</p><p class="lv-hint" id="lv-saveas-status"></p><div class="lv-row"><button class="lv-btn lv-btn--pri" data-act="saveas-confirm">另存为</button></div></div></dialog><dialog id="lv-error-dialog" class="lv-dialog"><header><h2>关卡问题</h2><button class="lv-btn" data-close-panel>关闭</button></header><pre class="lv-dialog-body" id="lv-error-details"></pre></dialog>`;
   timeline = new LevelTimeline(root.querySelector('#lv-timeline'), { enemies: ENEMY_LIBRARY.official, names, speeds: () => speedOf, duration: () => duration,
     change, onError: fail, onBeforeChange: begin, onChange: () => { if (!timeline.drag) commit(); refresh(); },
     onSelect: () => { renderSpawn(); tracer?.highlight(timeline.selected); }, onCursor: (t) => { cursor = t; tracer?.showAt(t); }, onPlace: placeAtTime });
@@ -239,8 +284,17 @@ function renderEditor() {
     try {
       if (b.dataset.mode) { drawingSpawnId = null; setMode(b.dataset.mode); return; }
       if (b.dataset.act === 'back') { finishEdits(); if (dirty && !confirm('有未保存的改动，仍要返回列表吗？')) return; disposeEditor(); current = null; dirty = false; error = ''; renderList(); }
-      else if (b.dataset.act === 'save') save();
-      else if (b.dataset.act === 'play') { save(); window.open(`/studio/play.html?level=${encodeURIComponent(current.id)}`, '_blank', 'noopener'); }
+      else if (b.dataset.act === 'save') save().catch(fail);
+      else if (b.dataset.act === 'save-as') { const dlg = root.querySelector('#lv-saveas-dialog'); dlg.querySelector('#lv-saveas-name').value = `${current.name} 副本`; dlg.querySelector('#lv-saveas-status').textContent = ''; dlg.showModal(); }
+      else if (b.dataset.act === 'saveas-confirm') {
+        const status = root.querySelector('#lv-saveas-status');
+        const name = root.querySelector('#lv-saveas-name').value.trim();
+        b.disabled = true;
+        saveAs(name).then(() => { root.querySelector('#lv-saveas-dialog')?.close(); })
+          .catch((err) => { status.textContent = err instanceof LevelError ? `${err.path}：${err.reason}` : err.message; })
+          .finally(() => { b.disabled = false; });
+      }
+      else if (b.dataset.act === 'play') { save().then(() => window.open(`/studio/play.html?level=${encodeURIComponent(current.id)}`, '_blank', 'noopener')).catch(fail); }
       else if (b.dataset.act === 'export') { requireReady(); download(current.name, exportLevel(current)); }
       else if (b.dataset.act === 'undo') undo(); else if (b.dataset.act === 'redo') undo(true);
       else if (b.dataset.act === 'spawn-delete') change(() => timeline.remove());
@@ -258,7 +312,7 @@ function renderEditor() {
       else if (el.id === 'lv-enemy-stats') showStats = el.checked;
       else if (el.id === 'lv-enemy-pick') { draftEnemy = el.value; renderEnemyPick(); return; }
       else if (el.dataset.levelField) {
-        const f = el.dataset.levelField; change(() => { if (f === 'name') current.name = el.value; else if (['difficulty', 'deployLimit', 'lifeLimit'].includes(f)) { const v = el.valueAsNumber, min = f === 'difficulty' ? 0 : 1, max = f === 'difficulty' ? 5 : f === 'deployLimit' ? 13 : 999; if (!Number.isInteger(v) || v < min || v > max) throw new Error(`此项须为 ${min}–${max} 的整数`); current.meta[f] = v; } else if (f === 'tags') current.meta.tags = el.value.split(/[,，]/).map((v) => v.trim()).filter(Boolean); else if (f === 'bgm') { if (el.value) current.meta.bgm = el.value; else delete current.meta.bgm; } else if (f === 'author') { const v = el.value.trim().slice(0, 40); if (v) current.meta.author = v; else delete current.meta.author; } else current.meta.note = el.value; }); const note = root.querySelector('.lv-note-preview'); if (note) note.textContent = notePreview(current.meta.note); return;
+        const f = el.dataset.levelField; change(() => { if (f === 'name') { const v = el.value.trim(); const problem = levelNameProblem(v); if (problem) throw new LevelError('level.name', problem); if (nameTaken(v, current.id)) throw new LevelError('level.name', `已经有叫「${v}」的关卡了`); current.name = v; } else if (['difficulty', 'deployLimit', 'lifeLimit'].includes(f)) { const v = el.valueAsNumber, min = f === 'difficulty' ? 0 : 1, max = f === 'difficulty' ? MAX_DIFFICULTY : f === 'deployLimit' ? 13 : 999; if (!Number.isInteger(v) || v < min || v > max) throw new Error(`此项须为 ${min}–${max} 的整数`); current.meta[f] = v; } else if (f === 'tags') current.meta.tags = el.value.split(/[,，]/).map((v) => v.trim()).filter(Boolean); else if (f === 'bgm') { if (el.value) current.meta.bgm = el.value; else delete current.meta.bgm; } else if (f === 'author') { const v = el.value.trim().slice(0, 40); if (v) current.meta.author = v; else delete current.meta.author; } else current.meta.note = el.value; }); const note = root.querySelector('.lv-note-preview'); if (note) note.textContent = notePreview(current.meta.note); return;
       } else if (el.dataset.spawnField && timeline.selected) {
         const s = timeline.selected, f = el.dataset.spawnField;
         if (f === 'route' && el.value === '__new') { drawingSpawnId = s.id; setMode('route'); routes.startNew(); return; }

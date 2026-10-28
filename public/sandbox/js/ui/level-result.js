@@ -1,7 +1,7 @@
 import { scoreTableMarkup } from './scoreboard.js';
 import { esc } from './html.js';
 import { groundPlaneTransform } from '../ground-plane.js';
-import { loadLevels, listLevels, lastLevelsError, saveLevel } from '../../../level/js/level-store.js';
+import { loadLevels, listLevels, lastLevelsError, saveLevel, uniqueName, nameTaken } from '../../../level/js/level-store.js';
 import { fadeOutLevelBgm } from '../level-bgm.js';
 
 /** 仅消费结算时的快照；延迟和入场动效不参与战斗推进。 */
@@ -70,7 +70,13 @@ export function createLevelResult({ battle, run, canvas, getView, preferences, r
           await loadLevels();
           if (destroyed) return;
           if (lastLevelsError()) throw new Error(lastLevelsError());
-          if (!listLevels().some((level) => level.id === run.levelId)) await saveLevel(run.level, {}, { wait: true });
+          if (!listLevels().some((level) => level.id === run.levelId)) {
+            // 临时玩过、库里没有的关卡：存进库时若名字已被别的关卡占着，就换上原名 2、原名 3……，
+            // 不能覆盖别人的文件。
+            const level = structuredClone(run.level);
+            if (nameTaken(level.name)) level.name = uniqueName(level.name);
+            await saveLevel(level, {}, { wait: true });
+          }
           if (!destroyed) location.assign(`/studio/level.html?level=${encodeURIComponent(run.levelId)}`);
         } catch (error) {
           if (!destroyed) { button.disabled = false; dialog.querySelector('[role="status"]').textContent = error.message; }

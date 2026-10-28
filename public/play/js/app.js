@@ -67,11 +67,16 @@ function showImport() {
       return;
     }
     if (!e.target.closest('[data-import]')) return;
+    const button = e.target.closest('[data-import]');
     try {
       const text = dialog.querySelector('[data-json]').value;
-      selected = dialog.querySelector('[data-keep]').checked ? importLevel(text, context) : parseLevel(text, context);
+      const keep = dialog.querySelector('[data-keep]').checked;
+      // 游玩页的「存入本地关卡库」是明确的入库动作：同一关（id 相同）就按更新覆盖，不另造副本。
+      button.disabled = true;
+      selected = keep ? await importLevel(text, context, { mode: 'overwrite' }) : parseLevel(text, context);
       transient = selected; error = ''; dialog.close(); renderLevels();
     } catch (err) { dialog.querySelector('[data-import-error]').textContent = err.message; }
+    finally { button.disabled = false; }
   });
 }
 function getSkill(id) {
