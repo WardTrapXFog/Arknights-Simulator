@@ -14,7 +14,7 @@ export const STOP_AT_END = 99999;
 /**
  * @param {object} host 由 controller 注入的运行时依赖
  * @param {() => object} host.state 沙盒状态
- * @param {() => object} host.battle 当前战斗
+ * @param {() => boolean} host.alive 会话是否活着（原来叫 battle，返回引擎实例）
  * @param {() => object} host.view 当前战场视图
  * @param {(msg: string, bad?: boolean) => void} host.warn
  * @param {() => void} host.renderDrawer
@@ -173,15 +173,14 @@ export function createEnemyPlacement(host, deps) {
 
   /** 逐段检查路线是否走得通（用引擎的真实寻路，忽略阻挡物也走不通才算错）。 */
   function firstBlockedSegment(route) {
-    const battle = host.battle();
-    if (!battle) return null;
+    if (!host.alive()) return null;
     const pts = [[route.start[0], route.start[1]]];
     for (const cp of route.checkpoints || []) if (cp.type === 'MOVE' && cp.pos) pts.push([cp.pos[0], cp.pos[1]]);
     if (route.end) pts.push([route.end[0], route.end[1]]);
     for (let i = 0; i < pts.length - 1; i++) {
       const [r0, c0] = pts[i], [r1, c1] = pts[i + 1];
       try {
-        const path = battle.grid?.pathBetween?.(r0, c0, r1, c1, { ignoreBlockers: true });
+        const path = host.grid()?.pathBetween?.(r0, c0, r1, c1, { ignoreBlockers: true });
         if (Array.isArray(path) && path.length === 0 && (r0 !== r1 || c0 !== c1)) return i + 1;
       } catch { /* 没有这个查询就当作可走 */ }
     }
@@ -269,10 +268,10 @@ export function createEnemyPlacement(host, deps) {
 
   /** 屏幕上那个矩形里有哪些敌人（用视图的投影换算）。 */
   function enemiesInScreenRect(x0, y0, x1, y1) {
-    const view = host.view(), battle = host.battle();
-    if (!view || !battle) return [];
+    const view = host.view();
+    if (!view || !host.alive()) return [];
     const out = [];
-    for (const e of battle.enemies) {
+    for (const e of host.enemies()) {
       if (!e.alive) continue;
       const p = view.tileScreen(Math.round(e.y), Math.round(e.x));
       if (!p) continue;
@@ -283,10 +282,9 @@ export function createEnemyPlacement(host, deps) {
 
   /** 某格上的敌人（取最近的）。 */
   function enemyAt(row, col) {
-    const battle = host.battle();
-    if (!battle) return null;
+    if (!host.alive()) return null;
     let best = null, bestD = ENEMY_HIT_RADIUS;
-    for (const e of battle.enemies) {
+    for (const e of host.enemies()) {
       if (!e.alive) continue;
       const d = Math.hypot(e.y - row, e.x - col);
       if (d <= bestD) { best = e; bestD = d; }
@@ -306,8 +304,8 @@ export function createEnemyPlacement(host, deps) {
     const name = e.name ?? e.defId;
     // `['fx','hitCap',…,{ consumed:true }]`：渲染这一侧本来就不画（hitCap 是 a:'none'），
     // 音频这一侧把它记成“用尽”，随后 kill 产生的 die 就不再响“被击倒 / 敌人死亡”。
-    try { host.battle().fx('hitCap', { x: e.x, y: e.y, id: e.id, consumed: true }); } catch { /* ignore */ }
-    host.battle().kill(e, null);
+    try { host.fx('hitCap', { x: e.x, y: e.y, id: e.id, consumed: true }); } catch { /* ignore */ }
+    host.kill(e);
     host.removeEnemy(e);
     host.saveLocal();
     warn(`已删除 ${name}`);
@@ -315,11 +313,11 @@ export function createEnemyPlacement(host, deps) {
   }
 
   function paintBatch() {
-    const view = host.view(), battle = host.battle();
+    const view = host.view();
     if (!view) return;
     const ids = new Set(state().ui.batchSel);
     const tiles = [];
-    for (const e of battle?.enemies || []) {
+    for (const e of host.enemies()) {
       if (!e.alive || !ids.has(e.id)) continue;
       tiles.push([Math.round(e.y), Math.round(e.x)]);
     }

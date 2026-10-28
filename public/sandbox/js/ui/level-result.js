@@ -5,11 +5,12 @@ import { loadLevels, listLevels, lastLevelsError, saveLevel, uniqueName, nameTak
 import { fadeOutLevelBgm } from '../level-bgm.js';
 
 /** 仅消费结算时的快照；延迟和入场动效不参与战斗推进。 */
-export function createLevelResult({ battle, run, canvas, getView, preferences, reduceMotion, onRetry }) {
-  const success = battle.reason === 'cleared' && battle.leakedCount < battle.flags.lifeLimit;
-  const report = { killed: battle.killed, leaked: battle.leakedCount, time: battle.time,
-    life: Math.max(0, battle.flags.lifeLimit - battle.leakedCount), lifeLimit: battle.flags.lifeLimit,
-    score: structuredClone(battle.sandboxScore.read()) };
+export function createLevelResult({ result, run, canvas, getView, preferences, reduceMotion, onRetry }) {
+  // `result` 是会话门面给出的结算读数，不是引擎实例：{ cleared, killed, leaked, time, life, lifeLimit, score }。
+  const success = result.cleared && result.leaked < result.lifeLimit;
+  const report = { killed: result.killed, leaked: result.leaked, time: result.time,
+    life: Math.max(0, result.lifeLimit - result.leaked), lifeLimit: result.lifeLimit,
+    score: structuredClone(result.score) };
   const born = performance.now();
   const delay = reduceMotion ? 120 : 450;
   let begun = false, cueDone = false, fallbackAt = Infinity, exitAt = null, cue = null;

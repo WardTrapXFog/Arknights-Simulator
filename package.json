@@ -35,7 +35,9 @@
     "launch": "node scripts/launch.mjs",
     "levels": "node tools/check-levels.mjs",
     "levels:stamp": "node tools/check-levels.mjs --stamp",
-    "levels:list": "node tools/check-levels.mjs --list"
+    "levels:list": "node tools/check-levels.mjs --list",
+    "session": "node tools/check-session-boundary.mjs",
+    "check": "npm run session && npm run levels"
   },
   "engines": {
     "node": ">=22"

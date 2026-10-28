@@ -47,7 +47,8 @@ tools/               内部数据维护与素材脚本
 | `ui/save-manager.js` | 入口使用内嵌预览与六槽管理，战场使用原生 dialog；共用操作确认、命名、复制目标与错误反馈。 |
 | `settings.js` `ui/settings.js` | 复用上游 `sanitizeSettings` 的全局偏好存储与设置窗口；局外不显示战斗快捷键配置；通过 AudioManager、`view.setSettings` 和文字／动效属性即时生效。`interface-text.css` 在四个入口中统一消费 `data-text`，按小／中／大／特大放大菜单、设置、牌库、详情与计分文字，保持地图和布局根尺寸。 |
 | `debug-log.js` | 局外交互日志：`debugLog`／`debugTimer` 写 console 并批量 POST `/api/log`，开关来自 `/api/debug` 或 localStorage。 |
-| `battle-session.js` | 组装 `BattleSpec`、按部署顺序恢复干员布置、部署判定、出生队列、手动敌人的持久化放置／删除与 runner 启动。 |
+| `session.js` | 界面与引擎之间唯一的会话门面：建场、推进、部署／撤退／刷怪命令、时间与单位查询、事件观测、存档读数。引擎私有成员只允许在这里出现；`tools/check-session-boundary.mjs` 守着这条线。 |
+| `battle-session.js` | 沙盒专属的对局操作：组装 `BattleSpec` 交给会话、部署判定、出生表与手动敌人的持久化放置／删除、runner 启动。 |
 | `damage-score.js` `ui/scoreboard.js` | 沙盒伤害计分与右侧六项面板。前者监听 `damaged` 回调累计四种对敌伤害、用固定 150 桶记录近 5 秒；后者每 200 毫秒刷新数字、占比与短促反馈。 |
 | `battle-runner.js` | 固定步长推进战斗并产出快照/事件（沙盒与关卡游玩共用）。 |
 | `field-view.js` | 战场视图的创建、销毁、快照推送、事件推送、音频接入、选中镜头与表现层接线。 |
@@ -135,7 +136,7 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 ## 5. 出生数据只有一种真相
 
-一次对局的敌人只能来自一处：关卡自带的 `document.spawns`，或沙盒按红门序号编的 `document.waves`。`state.js` 的 `useLevelSpawns` 与 `useSandboxWaves` 是仅有的两个切换口，各自清掉另一方。`battle-session.buildBattle` 的顺序是 `opts.spawns → document.spawns → 波次映射`。
+一次对局的敌人只能来自一处：关卡自带的 `document.spawns`，或沙盒按红门序号编的 `document.waves`。`state.js` 的 `useLevelSpawns` 与 `useSandboxWaves` 是仅有的两个切换口，各自清掉另一方。`session.open`（由 `battle-session.buildBattle` 调用）的顺序是 `opts.spawns → document.spawns → 波次映射`。
 
 ## 6. 内容定义与运行数据
 
@@ -161,5 +162,5 @@ SI 的 `field-view.js` 固定传入 `tierChips:false`，不创建干员血条左
 
 ## 8. 命名规则
 
-文件名说明它做什么，不说明它属于谁：`field-view` 是战场视图，`battle-session` 是一场战斗的会话，`spawn-catalog` 是能刷的敌人。共用的战斗与渲染模块保留原名，SI 页面入口、界面代码、引擎与构建工具按目录区分职责。
+文件名说明它做什么，不说明它属于谁：`field-view` 是战场视图，`session` 是界面与引擎之间的会话门面，`battle-session` 是沙盒这一层的对局操作，`spawn-catalog` 是能刷的敌人。共用的战斗与渲染模块保留原名，SI 页面入口、界面代码、引擎与构建工具按目录区分职责。
 

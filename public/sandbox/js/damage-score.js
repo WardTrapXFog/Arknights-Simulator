@@ -6,6 +6,9 @@
 //   * 召唤物计入其持有者（operatorOf 顺着 ownerUnit 往上找），所以「结构性原理」的伤害算在机械师头上；
 //   * 类型桶用事件里的 type，四种之外一律记「真实」。
 // DPS 用最近 5 秒（游戏时间）的结算量 ÷ 5：暂停时 time 不走，窗口自然冻结。
+//
+// 这一层不看引擎实例：它只拿到会话门面给的几个取值函数（时间、己方单位、事件登记），
+// 所以换引擎时这里一行不用改。
 const TYPES = ['phys', 'arts', 'elemental', 'true'];
 const HZ = 30;
 const WINDOW = HZ * 5;
@@ -19,12 +22,17 @@ function operatorOf(source) {
   return u && u.side === 'ally' && (u.kind === 'op' || u.kind === 'token') ? u : null;
 }
 
-export function createDamageScore(battle, saved) {
+/**
+ * @param {{ now: () => number, allies: () => any[], on: (name: string, fn: Function, opts?: object) => any, off: (h: any) => void }} probe
+ *   会话门面给出的取值函数
+ * @param {object} [saved] 存档里的计分快照
+ */
+export function createDamageScore(probe, saved) {
   const types = Object.fromEntries(TYPES.map((type) => [type, positive(saved?.types?.[type])]));
   // 全局窗口（面板不再显示，但存档里的 total / 快照还用它，别丢）
   const amounts = new Float64Array(WINDOW);
   const marks = new Float64Array(WINDOW).fill(-1);
-  const tick = () => Math.floor(battle.time * HZ + 1e-6);
+  const tick = () => Math.floor(probe.now() * HZ + 1e-6);
   const current = tick();
   for (const [at, amount] of saved?.recent || []) {
     if (!Number.isInteger(at) || at < 0 || at > current || current - at >= WINDOW) continue;
@@ -54,13 +62,13 @@ export function createDamageScore(battle, saved) {
     }
     return row;
   };
-  for (const u of battle.allyUnits || []) rowOf(u);
+  for (const u of probe.allies()) rowOf(u);
 
   // stats.dmg 的增量：每个单位一份上一帧读数
   const seenDmg = new WeakMap();
-  for (const u of battle.allyUnits || []) seenDmg.set(u, positive(u.stats?.dmg));
+  for (const u of probe.allies()) seenDmg.set(u, positive(u.stats?.dmg));
 
-  const hook = battle.on('damaged', ({ source, credit, target, type }) => {
+  const hook = probe.on('damaged', ({ source, credit, target, type }) => {
     const src = credit || source;
     if (!src || src.side !== 'ally' || target?.side !== 'enemy') return;
     const total = positive(src.stats?.dmg);
@@ -111,8 +119,8 @@ export function createDamageScore(battle, saved) {
       for (const type of TYPES) types[type] = 0;
       amounts.fill(0); marks.fill(-1);
       rows.clear();
-      for (const u of battle.allyUnits || []) { seenDmg.set(u, positive(u.stats?.dmg)); rowOf(u); }
+      for (const u of probe.allies()) { seenDmg.set(u, positive(u.stats?.dmg)); rowOf(u); }
     },
-    stop() { battle.off(hook); },
+    stop() { probe.off(hook); },
   };
 }

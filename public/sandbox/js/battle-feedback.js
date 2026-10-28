@@ -1,8 +1,12 @@
 import { COLS } from './battlefield.js';
 import { absoluteRangeKeys } from '/sim/targeting.js';
+import { session } from './session.js';
 
-// Presentation only: the battle owns DP, projectile collisions and all skill state.
-export function createBattleFeedback({ view, battle, canvas }) {
+// 纯表现层：费用、弹道命中与全部技能状态都归战斗会话所有，这里只画。
+//
+// 不持有引擎实例：时间、单位、弹道、费用都经会话门面取，事件也由调用方从门面取来喂进 ingest。
+// 所以换引擎时这个文件不用改。
+export function createBattleFeedback({ view, canvas }) {
   const layer = document.createElement('canvas');
   layer.className = 'battle-feedback';
   canvas.parentElement.append(layer);
@@ -16,13 +20,13 @@ export function createBattleFeedback({ view, battle, canvas }) {
     return { x: p.x + box.left, y: p.y + box.top };
   };
   function ingest(events) {
-    const now = performance.now();
-    for (const [id, until] of pulses) if (until <= battle.time) pulses.delete(id);
+    const now = performance.now(), at = session.time();
+    for (const [id, until] of pulses) if (until <= at) pulses.delete(id);
     for (const e of events) {
-      if (e[0] === 'skill' && e[2]) pulses.set(e[1], battle.time + .65);
+      if (e[0] === 'skill' && e[2]) pulses.set(e[1], at + .65);
       if (e[0] !== 'fx') continue;
       if (e[1] === 'dpGain') gains.push({ x: e[2], y: e[3], n: e[4].n, born: now });
-      if (e[1] === 'danzen') shots.push({ x: e[2], y: e[3], ...e[4], born: battle.time });
+      if (e[1] === 'danzen') shots.push({ x: e[2], y: e[3], ...e[4], born: at });
     }
   }
   function boundary(keys) {
@@ -64,17 +68,18 @@ export function createBattleFeedback({ view, battle, canvas }) {
   function paint(now) {
     if (now - lastPaint < 1000 / 30) return;
     lastPaint = now;
+    const at = session.time(), allies = session.allies();
     const w = innerWidth, h = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
     if (layer.width !== Math.round(w * dpr) || layer.height !== Math.round(h * dpr)) {
       layer.width = Math.round(w * dpr); layer.height = Math.round(h * dpr);
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
     drawnEdges.clear();
-    const activeCount = battle.allyUnits.filter((u) => u.alive && u.deployed && u.skill?.active && u.skill.kind !== 'passive').length;
+    const activeCount = allies.filter((u) => u.alive && u.deployed && u.skill?.active && u.skill.kind !== 'passive').length;
     rangeOpacity = 1 / Math.sqrt(Math.max(1, activeCount));
-    for (const u of battle.allyUnits) {
+    for (const u of allies) {
       if (!u.alive || !u.deployed || u.hidden) continue;
-      if (u.skill?.kind !== 'passive' && (u.skill?.active || (pulses.get(u.id) || 0) > battle.time)) {
+      if (u.skill?.kind !== 'passive' && (u.skill?.active || (pulses.get(u.id) || 0) > at)) {
         const color = u.def.charId === 'char_1045_svash2' ? '#b9edff' : '#ffbf70';
         // Custom operators already draw their own range edge in their dedicated VFX module.
         if (!['char_1503_talula', 'char_9901_vina', 'char_9902_custommakoto', 'char_2027_wang'].includes(u.def.charId)) glow(u.rangeKeys, color, now);
@@ -95,7 +100,7 @@ export function createBattleFeedback({ view, battle, canvas }) {
       }
     }
     for (let i = shots.length - 1; i >= 0; i--) {
-      const s = shots[i], t = (battle.time - s.born) / s.duration;
+      const s = shots[i], t = (at - s.born) / s.duration;
       if (t >= 1) { shots.splice(i, 1); continue; }
       const p = point(s.x + s.dx * t, s.y + s.dy * t, .35);
       const tail = point(s.x + s.dx * Math.max(0, t - .36), s.y + s.dy * Math.max(0, t - .36), .35);
@@ -103,7 +108,7 @@ export function createBattleFeedback({ view, battle, canvas }) {
       ctx.beginPath(); ctx.moveTo(tail.x, tail.y); ctx.lineTo(p.x, p.y); ctx.stroke();
       ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0;
     }
-    for (const p of battle.projectiles.list) {
+    for (const p of session.projectiles()) {
       if (p.visual !== 'nitro') continue;
       const pos = point(p.x, p.y, .4);
       ctx.fillStyle = '#e5fcff'; ctx.shadowColor = '#6dcdff'; ctx.shadowBlur = 20;
@@ -123,7 +128,11 @@ export function createBattleFeedback({ view, battle, canvas }) {
     }
   }
   return { ingest, paint,
-    displayedDp: () => Math.max(battle.players[0].dpFloor || 0, battle.players[0].dp - gains.filter((g) => performance.now() - g.born < 620).reduce((n, g) => n + g.n, 0)),
+    displayedDp: () => {
+      const account = session.account();
+      if (!account) return 0;
+      return Math.max(account.dpFloor || 0, account.dp - gains.filter((g) => performance.now() - g.born < 620).reduce((n, g) => n + g.n, 0));
+    },
     destroy: () => layer.remove(),
   };
 }

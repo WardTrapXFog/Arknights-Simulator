@@ -20,9 +20,8 @@ function skillInfoOf(rec) {
     duration: Number(rec.duration), passive: String(rec.skillType || rec.type || '').toUpperCase() === 'PASSIVE' };
 }
 
-export function createUnitModels({ state, units, charIdOf, selectedUnit, getBattle, getHandRecord, getRangeKeys }) {
+export function createUnitModels({ state, units, charIdOf, selectedUnit, now, canSpend, getHandRecord, getRangeKeys }) {
 function unitVM() {
-  const battle = getBattle();
   const u = selectedUnit();
   if (!u || !u.alive || !u.deployed) return null;
   const sk = u.skill;
@@ -80,8 +79,8 @@ function unitVM() {
     alt: mk ? `面具：${mk.names[mk.index]} · 切换 10 费` : null,
     equipment: mk ? `装备应变 · ${mk.index === 0 ? 3 : mk.index === 1 ? 8 : 50}费` : null,
     // 切换面具的冷却剩余（秒）与费用是否够：两个都要显示，否则玩家点了没反应只能瞎猜
-    altCd: mk ? Math.max(0, (Number(mk.switchAt) || 0) - battle.time) : 0,
-    altPoor: mk ? !battle.canSpendDp(u.ownerId, 10) : false,
+    altCd: mk ? Math.max(0, (Number(mk.switchAt) || 0) - now()) : 0,
+    altPoor: mk ? !canSpend(u.ownerId, 10) : false,
     personaIndex: mk?.index,
   };
 }

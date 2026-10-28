@@ -3,6 +3,7 @@ import { SAVE_KEY, MAX_SQUAD, SPEEDS, useLevelSpawns, useSandboxWaves } from './
 import { ROWS, COLS, DEFAULT_RECT, defaultStage, normRect, gatesOf } from './battlefield.js';
 import { isAvailable, canonicalOperatorId } from './roster.js';
 import { ENEMIES } from './spawn-catalog.js';
+import { session } from './session.js';
 
 const unitRuntime = (unit) => ({ hp: unit.hp, sp: unit.skill?.spTotal, atkCd: unit.atkCd });
 
@@ -22,35 +23,37 @@ function remainingRoute(enemy) {
   return { motion: enemy.motion, start: [enemy.y, enemy.x], end, checkpoints };
 }
 
-export function serializeSandbox(state, battle = null) {
-  const operators = battle ? battle.allyUnits.filter((u) => u.alive && u.deployed && u.hp > 0 && (u.kind === 'op' || (u.kind === 'token' && u.mem.handCard)))
+export function serializeSandbox(state, live = null) {
+  // `live` 是会话是否活着的布尔值，不是引擎实例：存档只从门面取数。
+  const operators = live ? session.allies().filter((u) => u.alive && u.deployed && u.hp > 0 && (u.kind === 'op' || (u.kind === 'token' && u.mem.handCard)))
     .sort((a, b) => a.deploySeq - b.deploySeq).map((u) => ({
       uid: u.uid, chessId: u.defId, row: u.tileR, col: u.tileC, dir: u.dir,
       ...(u.kind === 'token' ? { tokenId: u.defId, ownerUid: u.ownerUnit.uid,
         owner: { chessId: u.ownerUnit.defId, skillIndex: u.ownerUnit.def.loadout?.skillIndex, moduleId: u.ownerUnit.def.loadout?.moduleId } } : {}),
       skillIndex: u.mem.customMakoto?.index ?? u.skill?.index ?? u.def?.skill?.index ?? 0, runtime: unitRuntime(u),
     })) : state.document.operators;
-  const enemies = battle?.enemies.filter((e) => e.alive && e.deployed && e.hp > 0);
+  const enemies = live ? session.enemies().filter((e) => e.alive && e.deployed && e.hp > 0) : null;
   const spawns = enemies ? enemies.map((e, i) => ({
     enemyKey: e.defId, pos: [e.y, e.x], route: remainingRoute(e), mods: e.mods,
     time: 0, count: 1, tag: `sandbox:enemy:${i + 1}`, runtime: unitRuntime(e),
   })) : state.document.spawns;
+  const tally = live ? session.tally() : null;
   return {
     format: 3,
     stage: { ...state.document.stage, rect: normRect(state.document.stage.rect) },
-    waves: battle ? [] : state.document.waves, squad: state.document.squad,
+    waves: live ? [] : state.document.waves, squad: state.document.squad,
     spawns: spawns ?? null, levelName: state.document.levelName ?? null,
     operators: operators.map((o) => ({ ...o })),
     skillSelections: { ...state.document.skillSelections }, nextEnemyId: enemies ? enemies.length + 1 : state.document.nextEnemyId,
-    session: battle ? { time: battle.time, dp: battle.players[0].dp, killed: battle.killed, leaked: battle.leakedCount,
-      score: battle.sandboxScore?.snapshot() } : state.document.session,
+    session: live ? { time: tally.time, dp: session.cost(), killed: tally.killed, leaked: tally.leaked,
+      score: session.score()?.snapshot() } : state.document.session,
     settings: { board: state.ui.board, speed: state.ui.speed, payDp: state.ui.payDp },
   };
 }
 
-export function saveLocal(state, storage = globalThis.localStorage, battle = null) {
+export function saveLocal(state, storage = globalThis.localStorage, live = null) {
   try {
-    storage.setItem(SAVE_KEY, JSON.stringify(serializeSandbox(state, battle)));
+    storage.setItem(SAVE_KEY, JSON.stringify(serializeSandbox(state, live)));
   } catch { /* ignore */ }
 }
 
@@ -116,7 +119,7 @@ export function savedStage(storage = globalThis.localStorage) {
  * 换一张地形：只保留这张图自己的波次。
  *
  * 从关卡制作器带进来的 `spawns` 属于上一张图，换图时必须一并清掉，否则
- * `battle-session.buildBattle` 会继续优先读它，新地图只换了背景、敌人还是旧的。
+ * `session.open` 建场时会继续优先读它，新地图只换了背景、敌人还是旧的。
  * 同理清掉 `levelName`，它描述的也是那一关。
  */
 export function commitStage(stage, storage = globalThis.localStorage) {
@@ -137,7 +140,7 @@ export function commitStage(stage, storage = globalThis.localStorage) {
 
 /**
  * 从关卡制作器带一张关卡进沙盒：写入它的地形与出生表。
- * 出生表直接是引擎格式（`levelSpawns` 的产物），沙盒按原样喂给 `buildBattle`，
+ * 出生表直接是引擎格式（`levelSpawns` 的产物），沙盒按原样喂给会话，
  * 所以钉住的波次、自定义路线都不会在沙盒里被重新解释一遍。
  */
 export function commitLevel(level, spawns, storage = globalThis.localStorage) {

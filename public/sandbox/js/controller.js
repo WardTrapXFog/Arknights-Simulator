@@ -4,10 +4,10 @@ import { setTerminalState } from './terminal-shell.js';
 // 页面在浏览器里直接跑引擎（/sim/ 与 /data/ 都是静态挂载），不连服务器、不要工作台密钥：
 //   const ds = new DataSource({ stages: { sandbox: stage } }, sim.ds)   // 自定义地图叠在官方数据之上
 //   const b  = createBattleFromSpec(buildBattleSpec({...}), ds)          // 与服务器同构的一场战斗
-// 局内操作直接调 battle 的方法（没有指令协议层）：
-//   部署干员  battle._createAllyFromInput(ps, {chessId,row,col,dir,skillIndex}) + battle._deploy(u)
+// 局内操作统一经 ./session.js 的会话门面（没有指令协议层）：
+//   部署干员  session.makeAlly({chessId,row,col,dir,skillIndex}) + session.deployUnit(u)
 //   开技能    unit.skill.activate('manual')
-//   刷敌人    battle.spawnEnemy(key, { pos | route | routeIndex, mods })
+//   刷敌人    session.spawnEnemy(key, { pos | route | routeIndex, mods })
 // 改图 = 改 stage.rows 的一个字符 + 重建战斗：地形、寻路（官方 SPFA 流场）、渲染读的是同一张字形表。
 //
 // 这一层只做编排：状态在 state 里，画面交给 hud.js（DOM）+ render/app.js（战场），部署朝向交给官方四向轮盘
@@ -33,7 +33,8 @@ import { TALULA, SPEEDS, MAX_SQUAD, createSandboxState, useLevelSpawns } from '.
 import { loadOperatorLibrary, operatorSource } from './operator-library.js';
 import { createCatalog } from './operator-catalog.js';
 import { createUnitModels } from './panel-models.js';
-import { battle, runner, buildBattle, startRunner, unitAt, deploymentError, deployOperator, placeSandboxEnemy, removeSandboxEnemy } from './battle-session.js';
+import { buildBattle, startRunner, unitAt, deploymentError, deployOperator, placeSandboxEnemy, removeSandboxEnemy } from './battle-session.js';
+import { session } from './session.js';
 import { view, rebuildField, presentFrame, setSelectionFocus, paintBattleFeedback, displayedDp } from './field-view.js';
 import { saveLocal as saveLocalState, loadLocal as loadLocalState, serializeSandbox } from './save.js';
 import { openSaveManager } from './ui/save-manager.js';
@@ -51,8 +52,8 @@ const state = createSandboxState();
 let levelRun = null, resultShown = false, levelResult = null;
 let levelDeployment = null;
 let exitWasPlaying = false;
-const sceneSnapshot = () => serializeSandbox(state, battle);
-const saveLocal = () => { if (!levelRun) saveLocalState(state, undefined, battle); };
+const sceneSnapshot = () => serializeSandbox(state, session.alive());
+const saveLocal = () => { if (!levelRun) saveLocalState(state, undefined, session.alive()); };
 const loadLocal = () => loadLocalState(state);
 let preferences = loadSettings();
 
@@ -63,7 +64,7 @@ function applyPreferences(value) {
   audio.setVoiceNative(value.voiceNative);
   // 关卡自带音乐也遵守共用的背景音乐音量和静音设置。
   const vol = value.muted ? 0 : bgmVolume(value);
-  const bgm = battle?.finished ? null : playLevelBgm(levelBgmUrl(levelRun?.document?.meta), vol);
+  const bgm = session.finished() ? null : playLevelBgm(levelBgmUrl(levelRun?.document?.meta), vol);
   if (bgm) bgm.volume = vol;
   applyInterfaceSettings(value);
   view?.setSettings(value);
@@ -97,12 +98,12 @@ const { units, opVM, allOps, reserveSlots, squadVMs, charIdOf, rangeGridOf } = c
 /* 一场战斗                                                                                                        */
 /* -------------------------------------------------------------------------------------------------------------- */
 
-async function resetBattle({ paused = !(runner?.playing), resetSession = false } = {}) {
+async function resetBattle({ paused = !session.driver()?.playing, resetSession = false } = {}) {
   levelResult?.destroy(); levelResult = null;
   if (levelRun) cancelLevelDeployment();
   if (levelRun && resetSession) {
     state.document = structuredClone(levelRun.document); resultShown = false;
-  } else if (battle) {
+  } else if (session.alive()) {
     const snapshot = sceneSnapshot();
     state.document.operators = snapshot.operators;
     state.document.nextEnemyId = snapshot.nextEnemyId;
@@ -121,7 +122,7 @@ async function resetBattle({ paused = !(runner?.playing), resetSession = false }
   state.ui.popOpen = false;
   hud.setSelMark(refs, null);
   renderHand();
-  if (!await rebuildField({ canvas: refs.canvas, assets, battle, stage: state.document.stage, board: state.ui.board, settings: preferences, onTileClick, onPieceClick })) return;
+  if (!await rebuildField({ canvas: refs.canvas, assets, stage: state.document.stage, board: state.ui.board, settings: preferences, onTileClick, onPieceClick })) return;
   deploymentTilesSig = '';
   applyTileOnly();          // 重建战场后恢复“只认格子”的放置模式
   if (state.ui.place === 'route') paintRoute();
@@ -129,7 +130,7 @@ async function resetBattle({ paused = !(runner?.playing), resetSession = false }
   startRunner({ speed: state.ui.speed, paused, onFrame: presentFrame });
   if (levelRun) applyPreferences(preferences);
   syncHud(true);
-  if (battle.sandboxRestoreErrors.length) warn(battle.sandboxRestoreErrors.join('；'), true);
+  if (session.restoreErrors().length) warn(session.restoreErrors().join('；'), true);
 }
 
 /* -------------------------------------------------------------------------------------------------------------- */
@@ -163,8 +164,8 @@ function onPieceClick(hit) {
   if ((!levelRun && state.ui.active) || state.ui.place) {
     const row = hit?.unit?.tileR ?? null;
     let occ = null;
-    if (hit?.uid != null) occ = battle?.allyUnits.find((x) => x.uid === hit.uid) ?? null;
-    const e = occ || (hit?.unitId != null ? battle?.enemies.find((x) => x.id === hit.unitId) : null);
+    if (hit?.uid != null) occ = session.allies().find((x) => x.uid === hit.uid) ?? null;
+    const e = occ || (hit?.unitId != null ? session.enemies().find((x) => x.id === hit.unitId) : null);
     const r = occ ? occ.tileR : (e ? e.tileR : row);
     const c = occ ? occ.tileC : (e ? e.tileC : hit?.unit?.tileC ?? null);
     if (r != null && c != null) { onTileClick({ row: r, col: c }); return; }
@@ -172,10 +173,10 @@ function onPieceClick(hit) {
   }
   // 没在放置时点到「没有 uid 的棋子」= 点到了敌人。敌人和干员可以叠在同一格，
   // 而敌人往往画在上层先接住这一击：把这一击折算给站在同格的干员，否则那个干员永远选不中、技能也开不了。
-  let u = hit?.unitId != null ? battle?.allyUnits.find((x) => x.id === hit.unitId) : null;
-  if (!u && hit?.uid != null) u = battle?.allyUnits.find((x) => x.uid === hit.uid);
+  let u = hit?.unitId != null ? session.allies().find((x) => x.id === hit.unitId) : null;
+  if (!u && hit?.uid != null) u = session.allies().find((x) => x.uid === hit.uid);
   if (!u) {
-    const e = hit?.unitId != null ? battle?.enemies.find((x) => x.id === hit.unitId) : null;
+    const e = hit?.unitId != null ? session.enemies().find((x) => x.id === hit.unitId) : null;
     const occ = e ? unitAt(e.tileR, e.tileC) : null;
     if (occ && occ.alive && occ.deployed) u = occ;
   }
@@ -225,9 +226,9 @@ function setupLevelDeployment() {
   levelDeployment = createHandDeployment({
     hand: refs.hand, canvas: refs.canvas,
     getView: () => view,
-    getRect: () => battle.rect,
+    getRect: () => session.rect(),
     getCard: (id) => { const def = deploymentRecord(id); return { name: def?.name || id, charId: def?.charId || units()[id]?.charId, tokenId: def?.tokenId }; },
-    getError: (id, row, col) => battle.finished ? '作战已结束' : deploymentError(deploymentRecord(id), row, col, true),
+    getError: (id, row, col) => session.finished() ? '作战已结束' : deploymentError(deploymentRecord(id), row, col, true),
     onSelect: (id) => { selectLevelCard(id); sfx('pick'); },
     onInspect: (id) => actions.onCard(id),
     onDrop: openWheel,
@@ -237,25 +238,25 @@ function setupLevelDeployment() {
 }
 
 function deploymentRecord(id) {
-  const card = battle?.hand?.record(id);
+  const card = session.handRecord(id);
   if (card) {
     const unit = card.unit || card.units[0], def = unit.def;
     return { ...def.raw, name: def.name, charId: def.charId, tokenId: card.tokenId, rangeGrid: def.rangeGrid, stats: def.stats,
       handCardId: card.id, chessId: unit.defId, trait: def.trait,
       skills: card.kind === 'token' ? def.skill ? [def.skill] : [] : def.raw.skills || [] };
   }
-  if (!levelRun || !battle) return units()[id];
-  return battle.data.getChess(id, { skillIndex: state.document.skillSelections[id], moduleId: levelRun.moduleSelections[id] })?.raw || units()[id];
+  if (!levelRun || !session.alive()) return units()[id];
+  return session.content()?.getChess(id, { skillIndex: state.document.skillSelections[id], moduleId: levelRun.moduleSelections[id] })?.raw || units()[id];
 }
 
 function openWheel(row, col) {
-  if (!battle || !state.ui.active || (levelRun && battle.finished)) return false;
+  if (!session.alive() || !state.ui.active || (levelRun && session.finished())) return false;
   const id = state.ui.active;
   const def = deploymentRecord(id);
   const error = deploymentError(def, row, col, state.ui.payDp);
   if (error) { warn(error, true); return false; }
-  if (battle.hand?.record(id) && !battle.hand.requiresFacing(id)) {
-    const owner = battle.hand.record(id).owner;
+  if (session.handRecord(id) && !session.handRequiresFacing(id)) {
+    const owner = session.handRecord(id).owner;
     deployOp(row, col, owner?.dir || 'RIGHT');
     if (levelRun) cancelLevelDeployment();
     return true;
@@ -328,7 +329,7 @@ function pulse(el) {
 const selectionId = (u) => u.uid ?? `unit:${u.id}`;
 function selectedUnit() {
   if (state.ui.selectedUid == null) return null;
-  return battle?.allyUnits.find((x) => selectionId(x) === state.ui.selectedUid && x.alive && x.deployed && !x.removed) ?? null;
+  return session.allies().find((x) => selectionId(x) === state.ui.selectedUid && x.alive && x.deployed && !x.removed) ?? null;
 }
 
 /** 选中场上干员：显示准确范围、左侧详情和跟随单位的操作按钮。 */
@@ -383,8 +384,8 @@ function retreatSelected() {
   const name = u.name ?? u.defId;
   // 主动撤退不是被击倒：不播「干员被击倒」（引擎也只给 reason==='killed' 播那个音）
   // force：绕过结城理 S3 的庇护拦截（那是防暴毙，不该拦玩家手动撤退）
-  const before = battle.players[0].dp;
-  battle.retreat(u, { reason: 'retreat', permanent: !levelRun, force: true });
+  const before = session.cost();
+  session.retreat(u, { reason: 'retreat', permanent: !levelRun });
   state.document.operators = state.document.operators.filter((o) => o.uid !== u.uid);
   saveLocal();
   state.ui.selectedUid = null;
@@ -393,7 +394,7 @@ function retreatSelected() {
   hud.setSelMark(refs, null);
   syncHud(true);
   renderHand();
-  warn(levelRun ? `${name} 已撤退 · 返还 ${Math.floor(battle.players[0].dp - before)} 费，进入再部署冷却` : `${name} 已撤退`);
+  warn(levelRun ? `${name} 已撤退 · 返还 ${Math.floor(session.cost() - before)} 费，进入再部署冷却` : `${name} 已撤退`);
 }
 
 /** 范围签名的内容指纹：格子集合变了就重画。只比长度会漏掉「同长度不同形状」（技能换范围）的情况。 */
@@ -441,7 +442,7 @@ function showDeploymentTiles() {
   if (!view) return;
   const id = state.ui.active, tiles = [], def = id && deploymentRecord(id);
   if (def && !state.ui.place && !state.ui.tool) {
-    const rect = battle.rect;
+    const rect = session.rect();
     for (let r = rect.r0; r <= rect.r1; r++) for (let c = rect.c0; c <= rect.c1; c++) {
       if (!deploymentError(def, r, c, false, { placementOnly: true })) tiles.push([r, c]);
     }
@@ -468,7 +469,11 @@ function setupEnemyPlacement() {
   placement = createEnemyPlacement(
     {
       state: () => state,
-      battle: () => battle,
+      alive: () => session.alive(),
+      grid: () => session.grid(),
+      enemies: () => session.enemies(),
+      fx: (kind, params) => session.fx(kind, params),
+      kill: (unit) => session.kill(unit),
       view: () => view,
       warn,
       renderDrawer,
@@ -549,36 +554,37 @@ const paintAt = (row, col) => brush?.paintAt(row, col);
 /* HUD 同步                                                                                                        */
 /* -------------------------------------------------------------------------------------------------------------- */
 
-const { unitVM, handVM } = createUnitModels({ state, units, charIdOf, selectedUnit, getBattle: () => battle, getHandRecord: deploymentRecord, getRangeKeys: rangeKeysOf });
+const { unitVM, handVM } = createUnitModels({ state, units, charIdOf, selectedUnit, now: () => session.time(), canSpend: (ownerId, n) => session.canSpend(ownerId, n), getHandRecord: deploymentRecord, getRangeKeys: rangeKeysOf });
 
 function syncHud(force = false) {
-  if (!battle || !refs) return;
-  scoreboard?.render(battle.sandboxScore, force);
+  if (!session.alive() || !refs) return;
+  scoreboard?.render(session.score(), force);
   const now = performance.now();
   if (!force && now - lastHud < 80) return;
   lastHud = now;
   renderHand();
   if (levelRun) {
     const slots = refs.hud.querySelector('.hud__dp');
-    slots.dataset.slots = `部署位 ${battle.hand.deployedCount()} / ${battle.flags.deployLimit}`;
+    slots.dataset.slots = `部署位 ${session.deployedCount()} / ${session.flags().deployLimit}`;
   }
-  const account = battle.players[0];
+  const account = session.account();
   const dpHud = refs.hud.querySelector('.hud__dp');
   dpHud.classList.toggle('is-debt', account.dp < 0);
-  dpHud.title = `部署费用 · 下限 ${account.dpFloor || 0} · 自然回复 ${Number(((account.dpNaturalRate ?? battle.flags.dpPerSec) * (account.dp < 0 ? .5 : 1)).toFixed(3))} 点/秒`;
+  dpHud.title = `部署费用 · 下限 ${account.dpFloor || 0} · 自然回复 ${Number(((account.dpNaturalRate ?? session.flags().dpPerSec) * (account.dp < 0 ? .5 : 1)).toFixed(3))} 点/秒`;
 
   // 沙盒里随手刷出来的敌人不计入引擎的 total（那只统计关卡排程的），所以分母取「出现过的总数」，
   // 免得手刷时永远是 0/0。
-  const killed = battle.killed;
-  const total = Math.max(battle.total, killed + (battle.leakedCount || 0) + battle.enemies.length);
+  const tally = session.tally();
+  const killed = tally.killed;
+  const total = tally.total;
 
   hud.setStats(refs, {
     kill: killed,
     total,
-    life: Math.max(0, battle.flags.lifeLimit - (battle.leakedCount || 0)),
-    time: battle.time,
+    life: tally.life,
+    time: tally.time,
     dp: displayedDp(),
-    playing: !!runner?.playing,
+    playing: session.playing(),
     speed: state.ui.speed,
     board: state.ui.board,
     pay: state.ui.payDp,
@@ -618,7 +624,7 @@ function positionSelectionActions() {
 }
 
 function renderHand() {
-  const cards = battle?.hand?.cards() || [];
+  const cards = session.handCards();
   const visible = levelRun ? cards : [...squadVMs(), ...cards.filter((c) => c.token)];
   if (state.ui.active && !visible.some((c) => c.id === state.ui.active)) {
     state.ui.active = null; state.ui.popOpen = false; applyTileOnly();
@@ -676,8 +682,8 @@ const actions = {
     location.assign('/studio/play.html');
   },
   onExitToggle(open) {
-    if (open) { cancelLevelDeployment(); exitWasPlaying = !!runner?.playing; runner?.pause(); }
-    else { if (exitWasPlaying && !document.hidden && !resultShown) runner?.play(); exitWasPlaying = false; }
+    if (open) { cancelLevelDeployment(); exitWasPlaying = session.playing(); session.driver()?.pause(); }
+    else { if (exitWasPlaying && !document.hidden && !resultShown) session.driver()?.play(); exitWasPlaying = false; }
     syncHud(true);
   },
   onNewMap() {
@@ -692,22 +698,22 @@ const actions = {
   },
   onSettings() {
     if (levelRun) cancelLevelDeployment(); else closeWheel();
-    const playing = !!runner?.playing;
-    runner?.pause(); syncHud(true);
+    const playing = session.playing();
+    session.driver()?.pause(); syncHud(true);
     openSettings({ settings: preferences, onChange: applyPreferences,
-      onClose: () => { if (playing) runner?.play(); syncHud(true); } });
+      onClose: () => { if (playing) session.driver()?.play(); syncHud(true); } });
   },
   onSaves(afterSave = null) {
     if (levelRun) return;
     closeWheel();
-    const playing = !!runner?.playing;
-    runner?.pause();
+    const playing = session.playing();
+    session.driver()?.pause();
     syncHud(true);
     openSaveManager({
       current: sceneSnapshot,
       onLoad: (_save, index) => { location.assign(`/studio/console.html?slot=${index}`); },
       onSaved: (index) => { selectSaveSlot(index); syncSaveIndicator(); afterSave?.(); },
-      onClose: () => { if (playing) runner?.play(); syncSaveIndicator(); syncHud(true); },
+      onClose: () => { if (playing) session.driver()?.play(); syncSaveIndicator(); syncHud(true); },
     });
   },
   /** hud 的点击总代理先走这里：按键动效 + 音效，然后才派发真正的动作。 */
@@ -715,28 +721,29 @@ const actions = {
     pulse(btn);
     sfx(TAP_SFX[a]);
   },
-  onPlay() { if (!runner) return; if (runner.playing) runner.pause(); else runner.play(); syncHud(true); },
+  onPlay() { const driver = session.driver(); if (!driver) return; if (driver.playing) driver.pause(); else driver.play(); syncHud(true); },
   onSpeed() {
     const i = SPEEDS.indexOf(state.ui.speed);
     state.ui.speed = SPEEDS[(i + 1) % SPEEDS.length];
-    runner?.speedTo(state.ui.speed);
+    session.driver()?.speedTo(state.ui.speed);
     saveLocal();
     syncHud(true);
   },
-  onFrame() { runner?.step(1); syncHud(true); },
+  onFrame() { session.driver()?.step(1); syncHud(true); },
   /**
-   * 快捷键 · 步进一帧：没暂停就先暂停再步进（否则 runner.step 会让画面继续跑）。
+   * 快捷键 · 步进一帧：没暂停就先暂停再步进（否则推进器会接着跑下去）。
    * 只步进 1 个 tick（1/30 秒），和面板上的「步进」按钮同一套。
    */
   onKeyStep() {
-    if (!runner) return;
-    if (runner.playing) runner.pause();
-    runner.step(1);
+    const driver = session.driver();
+    if (!driver) return;
+    if (driver.playing) driver.pause();
+    driver.step(1);
     syncHud(true);
   },
   onScoreClear() {
-    battle?.sandboxScore?.clear();
-    scoreboard?.render(battle?.sandboxScore, true);
+    session.score()?.clear();
+    scoreboard?.render(session.score(), true);
     saveLocal();
     warn('伤害计分板已清零');
   },
@@ -761,7 +768,7 @@ const actions = {
     if (levelRun) {
       if (state.ui.active === id) { cancelLevelDeployment(); return; }
       selectLevelCard(id);
-      warn(`选中 ${rec.name} · ${battle.hand.status(battle.hand.record(id)) || '拖动手牌到可部署格，再拖动选择朝向'}`);
+      warn(`选中 ${rec.name} · ${session.handStatus(session.handRecord(id)) || '拖动手牌到可部署格，再拖动选择朝向'}`);
       return;
     }
     if (state.ui.place) setPlace(null);      // 拿牌 = 退出投放方式
@@ -940,7 +947,7 @@ const actions = {
   onBatchConfirm() {
     const ids = new Set(state.ui.batchSel);
     let n = 0;
-    for (const e of [...(battle?.enemies || [])]) if (e.alive && ids.has(e.id)) { killEnemy(e); n++; }
+    for (const e of [...session.enemies()]) if (e.alive && ids.has(e.id)) { killEnemy(e); n++; }
     clearBatch();
     setPlace(null);
     warn(`已批量删除 ${n} 只敌人`);
@@ -1028,11 +1035,10 @@ const actions = {
     const m = selectedUnit()?.mem.customMakoto;
     if (!m) return warn('这个干员没有可切换的形态');
     // 失败原因分开报：同居「需要10费、5秒冷却」时，冷却中的人看不出到底卡在哪一条
-    const now = battle.time;
-    const cd = Math.max(0, (Number(m.switchAt) || 0) - now);
-    const dp = battle.players[0]?.dp ?? 0;
+    const cd = Math.max(0, (Number(m.switchAt) || 0) - session.time());
+    const dp = session.cost();
     if (cd > 1e-9) return warn(`面具切换冷却中，还剩 ${cd.toFixed(1)} 秒`, true);
-    if (!battle.canSpendDp(selectedUnit().ownerId, 10)) return warn(`切换面具要 10 费，现在只有 ${Math.floor(dp)}`, true);
+    if (!session.canSpend(selectedUnit().ownerId, 10)) return warn(`切换面具要 10 费，现在只有 ${Math.floor(dp)}`, true);
     if (m.index === 2 && selectedUnit()?.skill.active) return warn('救济进行中不能换面具（技能结束后再换）', true);
     if (m.switchPersona((m.index + 1) % 3)) { refs._detailUid = null; syncHud(true); warn(`切换至${m.names[m.index]}`); }
     else warn('切换失败（状态已变，再点一次试试）', true);
@@ -1051,9 +1057,9 @@ const actions = {
 // 调试钩子（无头验证 / 手动排查都靠它，页面本身不依赖）
 globalThis.__sandbox = {
   state,
-  get battle() { return battle; },
+  get battle() { return session.rawEngine(); },
   get view() { return view; },
-  get runner() { return runner; },
+  get runner() { return session.driver(); },
   get refs() { return refs; },
   get audio() { return audio; },
   actions,
@@ -1066,7 +1072,11 @@ function showLevelResult() {
   resultShown = true;
   clearSelection(); setSelectionFocus(false);
   audio.stopSkillAmbients();
-  levelResult = createLevelResult({ battle, run: levelRun, canvas: refs.canvas, getView: () => view,
+  const tally = session.tally();
+  levelResult = createLevelResult({
+    result: { cleared: session.cleared(), killed: tally.killed, leaked: tally.leaked, time: tally.time,
+      lifeLimit: Number(session.flags().lifeLimit) || 0, score: session.score()?.read() ?? null },
+    run: levelRun, canvas: refs.canvas, getView: () => view,
     preferences,
     reduceMotion: preferences.reduceMotion || matchMedia('(prefers-reduced-motion: reduce)').matches,
     onRetry: () => { resetBattle({ paused: false, resetSession: true }).catch((error) => warn(error.message, true)); } });
@@ -1076,8 +1086,8 @@ function frame(now) {
   const dt = (now - prevFrame) / 1000;
   prevFrame = now;
   try {
-    if (document.hidden) runner?.pause();
-    else runner?.advance(dt);
+    if (document.hidden) session.driver()?.pause();
+    else session.driver()?.advance(dt);
   } catch (e) {
     // 战斗推进出错：记一次，但绝不让循环停掉（否则时间卡死、看起来像整个模拟器坏了）
     reportSoftError('advance', e);
@@ -1086,7 +1096,7 @@ function frame(now) {
     syncHud(false);
     positionSelectionActions();
     paintBattleFeedback(now);
-    if (levelRun && battle?.finished && !resultShown) showLevelResult();
+    if (levelRun && session.finished() && !resultShown) showLevelResult();
     levelResult?.paint(now);
   } catch (e) {
     // HUD / 详情面板的渲染出错，不该拖死战斗。上一版 detailTabBody 里一个未定义变量就是这样
@@ -1158,8 +1168,8 @@ async function boot({ run = null } = {}) {
     refs.exitMenu.hidden = false;
     refs.hud.querySelector('[data-act="reset"] span').textContent = '重新作战';
     refs.hud.querySelector('[data-act="reset"]').title = '清空本次进度并按当前阵容重新作战';
-    runner.play(); warn(`${levelRun.levelName} · 拖动手牌到可部署格，再拖动选择朝向`);
-  } else if (!battle.sandboxRestoreErrors.length) warn('现场已载入并暂停 · 空格继续 · 快存直接覆盖当前存档位');
+    session.driver()?.play(); warn(`${levelRun.levelName} · 拖动手牌到可部署格，再拖动选择朝向`);
+  } else if (!session.restoreErrors().length) warn('现场已载入并暂停 · 空格继续 · 快存直接覆盖当前存档位');
 }
 
 /* -------------------------------------------------------------------------------------------------------------- */
