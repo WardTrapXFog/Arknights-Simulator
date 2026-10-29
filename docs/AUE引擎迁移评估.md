@@ -6,6 +6,8 @@
 
 ## 1. 结论
 
+2026-10-29 的全量源码／数据／导入审查与当前试接顺序见[试接方案](引擎迁移试接方案.md)。该轮选择先保留本地 kit 和 SI 规则，隔离接入 AUE，再逐项评估是否转用原生；并未证明全量原生行为等价。
+
 **值得借鉴 AUE 的边界设计，也值得开展隔离的接入原型；目前不应直接替换正式引擎，更不应把三大模块整体搬到一个新的 AUE 应用里重做。** 推荐保留本项目的页面、关卡文件、沙盒存档和内容定义，在产品层与引擎之间建立适配层，再决定是否切换战斗内核。
 
 这不是近乎无痛的升级。两边虽使用 JavaScript、30 帧模拟和部分同源 kit，但战斗对象、数据模型、部署入口、表现事件、渲染器与依赖安装方式都不同。至少存在 13 人编队、自由沙盒重复部署、自设结城理多技力系统和自定义特效事件四类明确障碍。
@@ -50,7 +52,7 @@
 
 ### 3.1 战斗入口和对象不同
 
-本项目 `public/sandbox/js/battle-session.js` 使用 `buildBattleSpec`、`DataSource` 和 `createBattleFromSpec`，随后直接接入 `_checkEnd`、`_remove`、`_createAllyFromInput`、`_deploy`、手牌以及存档恢复。`battle-runner.js` 调用对象的 `start/step/snapshot/drainEvents`。这里既有稳定入口，也有产品层对引擎内部方法的依赖。
+本项目的旧引擎建场、结束规则、部署、手牌及存档恢复现已集中到 `public/sandbox/js/session.js`；`battle-session.js` 调用门面。门面仍返回旧单位形状，尚未完成新旧数据投影。`battle-runner.js` 调用对象的 `start/step/snapshot/drainEvents`。这里既有稳定入口，也有产品层对引擎内部方法的依赖。
 
 AUE 的核心入口则是 `createWorld(content, {seed, players})` 和 `step`，世界、内容与命令分开。它没有一份可以直接替换上述 Battle 实例的公共对象。必须把本项目的创建、推进、部署、技能、撤退、观察和结束操作转换到新的契约；继续在各 UI 文件中模拟同名私有方法，会把原有耦合带进新底座。[AUE 内核导出](https://github.com/ArknightsDevs/Arknights-Universal-Engine/blob/b25523619c981cb1380928ffe96b0fcd67263e74/packages/sim/src/index.js)、[世界创建与帧推进](https://github.com/ArknightsDevs/Arknights-Universal-Engine/blob/b25523619c981cb1380928ffe96b0fcd67263e74/packages/sim/src/world.js)
 

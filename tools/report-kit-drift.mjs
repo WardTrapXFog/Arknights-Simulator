@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // tools/report-kit-drift.mjs —— 只读：把「三个仓库」对齐后，算出本项目相对 **AUE 实际运行的内容** 差在哪。
 //
-// 为什么不是只比 Stronghold：AUE 并不直接跑 Stronghold 的全部 210 份 kit，它只启用 72 份
-// （packages/content/data/kits.json 的 enabled）。所以迁移时真正会发生交互的是这 72 份，
-// 而本项目有 213 份。两者的差集才是「迁移后哪些干员会缺行为」。
+// 为什么不是只比 Stronghold：AUE 默认只加载其中 72 份 kit
+// （packages/content/data/kits.json 的 enabled）。本工具对比这批文件的文本差异。
+// 默认未启用不等于缺行为：AUE 有原生实现，应用也可额外传入本地 kit 工厂。
+// 全量玩家身份与导入契约分别见 report-operator-paths.mjs、report-kit-contracts.mjs。
 //
 // 三方来源（全部固定提交，不自己挑版本）：
 //   本项目     server/sim/content/kits/ops/
