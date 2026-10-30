@@ -1,4 +1,5 @@
 import { COLS } from '../constants.js';
+import { canDeployOn } from '../../../shared/deployment.js';
 
 const live = (u) => u?.alive && u.deployed && !u.removed;
 const number = (v, fallback = 0) => Number.isFinite(Number(v)) ? Number(v) : fallback;
@@ -166,12 +167,7 @@ export function installDeploymentHand(battle) {
     if (ANCHOR.test(r.tokenId) && on) return '锚点须部署在思衡托攻击范围外';
     if (TRAPS.test(r.tokenId) && battle.enemies.some((e) => e.alive && !e.removed && !e.isFlying && Math.round(e.y) === row && Math.round(e.x) === col)
       && !(r.owner.skill?.id === 'skchr_wang_3' && r.owner.skill.active && on)) return '陷阱不能放在地面敌人所在格';
-    const position = u.def.position;
-    if (position === 'RANGED' && battle.grid.tile(row, col).build === 'MELEE') return '该单位需要高台或两用地块';
-    const highAllowed = /可以放置于远程位|可以部署在远程位/.test(u.def.raw.trait?.moduleDesc || '');
-    const canStand = position === 'ALL'
-      ? battle.grid.canStand(row, col, { ranged: true }) || battle.grid.canStand(row, col, { ranged: false })
-      : battle.grid.canStand(row, col, { ranged: position === 'RANGED' || highAllowed });
+    const canStand = battle.canDeployUnit ? battle.canDeployUnit(u, row, col) : canDeployOn(battle.grid, u.def, row, col);
     if (!canStand) return '这个地形不能部署该单位';
     const occupied = battle._occ[key];
     if (live(occupied) && occupied !== replace) return '这一格已有我方单位';
@@ -291,7 +287,7 @@ export function installDeploymentHand(battle) {
         const moduleRate = u.def.traitBb?.withdraw_cost_recover_ratio
           ?? u.def.talents.find((t) => t.bb?.withdraw_cost_recover_ratio != null)?.bb.withdraw_cost_recover_ratio;
         const rate = number(moduleRate, sub === 'charger' ? 1 : sub === 'merchant' ? 0 : .5);
-        battle.addDp(u.ownerId, Math.floor(Math.min(paid * rate, moduleRate != null ? paid : u.def.stats.cost)));
+        battle.addDp(u.ownerId, Math.floor(Math.min(paid * rate, moduleRate != null ? paid : u.def.stats.cost)), u);
       }
     } else if (r) {
       u.removed = false;

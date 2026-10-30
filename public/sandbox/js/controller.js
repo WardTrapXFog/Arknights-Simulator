@@ -15,7 +15,7 @@ import { setTerminalState } from './terminal-shell.js';
 
 import { data } from "../../js/data.js";
 import { createAssets } from "../../js/assets.js";
-import { loadBrowserSim } from "../../js/battle/simLoader.js";
+import { loadBattleData } from './battle-data.js';
 import { html } from "../../js/ui/components.js";
 import { FacingWheel } from "../../js/ui/facingWheel.js";
 import { render as mountPreact } from '/vendor/preact.module.js';
@@ -115,7 +115,8 @@ async function resetBattle({ paused = !session.driver()?.playing, resetSession =
     useLevelSpawns(state.document, snapshot.spawns, snapshot.levelName);
   }
   try { audio.stopSkillAmbients(); } catch { /* optional audio */ }
-  buildBattle(state.document, operatorSource(sim.ds), { mode: levelRun ? 'level' : 'sandbox', moduleSelections: levelRun?.moduleSelections });
+  const opened=buildBattle(state.document, operatorSource(sim.ds), { mode: levelRun ? 'level' : 'sandbox', moduleSelections: levelRun?.moduleSelections });
+  if(opened?.then) await opened;
   state.ui.selectedUid = null;
   state.ui.rangeSig = -1;
   state.ui.active = null;
@@ -1089,6 +1090,7 @@ function frame(now) {
     if (document.hidden) session.driver()?.pause();
     else session.driver()?.advance(dt);
   } catch (e) {
+    if(session.backend()==='aue'){session.driver()?.pause();warn(`AUE 试接已暂停：${e.message}`,true);}
     // 战斗推进出错：记一次，但绝不让循环停掉（否则时间卡死、看起来像整个模拟器坏了）
     reportSoftError('advance', e);
   }
@@ -1138,7 +1140,7 @@ async function boot({ run = null } = {}) {
 
   await data.loadAll('assets', 'stages', 'chess', 'tokens', 'enemies');
   await loadOperatorLibrary(data);
-  sim = await loadBrowserSim();
+  sim = await loadBattleData(data);
   assets = createAssets();
   assets.seed(data.getRaw('assets'));
   useAssets(assets);

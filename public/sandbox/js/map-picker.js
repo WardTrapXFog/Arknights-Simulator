@@ -32,12 +32,12 @@ function boot() {
   try {
     listSaveSlots();
     if (params.has('new')) {
-      history.replaceState(null, '', location.pathname);
+      history.replaceState(null, '', location.pathname + (params.get('engine') === 'legacy' ? '?engine=legacy' : params.get('engine') === 'aue' ? '?engine=aue' : ''));
       enter(newSandbox()).catch(showError); return;
     }
     const slot = params.get('slot');
     if (slot !== null) {
-      history.replaceState(null, '', location.pathname);
+      history.replaceState(null, '', location.pathname + (params.get('engine') === 'legacy' ? '?engine=legacy' : params.get('engine') === 'aue' ? '?engine=aue' : ''));
       const index = Number(slot), saved = Number.isInteger(index) && index >= 0 && index < SLOT_COUNT ? listSaveSlots()[index] : null;
       if (!saved || saved.damaged) throw Error('这个存档无法载入，请重新选择。');
       enter(saved.save, index).catch(showError); return;

@@ -19,7 +19,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { UI_GROUPS, MAYBE_GROUPS, LEGACY_GROUPS, KEEP_GROUPS } from './assets/ui-groups.mjs';
+import { UI_GROUPS, MAYBE_GROUPS, LEGACY_GROUPS, KEEP_GROUPS, uiAssetAllowed } from './assets/ui-groups.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const ASSET_UI = path.join(ROOT, 'public', 'assets', 'ui');
@@ -101,6 +101,10 @@ function main() {
 
   const blob = siteText();
   const problems = [];
+  for(const key of Object.keys(manifest.ui || {})){
+    const slash=key.lastIndexOf('/');
+    if(!uiAssetAllowed(key.slice(0,slash),key.slice(slash+1)))problems.push(`不再使用的 UI 素材仍在索引：${key}`);
+  }
   for (const g of Object.keys(counts)) {
     if (!KEEP_GROUPS[g] && !LEGACY_GROUPS[g]) problems.push(`ui 分组「${g}」三档名单都没有（plan.mjs 会照旧下载它）`);
   }

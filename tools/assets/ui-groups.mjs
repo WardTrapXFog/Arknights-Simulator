@@ -80,3 +80,7 @@ export const LEGACY_GROUPS = Object.freeze({
 
 /** 真正要下载的分组：确定要用 + 可能要用。 */
 export const KEEP_GROUPS = Object.freeze({ ...UI_GROUPS, ...MAYBE_GROUPS });
+
+/** Individual assets left inside an otherwise retained group. */
+export const UNUSED_UI = Object.freeze({ 'hudPanel/bg_board': '上游官方棋盘底图；本项目使用自己的战场地形渲染' });
+export const uiAssetAllowed=(group,key)=>Object.hasOwn(KEEP_GROUPS,String(group).split('/')[0]) && !Object.hasOwn(UNUSED_UI,`${group}/${key}`);

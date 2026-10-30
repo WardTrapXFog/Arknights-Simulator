@@ -26,7 +26,6 @@
 import { T, hurt, auraBuff, spawnChildren, targetsNear } from './helpers.js';
 import { skill } from './archetypes.js';
 import { sortAllyTargets } from '../../targeting.js';
-import { applyElement } from '../../damage.js';
 
 /** 入戏太深的孩童 初始模式防御力。PRTS 写 +500；数据 talentBb DefUp.def 是 600。两者冲突，按 PRTS 取 500。 */
 const PORC_DEF = 500;
@@ -48,7 +47,7 @@ const biteRadius = (e) => (e.base.rangeRadius > 0 ? e.base.rangeRadius : 1);
  */
 function rampageHit(b, src, tgt, amount) {
   if (!(amount > 0) || !tgt || !tgt.alive || tgt.side !== 'ally' || !tgt.elem) return 0;
-  return applyElement(b, src, tgt, { element: 'angers', amount, mul: 1, type: 'element' });
+  return b.dealDamage(src, tgt, { element: 'angers', amount, mul: 1, type: 'element' });
 }
 
 // ---------------------------------------------------------------------------------------------------------------

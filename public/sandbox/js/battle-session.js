@@ -1,6 +1,7 @@
 import { session } from './session.js';
 import { ENEMIES } from './spawn-catalog.js';
 import { useLevelSpawns } from './state.js';
+import { canDeployOn } from '/shared/deployment.js';
 
 // 沙盒专属的对局操作：建场、起推进器、部署判定、刷怪、出生表。
 //
@@ -38,10 +39,7 @@ export function deploymentError(def, row, col, payDp, { placementOnly = false } 
     if (remaining > 0) return `再部署还需 ${Math.ceil(remaining)} 秒`;
   }
   const grid = session.grid();
-  if (def.position === 'RANGED' && grid?.tile(row, col).build === 'MELEE') return '该单位需要高台或两用地块';
-  const canStand = def.position === 'ALL'
-    ? grid?.canStand(row, col, { ranged: true }) || grid?.canStand(row, col, { ranged: false })
-    : grid?.canStand(row, col, { ranged: def.position === 'RANGED' });
+  const canStand = canDeployOn(grid, def, row, col);
   if (!canStand) return '这个地形放不下该干员';
   const occ = unitAt(row, col);
   if (occ && occ.alive && occ.deployed) return '这一格已经有干员了';

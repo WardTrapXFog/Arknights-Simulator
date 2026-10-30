@@ -137,11 +137,11 @@ export { HOVER_KEYS, blinkForward } from './enemies/archetypes.js';
 // per-battle state + installation
 
 /** Register the global dispatch hooks once per battle (idempotent). */
-export function ensureInstalled(b) {
+export function ensureInstalled(b, { accept = () => true } = {}) {
   const st = stOf(b);
   if (st.installed) return st;
   st.installed = true;
-  b.on('enemySpawn', ({ enemy }) => onSpawn(b, enemy), { priority: 100 });
+  b.on('enemySpawn', ({ enemy }) => { if (accept(enemy)) onSpawn(b, enemy); }, { priority: 100 });
   b.on('hit', (c) => onHitOut(b, c), { priority: 200 });
   b.on('hit', (c) => chaliceShare(b, c), { priority: -400 });
   b.on('hit', (c) => onHitIn(b, c), { priority: -500 });

@@ -5,7 +5,7 @@
 // 引擎一换就要改几十处。现在这些访问统一收进 public/sandbox/js/session.js 的门面里，
 // 这个脚本替人守着那条线：**门面外不许出现对引擎实例的私有访问**。
 //
-// 检查两类东西（都在 public/sandbox/js/ 下，session.js 与 battle-session.js 自身除外）：
+// 检查两类东西（都在 public/sandbox/js/ 下；明确的门面与引擎适配文件除外）：
 //   1. `battle._xxx` / `battle.hand` / `battle.players` / `battle.allyUnits` / `battle.enemies`
 //      这类引擎内部成员读取；
 //   2. 从 './battle-session.js' 导入 `battle` / `runner` 这两个过渡出口。
@@ -17,8 +17,8 @@ import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const DIR = path.join(ROOT, 'public', 'sandbox', 'js');
-/** 门面自己当然可以碰引擎；battle-session.js 是过渡出口，暂时豁免。 */
-const EXEMPT = new Set(['session.js', 'battle-session.js']);
+/** 仅门面、过渡出口和两个引擎适配文件可访问引擎；不豁免整个 aue 目录。 */
+const EXEMPT = new Set(['session.js', 'battle-session.js', 'legacy-session.js', 'aue/battle.js', 'aue/content.js']);
 
 /** 引擎内部成员：出现在 `battle.` 后面就是越界。 */
 const ENGINE_MEMBERS = ['_pending', '_deploy', '_occ', '_remove', '_checkEnd', '_createAllyFromInput', '_setupUnit',

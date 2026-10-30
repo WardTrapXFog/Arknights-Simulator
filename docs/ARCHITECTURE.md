@@ -32,6 +32,12 @@ tools/               内部数据维护与素材脚本
 
 `server/sandbox/index.js` 是唯一服务入口，负责本机静态文件、关卡库与音乐列表接口；战斗模拟在浏览器中执行。`public/index.html` 将首页地址导向主菜单。
 
+`session.js` 默认装载 `public/sandbox/js/aue/`，由一个 AUE 世界执行战斗，适配器提供现有手牌、单位投影、表现事件和计分接口。`battle-data.js` 复用页面数据缓存，默认加载链不导入旧 Battle 或脚本／特质安装器。明确带 `?engine=legacy` 时才延迟装载 `legacy-session.js` 和旧引擎，供既有内容对照；新增原生干员使用 AUE 路径。
+
+`tools/prepare-aue-trial.mjs` 只在维护时读取固定上游 Git 对象并生成 `engine/aue-runtime.json.gz`。包内包含运行导入闭包、逐文件哈希与上游许可；服务启动时由 `tools/aue-runtime.mjs` 在本地展开到忽略的 `public/vendor/aue-trial/`，同一包复用缓存，玩家不需要上游仓库或网络下载。版本由 `aue/version.js` 固定。
+
+牌库保留原有 202 个原作／补位槽位及三名自设，另由 `tools/build-aue-roster.mjs` 生成 259 个原生槽位及配装定义，总计 464 个。原有干员继续使用本地 kit，新槽位使用 AUE 原生技能、职业和天赋数据；同名自设与原作身份独立。敌人优先原生能力，项目新增能力及原生未覆盖部分使用已登记的本地敌人／领袖能力，按单位选择，避免双重安装。当前 259 条敌人均已接入；有限运行检查与用户试玩的区别见 [运行记录](AUE试接运行记录.md)，成果与维护方式见 [引擎迁移成果与维护](引擎迁移成果与维护.md)。
+
 ## 3. 自由沙盒 `public/sandbox/js/`
 
 | 文件 | 职责 |

@@ -112,6 +112,7 @@ const HELP = `Usage: node tools/fetch-assets.mjs [options]
                     (incompatible with --offline / --add-only / --local-spines)
   --offline         no network: post-process what is on disk and rebuild data/assets.json
   --dry-run         print the plan and exit
+  --art-only        download images and Spine models; reuse existing audio without downloading new audio
   --refresh-index   re-download the audio_data.json / charword_table.json / models_data.json indexes
   --voice-lang=cn   the dub of audio.voice (the 中文 voice setting): cn (default) | jp | en | kr
                     (audio.voiceJp, the 日本語 setting, is always the JP dub: both trees are planned)
@@ -157,7 +158,7 @@ function envFlag(value) {
  * @returns {{concurrency:number, force:boolean, offline:boolean, dryRun:boolean, refreshIndex:boolean, prune:boolean, allowShrink:boolean, strict:boolean, addOnly:boolean, localSpines:boolean, voiceLang:string, voiceAll:boolean, optionalVoice:boolean, help:boolean, source:string, sourceSnapshot:string}}
  */
 export function parseArgs(argv) {
-  const o = { concurrency: 16, force: false, offline: false, dryRun: false, refreshIndex: false, prune: false, allowShrink: false, strict: envFlag(process.env.SP_ASSETS_STRICT), addOnly: false, localSpines: false, voiceLang: 'cn', voiceAll: false, optionalVoice: true, help: false, source: process.env.SP_ASSET_SOURCE || DEFAULT_ASSET_SOURCE, sourceSnapshot: '' };
+  const o = { concurrency: 16, force: false, offline: false, dryRun: false, artOnly: false, refreshIndex: false, prune: false, allowShrink: false, strict: envFlag(process.env.SP_ASSETS_STRICT), addOnly: false, localSpines: false, voiceLang: 'cn', voiceAll: false, optionalVoice: true, help: false, source: process.env.SP_ASSET_SOURCE || DEFAULT_ASSET_SOURCE, sourceSnapshot: '' };
   for (const a of argv) {
     const [k, v] = a.split('=');
     if (k === '--concurrency') o.concurrency = Math.max(1, Math.min(64, parseInt(v, 10) || 16));
@@ -171,6 +172,7 @@ export function parseArgs(argv) {
     else if (k === '--allow-shrink') o.allowShrink = true;
     else if (k === '--strict') o.strict = true;
     else if (k === '--add-only') o.addOnly = true;
+    else if (k === '--art-only') o.artOnly = true;
     else if (k === '--local-spines') o.localSpines = true;
     else if (k === '--voice-lang') { if (!VOICE_DIRS[v]) throw new Error(`unknown --voice-lang ${v} (cn | jp | en | kr)`); o.voiceLang = v; }
     else if (k === '--voice-all') o.voiceAll = true;
@@ -462,6 +464,13 @@ async function main() {
   const [dataEnemies, dataTokens, dataBosses, dataBackups, dataChess] = await Promise.all(
     ['data/enemies.json', 'data/tokens.json', 'data/bosses.json', 'data/backups.json', 'data/chess.json'].map((f) => readJson(f).catch(() => null)));
   const extras = dataExtras(dataBackups, dataChess);
+  const nativeRoster=await readJson('data/aue-operators.json');
+  for(const record of Object.values(nativeRoster.operators || {})){
+    extras.extraOperators[record.charId]={name:record.name,subProfessionId:record.subProfessionId,skills:record.skills};
+    for(const module of record.modules || [])if(module.typeIcon && !extras.moduleTypes.includes(module.typeIcon))extras.moduleTypes.push(module.typeIcon);
+  }
+  extras.tokenIds=[...new Set([...extras.tokenIds,...Object.keys(nativeRoster.tokens || {})])];
+  extras.extraVoiceIds=[...new Set([...extras.extraVoiceIds,...Object.values(nativeRoster.operators || {}).map(r=>r.charId)])];
   for (const id of Object.keys(contentAssets.chars)) delete extras.extraOperators[id];
   const contentModels = contentModelDependencies(contentAssets);
   for (const id of contentModels.operators) extras.extraOperators[id] ||= {};
@@ -506,10 +515,11 @@ async function main() {
     concurrency: opts.concurrency, force: opts.force, keepExisting: opts.addOnly, log, ...network,
   });
   await dl.loadLedger();
-  const downloadErrors = opts.offline ? [] : await downloadLeaves(leaves, dl, ASSETS, 'files');
+  const downloadLeavesInScope=opts.artOnly?leaves.filter(row=>!row.leaf.alts.every(alt=>alt.rel.startsWith('audio/'))):leaves;
+  const downloadErrors = opts.offline ? [] : await downloadLeaves(downloadLeavesInScope, dl, ASSETS, 'files');
   const extraAudioJobs = contentAudioJobs(contentAssets);
-  const contentAudio = await dl.run(opts.offline ? [] : extraAudioJobs, 'content-audio');
-  if (opts.offline) for (const job of extraAudioJobs) {
+  const contentAudio = await dl.run(opts.offline || opts.artOnly ? [] : extraAudioJobs, 'content-audio');
+  if (opts.offline || opts.artOnly) for (const job of extraAudioJobs) {
     try {
       const valid = validate(job.kind, await readFile(join(ASSETS, job.rel)));
       contentAudio.set(job.rel, { status: valid ? 'skip' : 'error' });
@@ -579,7 +589,7 @@ async function main() {
   const orphans = orphanFiles(await listFiles(ASSETS), new Set([...resolved.files, ...dl.preserved]));
   if (opts.prune) for (const r of orphans) { try { await unlink(join(ASSETS, r)); } catch { /* ignore */ } }
 
-  const charIds = Object.keys(catalog.operators || {});
+  const charIds = [...new Set([...Object.keys(catalog.operators || {}),...Object.values(nativeRoster.operators || {}).map(record=>record.charId)])];
   const required = requiredMisses(manifest, charIds);
   const contentModelErrors = [...contentModels.files].filter(rel => !resolved.files.has(rel));
   required.push(...contentModelErrors.map(rel => `content model: ${rel}`));

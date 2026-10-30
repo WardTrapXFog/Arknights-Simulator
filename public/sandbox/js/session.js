@@ -1,10 +1,6 @@
-import { buildBattleSpec, createBattleFromSpec } from '/sim/spec.js';
-import { DataSource } from '/sim/simdata.js';
 import { makeRunner } from './battle-runner.js';
-import { COLS, normRect, routesOf } from './battlefield.js';
+import { COLS } from './battlefield.js';
 import { ENEMIES } from './spawn-catalog.js';
-import { createDamageScore } from './damage-score.js';
-import { DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT } from '../../../shared/level.js';
 
 // 战斗会话：界面与引擎之间唯一的门面。
 //
@@ -16,7 +12,7 @@ import { DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT } from '../../../shared/level.
 //   * 门面内部可以碰引擎私有成员；门面外的 public/sandbox/js/ 不允许出现 `battle._`，
 //     由 tools/check-session-boundary.mjs 守着。
 //   * 门面只转发、不改规则。任何玩法判断都不写在这里——那是 kit 和调用方的事。
-//   * 换引擎时只改这一个文件：把 engine 换成别的实现，外面的调用一行不动。
+//   * 引擎由这里选择；单位投影与规则兼容放在对应适配器，界面继续使用门面。
 //
 // 用法：`import { session } from './session.js'`，然后 `session.time()`、`session.allies()`。
 // 统一前缀让"我在跨边界"一眼可见，也避免和界面自己的同名变量撞车。
@@ -25,6 +21,7 @@ import { DEFAULT_DEPLOY_LIMIT, DEFAULT_LIFE_LIMIT } from '../../../shared/level.
 let engine = null;
 /** 当前会话的推进器。 */
 let driver = null;
+let opening = 0;
 
 /** 当前引擎实例（只给调试钩子与过渡调用点；规则代码一律走下面的门面）。 */
 function rawEngine() { return engine; }
@@ -32,108 +29,31 @@ function rawEngine() { return engine; }
 /** 建一场战斗。`document` 是沙盒/关卡的当前文档，`baseSource` 是数据源。 */
 function open(document, baseSource, opts = {}) {
   close();
-  engine = createEngine(document, baseSource, opts);
-  return engine;
+  if (!globalThis.location || new URLSearchParams(globalThis.location.search).get('engine') !== 'legacy') {
+    const generation=opening;
+    return Promise.all([import('./aue/runtime.js'),import('./aue/battle.js')]).then(async ([runtime,adapter])=>{
+      const next=await adapter.prepareBattle({...document,spawns:opts.spawns ?? spawnsOf(document)},baseSource,await runtime.loadAueRuntime(),opts);
+      if(generation!==opening){next.close();throw Error('AUE 建场已被下一次会话替代');}
+      engine=next;return engine;
+    });
+  }
+  const generation=opening;
+  return import('./legacy-session.js').then(({createEngine})=>{
+    if(generation!==opening)throw Error('建场已被下一次会话替代');
+    engine=createEngine(document,baseSource,{...opts,spawns:opts.spawns ?? spawnsOf(document)});return engine;
+  });
 }
 
 /** 关掉当前会话。 */
 function close() {
-  try { driver?.pause(); engine?.sandboxScore?.stop(); } catch { /* 已经没了 */ }
+  opening++;
+  try { driver?.pause(); engine?.sandboxScore?.stop(); engine?.close?.(); } catch { /* 已经没了 */ }
   engine = null; driver = null;
 }
 
 // ---------------------------------------------------------------------------------------------------
 // 建场（原 battle-session.js 的 buildBattle 主体，逐行搬过来，行为不变）
 // ---------------------------------------------------------------------------------------------------
-
-function createEngine(document, baseSource, opts) {
-  const stage = document.stage, stageId = stage.id ?? 'sandbox';
-  const ds = new DataSource({ stages: { [stageId]: stage } }, baseSource);
-  const spec = buildBattleSpec({
-    battleId: 'sandbox', fieldId: 'sandbox', kind: 'normal', seed: 20261021,
-    stageId, timeLimit: null, rect: normRect(stage.rect),
-    players: [{ playerId: 'p1', seat: 0, side: 'L', colOffset: 0, coords: 'field', units: opts.mode === 'level'
-      ? document.squad.map((chessId, i) => ({ chessId, uid: i + 1, row: 0, col: 0, skillIndex: document.skillSelections[chessId], moduleId: opts.moduleSelections?.[chessId] })) : [] }],
-    // 关卡制作器直接给引擎格式的 spawns；沙盒仍按波次表映射。
-    // `document.spawns` 是从制作器带进来的出生表（钉住 / 自定义路线原样保留），存在时优先。
-    spawns: opts.spawns ?? spawnsOf(document),
-    routes: stage.routes ?? routesOf(stage),
-    flags: { dpInit: opts.mode === 'level' ? 10 : 30, dpPerSec: 1, dpMax: 99, startOpCooldown: 0, manualOnly: true,
-      manualDeployment: true, siLevel: opts.mode === 'level',
-      // 关卡可在 meta.deployLimit 指定部署上限（官方集成战略关卡是 6）；未写时沿用 8。
-      deployLimit: Math.max(1, Math.min(13, Number(document.meta?.deployLimit) || DEFAULT_DEPLOY_LIMIT)),
-      lifeLimit: Math.max(1, Math.min(999, Number(document.meta?.lifeLimit) || DEFAULT_LIFE_LIMIT)),
-      // 集成战略主题（meta.theme，如 rogue_6）：内容层的特勤模组据此决定局内部分是否生效。
-      siTheme: document.meta?.theme ?? null, ...(opts.flags || {}) },
-  });
-  const b = createBattleFromSpec(spec, ds, { quiet: true });
-  b.siLevel = opts.mode === 'level';
-  b.siReadyAt = new Map();
-  b.autoFinish = b.siLevel;
-  // 自由沙盒没有回合截止时间；不改变共用引擎与关卡编辑器的限时规则。
-  b.timeLimit = Infinity;
-  b._checkEnd = () => {
-    if (!b.siLevel || b.finished) return;
-    if (b.leakedCount >= b.flags.lifeLimit) { b.forceEnd('forced'); return; }
-    if (!b._pending.length && !b.enemies.some((e) => e.alive) && b.started && !b._hasPendingEnemySchedules()) b._finish('cleared');
-  };
-  b.__uid = Math.max(0, ...b.allyUnits.map((u) => u.uid || 0), ...(document.operators || []).map((o) => o.uid));
-  const remove = b._remove.bind(b);
-  b._remove = (unit, reason, killer, permanent, dying) => {
-    return remove(unit, reason, killer, b.siLevel ? permanent : true, dying);
-  };
-  if (document.session) {
-    b.time = Math.max(0, Number(document.session.time) || 0);
-    b.tickCount = Math.round(b.time * 30);
-  }
-  // 只重建存档列出的在场单位，血量与技力在部署后恢复。
-  b.start();
-  const errors = [];
-  const restoredOperators = [];
-  for (const input of (document.operators || []).filter((o) => !o.tokenId)) {
-    const unit = b._createAllyFromInput(b.players[0], { ...input, kind: 'chess' });
-    if (unit) b.hand?.prepare(unit);
-    if (!unit || !b._deploy(unit)) errors.push(`行${input.row} 列${input.col}的干员无法部署`);
-    else restoredOperators.push([unit, input.runtime]);
-  }
-  for (const input of (document.operators || []).filter((o) => o.tokenId)) {
-    if (!b.allyUnits.some((u) => u.kind === 'op' && u.uid === input.ownerUid) && input.owner?.chessId) {
-      const owner = b._createAllyFromInput(b.players[0], { ...input.owner, kind: 'chess', uid: input.ownerUid, row: 0, col: 0 });
-      if (owner) { b.hand.prepare(owner); b._setupUnit(owner); }
-    }
-    const r = [...b.hand.records.values()].find((r) => r.tokenId === input.tokenId && r.owner.uid === input.ownerUid);
-    const t = r?.units.find((u) => !u.alive);
-    if (!t) { errors.push(`召唤物 ${input.tokenId} 的所属干员不在存档中`); continue; }
-    t.dir = input.dir; t.homeR = input.row; t.homeC = input.col;
-    if (b._deploy(t, { tile: [input.row, input.col] })) restoredOperators.push([t, input.runtime]);
-  }
-  b._processSpawns();
-  for (const [unit, runtime] of restoredOperators) restoreRuntime(unit, runtime);
-  for (const enemy of b.enemies) {
-    restoreRuntime(enemy, document.spawns?.find((s) => s.tag === enemy.tag)?.runtime);
-  }
-  if (document.session) {
-    b.players[0].dp = Math.max(b.players[0].dpFloor || 0, Math.min(b.flags.dpMax, Number(document.session.dp) || 0));
-    b.killed = Math.max(0, Number(document.session.killed) || 0);
-    b.leakedCount = Math.max(0, Number(document.session.leaked) || 0);
-    b.total = Math.max(b.total, b.killed + b.leakedCount + b.enemies.length);
-  }
-  b.sandboxRestoreErrors = errors;
-  b.sandboxScore = createDamageScore({
-    now: () => b.time,
-    allies: () => b.allyUnits,
-    on: (name, fn, opts) => b.on(name, fn, opts),
-    off: (hook) => b.off(hook),
-  }, document.session?.score);
-  return b;
-}
-
-function restoreRuntime(unit, saved) {
-  if (!saved) return;
-  if (Number.isFinite(saved.hp)) unit.hp = Math.max(1, Math.min(unit.s.maxHp, saved.hp));
-  if (Number.isFinite(saved.sp) && unit.skill && !unit.skill.noSkill) unit.skill.setSpTotal(saved.sp);
-  if (Number.isFinite(saved.atkCd)) unit.atkCd = Math.max(0, saved.atkCd);
-}
 
 function spawnsOf(document) {
   return document.spawns ?? document.waves.map((w) => ({ time: w.at, enemyKey: ENEMIES[w.enemyIndex]?.key,
@@ -152,6 +72,7 @@ function spawnMods(w) {
 // ---------------------------------------------------------------------------------------------------
 
 export const session = Object.freeze({
+  backend: () => engine?.backend || 'legacy',
   // ---- 建场 / 推进 ----
   /** 当前引擎实例（调试与过渡出口，业务代码不要用）。 */
   rawEngine,
@@ -225,7 +146,7 @@ export const session = Object.freeze({
     if (!engine) return { killed: 0, leaked: 0, total: 0, life: 0, time: 0, finished: false };
     const killed = engine.killed || 0, leaked = engine.leakedCount || 0;
     return { killed, leaked, total: Math.max(engine.total || 0, killed + leaked + engine.enemies.length),
-      life: Math.max(0, (engine.flags?.lifeLimit ?? 0) - leaked), time: engine.time || 0, finished: !!engine.finished };
+      life: engine.life ?? Math.max(0, (engine.flags?.lifeLimit ?? 0) - leaked), time: engine.time || 0, finished: !!engine.finished };
   },
   /** 存档恢复时被跳过的单位（读不出位置的用来提示）。 */
   restoreErrors: () => engine?.sandboxRestoreErrors ?? [],

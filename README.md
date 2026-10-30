@@ -120,7 +120,7 @@ npm run setup -- --no-assets --local --game "填入你补全到盘符后的路�
 
 ## 与上游的关系
 
-战斗引擎、渲染层与大部分干员数据来自 [sganggs/Stronghold-Protocol](https://github.com/sganggs/Stronghold-Protocol)，即《明日方舟》限时玩法「卫戍协议：盟约」的非官方复刻。本项目在其基础上改造为手动部署的单机关卡作战，移除了大厅、房间与联机功能。
+战斗引擎、渲染层与大部分干员数据来自 [sganggs/Stronghold-Protocol](https://github.com/sganggs/Stronghold-Protocol)以及 [ArknightsDevs/Arknights-Universal-Engine](https://github.com/ArknightsDevs/Arknights-Universal-Engine)，本项目在其两者基础上改造为手动部署的单机关卡作战，添加了自由沙盒、关卡编辑器等修改，并且对局内战斗做了更多的相关特性更新，移除了大厅、房间与联机功能。
 
 ## 随源码提供的素材
 

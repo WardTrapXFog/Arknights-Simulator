@@ -26,7 +26,7 @@ import { kindOf } from './formats.mjs';
 import { pickUnitSfx, assignSkillModeSfx, UI_SFX, BATTLE_SFX, resolveSpec, indexVoice, nativeVoiceDirs, VOICE_DIRS, VOICE_CUSTOM_DIR, VOICE_BATTLE_SLOTS } from './audio.mjs';
 import { literal } from './manifest.mjs';
 import { EMOTE_CATALOG } from '../../shared/constants.js';
-import { KEEP_GROUPS } from './ui-groups.mjs';
+import { KEEP_GROUPS, uiAssetAllowed } from './ui-groups.mjs';
 
 /**
  * The voice slots are read from the zh_CN charword table, whose voiceIds are always `CN_*`: the other dubs
@@ -597,6 +597,7 @@ export function buildPlan({ catalog, audio, modelsData, charword = null, voiceLa
   const addUi = (group, key, url) => {
     if (!uiAllowed(group)) { skippedUi.add(group); return; }
     const k = safeName(key);
+    if (!uiAssetAllowed(group,k)) return;
     const name = `${group}/${k}`;
     if (!ui[name] && url) ui[name] = leaf(alt(`ui/${group}/${k}.png`, url));
   };

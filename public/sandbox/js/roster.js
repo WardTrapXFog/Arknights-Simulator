@@ -11,6 +11,7 @@
 
 import { CUSTOM_OPS } from './generated-ops.js';
 import { OFFICIAL_IDS, OPERATOR_ALIASES } from './generated-library.js';
+import { AUE_IDS } from './generated-aue-library.js';
 
 export const DIY_OPS = CUSTOM_OPS;
 
@@ -26,7 +27,7 @@ export const SUPPORT_OPS = Object.freeze([
   { id: 'chess_char_4_21_a', name: '白面鸮', role: '技力光环，展示技能循环' },
   { id: 'chess_char_5_03_a', name: '烛煌', role: '异路施加灼燃，展示全场天赋联动' },
 ]);
-export const AVAILABLE_IDS = Object.freeze([...new Set([...DIY_IDS, ...OFFICIAL_IDS])]);
+export const AVAILABLE_IDS = Object.freeze([...new Set([...DIY_IDS, ...OFFICIAL_IDS, ...AUE_IDS])]);
 export const canonicalOperatorId = (id) => OPERATOR_ALIASES[id] || id;
 export const isAvailable = (id) => AVAILABLE_IDS.includes(canonicalOperatorId(id));
 

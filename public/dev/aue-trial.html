@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AUE 地图试接 · ARK/SIM</title>
+  <link rel="icon" href="/icons/app.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/dev/aue-trial.css">
+  <script type="module" src="/dev/aue-trial.js"></script>
+</head>
+<body>
+  <header><a href="/studio/home.html">返回主菜单</a><h1>AUE 地图试接</h1><p>独立地图诊断入口 · 正式战斗已默认使用 AUE</p></header>
+  <main>
+    <section class="controls">
+      <a class="file" href="/studio/play.html?engine=aue">在关卡游玩界面试接</a>
+      <a class="file" href="/studio/console.html?engine=aue">在沙盒界面试接</a>
+      <label>本机关卡<select id="levels" disabled><option>读取关卡库…</option></select></label>
+      <button id="open" disabled>建立地图世界</button>
+      <label class="file">导入关卡文件<input id="file" type="file" accept=".json,application/json"></label>
+      <button id="step" disabled>推进 1 帧</button>
+      <button id="close" disabled>关闭世界</button>
+    </section>
+    <p>当前仅接入普通地形、生命与部署上限。出生表、路线和干员尚未加入此世界；下方单独显示未接入的内容数量。这里的帧推进不代表完整战斗已迁移。</p>
+    <p id="status" role="status">选择关卡后建立世界。引擎源码由启动器在本地准备。</p>
+    <div class="field"><canvas id="map" width="840" height="760" aria-label="地图地形与战场范围"></canvas><pre id="details">尚未建立世界</pre></div>
+  </main>
+</body>
+</html>

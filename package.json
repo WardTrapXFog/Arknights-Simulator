@@ -37,6 +37,10 @@
     "levels:stamp": "node tools/check-levels.mjs --stamp",
     "levels:list": "node tools/check-levels.mjs --list",
     "session": "node tools/check-session-boundary.mjs",
+    "engine:prepare": "node tools/prepare-aue-trial.mjs",
+    "engine:roster": "node tools/build-aue-roster.mjs",
+    "engine:size": "node tools/report-engine-footprint.mjs",
+    "ui:prune": "node tools/prune-unused-ui.mjs",
     "ui": "node tools/check-ui-assets.mjs",
     "check": "npm run session && npm run ui && npm run levels"
   },

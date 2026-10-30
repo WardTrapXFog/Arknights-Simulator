@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import { openBrowser as openInBrowser } from './open-browser.mjs';
 import { startupMessage } from './startup-message.mjs';
 import { printReadiness } from '../tools/assets/readiness.mjs';
+import { ensureAueRuntime } from '../tools/aue-runtime.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IS_WIN = process.platform === 'win32';
@@ -93,6 +94,12 @@ async function main() {
   // before setup: setup and the server then see the new version's files (its message explains a refusal)
   if (applyPendingUpdate(ROOT).state === 'failed') return 1;
 
+  try { await ensureAueRuntime(); }
+  catch(error) {
+    console.error(`${mark.err} AUE 运行源码准备失败：${error.message}`);
+    console.error('  请恢复同版本的 engine/aue-runtime.json.gz 后重新启动；不需要下载上游仓库。');
+    return 1;
+  }
   if (!printReadiness()) return 1;
 
   const env = serverEnv(o);

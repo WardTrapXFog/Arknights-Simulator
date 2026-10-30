@@ -12,6 +12,7 @@ import { startupMessage } from '../../scripts/startup-message.mjs';
 
 /** SI serves files; battle simulation and editing run in the browser. */
 export async function startSandboxServer(opts = {}) {
+  await (await import('../../tools/aue-runtime.mjs')).ensureAueRuntime();
   const { port, host } = listenAddress({ ...opts, port: opts.port ?? Number(process.env.PORT || 3100) });
   const log = opts.log || makeLogger(!!opts.quiet), cache = new CompressCache();
   // 调试日志：启动器传 --debug 时打开，浏览器端经 /api/debug 读取，交互日志经 /api/log 回到本窗口。

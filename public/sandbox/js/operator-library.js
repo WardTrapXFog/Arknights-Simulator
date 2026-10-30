@@ -6,9 +6,12 @@ export const PROFESSIONS = [
 let library = null;
 export async function loadOperatorLibrary(data) {
   if (!library) {
-    const response = await fetch('/data/operator-library.json');
-    if (!response.ok) throw new Error('满配干员牌库载入失败');
-    library = await response.json();
+    const responses=await Promise.all(['/data/operator-library.json','/data/aue-operators.json'].map(url=>fetch(url)));
+    if (responses.some(r=>!r.ok)) throw new Error('满配干员牌库载入失败');
+    const [local,native]=await Promise.all(responses.map(r=>r.json()));
+    const tokens={...native.tokens};
+    for(const [id,record] of Object.entries(local.tokens))tokens[id]={...tokens[id],...record,variants:{...tokens[id]?.variants,...record.variants}};
+    library={...local,operators:{...native.operators,...local.operators},tokens};
   }
   Object.assign(data.getRaw('chess'), library.operators);
   return library;

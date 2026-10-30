@@ -203,7 +203,7 @@ async function boot() {
     await loadLevels(context);
     if (lastLevelsError()) error = lastLevelsError();
     const url = new URL(location.href), id = url.searchParams.get('level'), prepare = url.searchParams.has('squad');
-    history.replaceState(null, '', location.pathname);
+    history.replaceState(null, '', location.pathname + (['aue','legacy'].includes(url.searchParams.get('engine')) ? '?engine='+url.searchParams.get('engine') : ''));
     if (id) { selected = listLevels(context).find((l) => l.id === id); if (!selected) throw Error('找不到这张关卡，请重新选择或导入 JSON'); }
     if (prepare && selected) { initializeTeam(); renderPreparation(); } else renderLevels();
   } catch (err) { renderLevels(); fail(err); }
